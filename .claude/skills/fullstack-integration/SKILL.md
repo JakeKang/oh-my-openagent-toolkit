@@ -28,6 +28,154 @@ allowed-tools:
 - Performance architecture
 - Deployment architecture
 
+## Deep Thinking Protocol
+
+**MANDATORY REQUIREMENT**: fullstack-integration MUST use Sequential Thinking MCP + ultrathink for ALL system architecture and integration decisions. These decisions form the foundation upon which all implementation is built.
+
+### Why MANDATORY for Fullstack Integration
+
+Fullstack Integration makes **structural decisions that are extremely expensive to change**. System architecture patterns, API contract designs, and integration strategies become deeply embedded in the codebase. Wrong choices here require massive refactoring across frontend, backend, and all integration points. These decisions must be right the first time.
+
+**Impact**: A poor architecture decision can require months of refactoring and delay project delivery by 50-100%.
+
+### When to Apply Deep Thinking
+
+**ALWAYS Required for**:
+- **System Architecture Patterns**: Monolith vs microservices, layered vs hexagonal, modular vs coupled
+- **API Design Strategy**: REST vs GraphQL vs gRPC, versioning approach, contract-first vs code-first
+- **Real-time Communication**: WebSocket vs Server-Sent Events vs polling vs WebRTC
+- **State Management Architecture**: Where state lives (client/server/edge), synchronization strategy
+- **Authentication/Authorization Flow**: Session vs token, OAuth strategy, role-based vs attribute-based
+- **Data Flow Architecture**: Unidirectional vs bidirectional, event-driven vs request-response
+- **Database Strategy**: SQL vs NoSQL, single vs polyglot persistence, schema design
+- **Caching Architecture**: Client-side, CDN, server-side, database caching strategies
+- **API Gateway/BFF Pattern**: Direct communication vs intermediary layer
+- **Cross-cutting Concerns**: Logging, monitoring, error handling, transaction management
+
+**Standard Protocol Exemptions**:
+- Implementation of already-designed API endpoints
+- Standard CRUD operations following established patterns
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with Fullstack-specific focus:
+
+#### 1. Problem Framing (1-2 thoughts)
+**Fullstack-specific questions**:
+- What are the integration points between frontend and backend?
+- What are the performance requirements (latency, concurrent users)?
+- What are the scalability requirements (users, data volume)?
+- What are the real-time vs batch processing needs?
+- What are the security requirements?
+- How will frontend and backend evolve independently?
+
+#### 2. Alternative Generation (2-4 thoughts)
+**Fullstack-specific alternatives**:
+- Generate 3-5 architecturally distinct approaches
+- Consider industry patterns (clean architecture, DDD, microservices, serverless)
+- Evaluate type-safety strategies (shared types, code generation, runtime validation)
+- Research similar system architectures using GitHub MCP
+
+#### 3. Multi-Dimensional Evaluation (3-6 thoughts)
+**Fullstack-specific evaluation dimensions**:
+- **Scalability** (25%): Horizontal and vertical scaling capabilities
+- **Maintainability** (20%): How easy to understand, modify, extend
+- **Performance** (20%): Latency, throughput, resource usage
+- **Type Safety** (15%): Compile-time vs runtime error catching
+- **Integration Complexity** (10%): Effort to connect frontend-backend
+- **Team Productivity** (10%): Developer experience, debugging ease
+
+#### 4. Decision Synthesis (2-3 thoughts)
+**Fullstack-specific criteria**:
+- Must support independent frontend/backend deployment
+- Must provide clear API contracts (documentation + types)
+- Must scale to expected user load with margin
+- Must enable efficient debugging across stack
+
+#### 5. Implementation Strategy (2-4 thoughts)
+**Fullstack-specific considerations**:
+- API contract definition (OpenAPI spec or GraphQL schema)
+- Type generation setup (frontend types from backend)
+- Integration testing infrastructure
+- Error handling and propagation strategy
+
+**Expected Thought Investment**: 15-25 thoughts for typical Fullstack architecture decisions
+
+### Documentation Requirements
+
+All decisions MUST be documented in `.memory/decisions.md`. See CLAUDE.md Deep Thinking Protocol section for full template.
+
+### Domain-Specific Examples
+
+#### Example 1: Real-time Collaboration Architecture
+
+**Problem**: Design real-time collaboration system for collaborative document editing (100 concurrent users per document)
+
+**Complexity**: Very High (5 indicators: Multiple approaches, Performance critical, Cross-skill dependencies, Long-term implications, High cost of failure)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements - <100ms latency, conflict resolution, offline support
+- Thoughts 3-6: Alternatives - WebSocket, Server-Sent Events, Polling, WebRTC, Hybrid
+- Thoughts 7-14: Evaluate latency, scalability, complexity, offline support
+- Thoughts 15-18: Decision synthesis - WebSocket with CRDT
+- Thoughts 19-22: Implementation strategy - Y.js library, Redis pub/sub
+
+**Decision**: WebSocket + Y.js CRDT + Redis Pub/Sub
+
+**Rationale**: WebSocket provides full-duplex <50ms latency. Y.js CRDT enables automatic conflict resolution. Redis Pub/Sub scales to 10K concurrent users per server. Offline support built-in.
+
+**Impact**: Achieved 45ms P99 latency, 500 concurrent users per server, zero data loss.
+
+#### Example 2: API Design - REST vs GraphQL
+
+**Problem**: Choose API pattern for e-commerce platform (100+ entities, mobile + web clients)
+
+**Complexity**: Very High (4 indicators: Multiple approaches, Long-term implications, Cross-skill dependencies, Team productivity)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements - Complex queries, mobile bandwidth constraints, rapid iteration
+- Thoughts 3-5: Alternatives - REST, GraphQL, gRPC, REST + BFF
+- Thoughts 6-12: Evaluate query flexibility, caching, tooling, learning curve
+- Thoughts 13-15: Decision synthesis with team capability
+- Thoughts 16-18: Implementation plan - GraphQL with DataLoader
+
+**Decision**: GraphQL with Apollo Server/Client + DataLoader
+
+**Rationale**: Query flexibility reduces mobile bandwidth by 50%. Single endpoint simplifies API gateway. Type safety with automatic TypeScript generation. DataLoader prevents N+1 queries.
+
+**Impact**: 50% reduction in API calls from mobile, 30% faster feature development, excellent type safety.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Integration patterns clearly defined and documented
+- [ ] Type safety strategy established
+- [ ] Performance requirements quantified
+- [ ] Frontend and backend skills consulted and aligned
+- [ ] API contracts specified
+- [ ] Error handling strategy defined across stack
+
+Coordinate with **frontend-nextjs**, **backend-nestjs**/**backend-fastapi**, and **quality-controller** for validation.
+
+### Integration with Fullstack Workflow
+
+**Deep Thinking checkpoints**:
+- **Architecture Design** (Workflow 03): System architecture pattern (MANDATORY), API design strategy (MANDATORY), Database architecture (MANDATORY)
+- **Integration Planning**: Real-time communication strategy (MANDATORY if needed), Authentication/authorization flow (MANDATORY), State management architecture (MANDATORY)
+- **API Contract Design**: API endpoint design, Type generation strategy, Error response standardization
+- **Integration Testing**: Contract testing, E2E testing coordination, Performance testing
+
+**Critical**: Do not begin implementation without agreed-upon architecture and API contracts. Frontend and backend must work from same source of truth.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- Architecture revision rate: Target <5%
+- API contract breaking changes: Target <10% during development
+- Integration bugs: Target <20% of total bugs
+- Type safety coverage: Target >95%
+- Frontend-backend alignment score: Target >90%
+
 ## Integration Patterns
 
 ### Frontend-Backend Communication

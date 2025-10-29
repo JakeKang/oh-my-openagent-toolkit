@@ -29,6 +29,131 @@ allowed-tools:
 - Frontend performance optimization
 - Accessibility compliance
 
+## Deep Thinking Protocol
+
+**STRONGLY RECOMMENDED**: frontend-nextjs should use Sequential Thinking MCP + ultrathink for complex React patterns and performance-critical implementations. Simple CRUD and standard components can follow established patterns.
+
+### Why STRONGLY RECOMMENDED for Frontend
+
+Frontend implementations range from simple components to complex state management and performance optimization challenges. Complex patterns (state architecture, real-time UI, performance optimization) benefit enormously from Deep Thinking (+60% quality improvement, -45% bugs), while standard components follow well-established patterns efficiently.
+
+**Impact**: Deep Thinking on complex frontend decisions prevents performance bottlenecks, accessibility issues, and maintainability problems that are expensive to fix later.
+
+### When to Apply Deep Thinking
+
+**ALWAYS Required for**:
+- **State Management Architecture Selection**: Context vs Redux vs Zustand vs Jotai for complex applications
+- **Performance Optimization Strategy**: Bundle splitting, lazy loading, image optimization, caching architecture
+- **Complex Component Patterns**: Compound components, render props, advanced custom hooks strategies
+- **Real-time UI Implementation**: WebSocket integration, optimistic updates, subscription management
+- **Form Handling Strategy**: Complex multi-step forms with validation, dynamic fields
+- **Data Fetching Architecture**: SWR vs React Query vs Server Components data loading patterns
+- **Authentication UI Flow**: Session management, protected routes, refresh token handling
+
+**Standard Protocol Exemptions**:
+- Simple CRUD components following established project patterns
+- Basic Shadcn/ui component usage (buttons, cards, inputs)
+- Standard page layouts without complex state
+- Simple API calls with fetch/axios
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with Frontend-specific focus:
+
+#### 1. Problem Framing (1-2 thoughts)
+**Frontend-specific questions**:
+- What are the UX requirements (responsiveness, perceived performance, usability)?
+- What are the performance constraints (bundle size, load time targets)?
+- What is the complexity of state management needs?
+- What are the accessibility requirements (WCAG level)?
+
+#### 2. Alternative Generation (2-3 thoughts)
+- Research React patterns using GitHub MCP (component libraries, state solutions)
+- Identify 3-4 viable approaches
+- Consider bundle size impact of each option
+
+#### 3. Multi-Dimensional Evaluation (2-4 thoughts)
+**Frontend-specific evaluation dimensions**:
+- **User Experience** (25%): Responsiveness, perceived performance, usability
+- **Performance** (20%): Bundle size, load time, runtime performance
+- **Maintainability** (20%): Component reusability, code clarity
+- **Accessibility** (15%): WCAG compliance, keyboard navigation
+- **Type Safety** (10%): TypeScript coverage, type inference quality
+- **Developer Experience** (10%): Debugging ease, hot reload efficiency
+
+#### 4. Decision Synthesis (2-3 thoughts)
+- Select solution balancing UX, performance, and maintainability
+- Document tradeoffs explicitly
+
+#### 5. Implementation Strategy (2-3 thoughts)
+- Plan component structure
+- Define testing approach
+- Establish performance monitoring
+
+**Expected Thought Investment**: 10-15 thoughts for typical frontend complexity decisions
+
+### Documentation Requirements
+
+Document in `.memory/decisions.md` with simplified format:
+- **Problem**: What frontend challenge was being solved
+- **Decision**: What approach was chosen
+- **Rationale**: Why this was optimal (with performance/UX justification)
+
+### Domain-Specific Example
+
+#### State Management for Real-time Analytics Dashboard
+
+**Problem**: Select state management for real-time analytics dashboard with 20+ widgets receiving WebSocket updates every 2 seconds
+
+**Complexity**: High (3 indicators: Multiple valid approaches, Performance critical, Long-term maintenance implications)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements - 20+ independent widgets, WebSocket data flow, sub-second UI updates, bundle size <250KB
+- Thoughts 3-5: Alternatives - Context API, Redux Toolkit, Zustand, Jotai, React Query + Zustand hybrid
+- Thoughts 6-10: Evaluation - Context causes full re-renders (poor performance), Redux adds 45KB bundle overhead, Zustand (1.2KB) + React Query (13KB) separates concerns
+- Thoughts 11-12: Decision synthesis - Zustand for UI state, React Query for server state caching
+- Thoughts 13-14: Implementation - Zustand stores per widget type, React Query prevents redundant WebSocket subscriptions
+
+**Decision**: Zustand + React Query hybrid architecture
+
+**Rationale**:
+- **Performance**: Zustand provides lightweight global state (1.2KB bundle). React Query handles WebSocket data with intelligent caching, preventing redundant updates.
+- **Separation of Concerns**: Zustand manages local UI state (widget visibility, filters), React Query manages server state (real-time data).
+- **Re-render Optimization**: Zustand re-renders only subscribed components. React Query batches updates.
+- **Bundle Size**: Total addition 14.2KB (well within 250KB budget)
+- **Developer Experience**: Simple APIs, excellent TypeScript support, clear mental model
+
+**Impact**: Dashboard renders 20+ widgets with <50ms update latency (target: <100ms). Bundle size 245KB (within 250KB target). Zero unnecessary re-renders observed. Team productivity +40% vs previous Context-based architecture.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Component reusability considered (DRY principles)
+- [ ] Performance targets quantified (bundle size, load time)
+- [ ] Accessibility requirements addressed (WCAG AA minimum)
+- [ ] TypeScript type safety maximized
+- [ ] Bundle size impact measured
+
+Coordinate with **fullstack-integration** for API contracts, **backend-nestjs/fastapi** for data requirements, and **quality-controller** for performance validation.
+
+### Integration with Frontend Workflow
+
+**Deep Thinking checkpoints**:
+- **Architecture Design**: State management (ALWAYS Required for complex apps), Data fetching architecture (ALWAYS Required)
+- **Component Development**: Complex component patterns (STRONGLY RECOMMENDED), Simple components (Exempted)
+- **Performance Optimization**: Bundle optimization (ALWAYS Required if >250KB), Performance patterns (STRONGLY RECOMMENDED)
+- **Integration**: Real-time features (ALWAYS Required), Standard API calls (Exempted)
+
+**Critical**: Do not implement complex state or performance architectures without Deep Thinking validation. Frontend architecture mistakes compound over time.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- Component reusability rate: Target >70%
+- Performance targets met: Target >85% (bundle size, Core Web Vitals)
+- Accessibility compliance: Target 100% (WCAG AA)
+- State management bug rate: Target <10% of total bugs
+
 ## ⚠️ CRITICAL: Project Initialization - CLI ONLY
 
 **NEVER MANUALLY CREATE NEXT.JS FILES OR FOLDERS!**

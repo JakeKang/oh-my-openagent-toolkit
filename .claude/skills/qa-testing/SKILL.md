@@ -56,6 +56,89 @@ workspace/tests/
     └── screenshots/
 ```
 
+## Deep Thinking Protocol
+
+**CONDITIONAL**: qa-testing should use Sequential Thinking MCP + ultrathink only when designing complex, multi-layered testing strategies. Most standard testing follows established patterns and Playwright MCP best practices.
+
+### When to Apply Deep Thinking
+
+**Use Deep Thinking when**:
+- **Multi-Layered Testing Strategy**: Coordinating unit + integration + E2E + performance + security testing layers
+- **High-Scale Performance Testing**: Load testing for systems handling >5K concurrent users with complex patterns
+- **Security Testing Beyond Standards**: Custom threat scenarios, penetration testing, advanced security validation
+- **Novel Testing Patterns**: New technology stacks or unique project requirements without established patterns
+
+**Do NOT use for** (most cases):
+- Standard E2E tests with Playwright MCP (follows established patterns)
+- Basic unit/integration tests
+- Simple accessibility testing with axe-core
+- Standard security scans with npm audit
+- Performance testing with Lighthouse alone
+
+### Complexity Threshold
+
+Use Deep Thinking only when **2 or more** of these indicators apply:
+1. Multiple testing layers requiring coordination
+2. High-scale performance testing (>5K concurrent users)
+3. Security testing beyond standard automation
+4. Novel testing patterns for new technologies
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with QA-specific focus:
+
+**Evaluation Dimensions**:
+- **Test Coverage** (30%): Breadth and depth of testing across layers
+- **Efficiency** (25%): Test execution time, parallelization effectiveness
+- **Reliability** (20%): Flakiness rate, false positive/negative rate
+- **Maintainability** (15%): Test code quality, ease of updates
+- **ROI** (10%): Bug detection rate vs testing effort
+
+**Expected Thought Investment**: 8-12 thoughts for complex testing strategy decisions
+
+### Documentation Requirements
+
+Document in `.memory/decisions.md` with minimal format:
+- **Problem**: What testing challenge was addressed
+- **Decision**: What testing strategy was chosen
+
+### Domain-Specific Example
+
+#### Comprehensive Testing for Real-Time Collaboration Platform
+
+**Problem**: Design testing strategy for real-time collaboration platform requiring WebSocket testing, 10K concurrent users load testing, data encryption security testing, and cross-browser E2E validation
+
+**Complexity**: High (3 indicators: Multi-layer testing coordination, High-scale performance >5K users, Security testing beyond standards)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements - WebSocket real-time testing, 10K user load simulation, end-to-end encryption validation, Chrome/Firefox/Safari compatibility
+- Thoughts 3-5: Alternatives - Playwright alone, k6 + Playwright, Artillery + Playwright + OWASP ZAP, Custom test framework
+- Thoughts 6-9: Evaluation - Playwright excellent for E2E + cross-browser, k6 superior for WebSocket load testing, OWASP ZAP for security, axe-core for accessibility
+- Thoughts 10-12: Implementation strategy - Playwright E2E (cross-browser), k6 for load (WebSocket support), OWASP ZAP for security, axe-core for a11y
+
+**Decision**: Playwright MCP (E2E + cross-browser) + k6 (load testing with WebSocket) + OWASP ZAP (security) + axe-core (accessibility)
+
+**Rationale**: Playwright MCP provides comprehensive E2E testing with cross-browser support built-in. k6 specifically handles WebSocket load testing (10K users validated). OWASP ZAP performs security penetration testing beyond basic scans. axe-core validates WCAG AA compliance.
+
+**Impact**: Achieved 95% test coverage across all layers. Detected 45 bugs during development (zero critical bugs reached production). Load testing validated 12K concurrent users (exceeds 10K target). Security scan found and fixed 8 vulnerabilities pre-launch.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Test coverage meets targets (>80% for critical paths)
+- [ ] Performance testing validates actual capacity
+- [ ] Security testing covers identified threat scenarios
+- [ ] Cross-browser compatibility verified
+
+Coordinate with **quality-controller** for quality gate validation and **frontend-nextjs/backend-nestjs/backend-fastapi** for integration testing requirements.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- Test coverage: Target >80% (critical paths)
+- Bug detection rate: Target >90% (pre-production bug capture)
+- Test reliability: Target <5% flakiness rate
+
 ## Testing Technology Stack
 
 ### Primary Testing Tool

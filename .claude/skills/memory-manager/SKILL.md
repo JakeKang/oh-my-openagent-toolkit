@@ -42,6 +42,85 @@ This skill implements a sophisticated dual-system approach:
 - Log analysis feeds back into memory optimization
 - Both systems work together for comprehensive project management
 
+## Deep Thinking Protocol
+
+**OPTIONAL**: memory-manager Deep Thinking is rarely needed. 99% of memory operations follow clear templates and structured file operations. Use Deep Thinking only for rare edge cases involving novel memory structures or complex integration patterns not covered by existing templates.
+
+### Rare Use Cases for Deep Thinking
+
+**Consider Deep Thinking only when**:
+- **Novel Memory Structure Design**: Entirely new memory architecture not template-based (e.g., distributed memory system, custom integration with external context stores)
+- **Complex Memory-Logging Integration**: Custom integration triggers beyond standard memory update → log entry patterns
+- **Multi-Project Memory Management**: Novel patterns for managing shared context across multiple related projects
+- **Performance-Critical Memory Strategy**: Optimizing memory operations for very large projects (>10K files, >100MB memory state)
+
+**Do NOT use for** (99% of cases - standard operations):
+- Standard memory file updates (active-context.md, decisions.md, collaboration.log.md, etc.)
+- Session history recording (follows clear template)
+- Standard logging integration (auto-triggered from memory-logging-integration.yaml)
+- File manifest updates (straightforward CRUD)
+- Project initialization with existing templates
+- Context restoration (follows structured protocol)
+- All standard CRUD operations on memory files
+
+### Complexity Threshold
+
+Use Deep Thinking only when:
+1. **No existing template** covers the memory structure needed
+2. **Custom integration logic** required (not in memory-logging-integration.yaml)
+3. **Multi-project coordination** with shared memory context
+4. **Performance optimization** for extreme-scale projects (>10K files)
+
+**Expected Scenarios**: <1% of memory-manager invocations (most projects use standard templates)
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with memory-manager-specific focus:
+
+**Evaluation Dimensions**:
+- **Clarity** (30%): Memory structure clarity for human developers
+- **Efficiency** (25%): File operation performance, storage optimization
+- **Maintainability** (20%): Ease of updates, template consistency
+- **Session Continuity** (15%): Context restoration reliability
+- **Integration** (10%): Logging and cross-skill coordination
+
+**Expected Thought Investment**: 5-8 thoughts for rare novel memory patterns
+
+### Documentation Requirements
+
+Document in `.memory/decisions.md` with minimal format:
+- **Problem**: What novel memory challenge was encountered
+- **Decision**: What memory structure/pattern was created
+
+**Example** (Brief - Rare Scenario):
+
+**Problem**: Design memory structure for distributed AI model training coordination across 4 geographic regions with separate model versions and training state synchronization
+
+**Complexity**: Medium (1 indicator: Novel domain - distributed training memory not covered by templates)
+
+**Decision**: Regional memory shards (.memory/regions/{region-id}/) with centralized coordination file (.memory/coordination.json) and sync protocol
+
+**Rationale**: Standard single-project memory insufficient for distributed training. Regional shards reduce latency for local teams (Asia, Europe, US-East, US-West). Centralized coordination.json tracks version consistency and synchronization state across regions.
+
+**Impact**: Enabled distributed training with <5s sync latency. Each region maintains local context. Zero conflicts from 300+ daily memory updates across 4 regions.
+
+### Quality Validation
+
+After Deep Thinking (rare cases), validate:
+- [ ] Memory structure documented clearly in .memory/ README
+- [ ] Template created for reuse if pattern generalizable
+- [ ] Integration with logging system maintained
+- [ ] Session continuity tested (restore context from new structure)
+
+Coordinate with **pm-orchestrator** for project-wide memory strategies and **quality-controller** for memory quality standards validation.
+
+### Success Metrics
+
+Track in `.memory/metrics.md` (only when Deep Thinking applied):
+- Template coverage: Target >95% (how many projects use standard templates)
+- Context restoration success: Target 100% (restore works reliably)
+- Memory operation efficiency: Target <100ms for standard operations
+
 ## Core Memory Files
 
 ### Project Initialization

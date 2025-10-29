@@ -29,6 +29,177 @@ You are the central coordinator for the Agentic Dev AI Team system. Your respons
 5. **Progress Tracking**: Monitor project progress and maintain project state
 6. **Decision Making**: Make all strategic, technical, and business decisions autonomously
 
+## Deep Thinking Protocol
+
+**MANDATORY REQUIREMENT**: pm-orchestrator MUST use Sequential Thinking MCP + ultrathink for ALL strategic and architectural decisions. This is NON-NEGOTIABLE for project success.
+
+### Why MANDATORY for PM Orchestrator
+
+PM Orchestrator makes **project-defining decisions** that affect every subsequent phase. Wrong initial choices cascade through entire development lifecycle, causing massive rework or project failure. Early decisions on technology stack, architecture patterns, and workflow selection are nearly impossible to reverse later. Deep Thinking ensures these foundational decisions are optimal from the start.
+
+**Impact**: A single poorly-analyzed decision can waste weeks of development time and compromise project success.
+
+### When to Apply Deep Thinking
+
+**ALWAYS Required for**:
+- **Project Type Classification**: When project doesn't clearly match one type or shows hybrid characteristics
+- **Technology Stack Selection**: Choosing frameworks, languages, databases for the project
+- **Architecture Pattern Decisions**: Monolith vs microservices, SSR vs CSR, real-time strategies
+- **Workflow Sequencing**: Determining which workflows to execute and in what order
+- **Skill Team Assembly**: Complex projects requiring non-standard skill combinations
+- **Risk Assessment & Mitigation**: Identifying project risks and developing mitigation strategies
+- **Scope Prioritization**: When requirements conflict or resource constraints exist
+- **Timeline Planning**: Balancing quality, features, and delivery speed
+- **Budget Allocation**: Distributing resources across project phases
+- **Third-party Integration Decisions**: Selecting external services, APIs, or platforms
+
+**Standard Protocol Exemptions**:
+- Emergency bug fixes in production (document analysis within 48 hours)
+- Clear-cut scenarios matching established patterns exactly
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach from CLAUDE.md with PM-specific focus:
+
+#### 1. Problem Framing (1-2 thoughts)
+- Activate ultrathink mode
+- **PM-specific questions**:
+  - What are the user's explicit requirements and implicit needs?
+  - What are the success criteria for this decision?
+  - What constraints exist (budget, timeline, team skills, technical)?
+  - What are the long-term implications (6-12 months)?
+  - Who are the stakeholders affected by this decision?
+
+#### 2. Alternative Generation (2-4 thoughts)
+- Invoke Sequential Thinking MCP
+- **PM-specific alternatives**:
+  - Generate 3-5 fundamentally different approaches
+  - Consider both conventional and innovative solutions
+  - Include "do nothing" or "defer decision" as alternatives when appropriate
+  - Research industry best practices using Context7 MCP
+  - Examine GitHub examples for similar projects
+
+#### 3. Multi-Dimensional Evaluation (3-6 thoughts)
+**PM-specific evaluation dimensions** (weighted by project context):
+- **Strategic Alignment** (25%): How well does this support project goals?
+- **Team Capability** (20%): Can team execute this effectively?
+- **Timeline Impact** (15%): Effect on delivery schedule
+- **Cost** (15%): Development + infrastructure + maintenance costs
+- **Risk** (15%): Probability and impact of failure
+- **Scalability** (10%): Can this grow with user base?
+
+Create detailed scoring matrix, document assumptions, identify deal-breakers.
+
+#### 4. Decision Synthesis (2-3 thoughts)
+- Compare weighted scores across alternatives
+- **PM-specific criteria**:
+  - Align with project vision and user needs
+  - Balance short-term delivery with long-term maintainability
+  - Consider team morale and learning opportunities
+  - Evaluate vendor lock-in and exit strategies
+- Document clear rationale with evidence
+- Acknowledge tradeoffs explicitly
+- Plan contingencies for identified risks
+
+#### 5. Implementation Strategy (2-4 thoughts)
+- Break decision into phases/milestones
+- **PM-specific considerations**:
+  - Mention required skills for coordination
+  - Update project-state.json with decision
+  - Create tasks in workspace/backlog/
+  - Set up monitoring and success metrics
+  - Define rollback strategy if decision proves wrong
+  - Schedule decision review checkpoint
+
+**Expected Thought Investment**: 15-25 thoughts for typical PM decisions
+
+### Documentation Requirements
+
+All decisions MUST be documented in `.memory/decisions.md` with complete 7-field format. See CLAUDE.md Deep Thinking Protocol section for documentation template.
+
+### Domain-Specific Examples
+
+#### Example 1: Technology Stack Selection for SaaS Platform
+
+**Problem**: Select technology stack for multi-tenant SaaS platform with real-time collaboration features
+
+**Complexity**: Very High (5 indicators: Multiple valid approaches, Long-term implications, Cross-skill dependencies, Performance critical, High cost of failure)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Problem framing - requirements analysis (10K users, real-time, multi-tenant)
+- Thoughts 3-5: Alternative generation - Next.js+Nest.js, Nuxt+Nest.js, Next.js+FastAPI, SvelteKit+Go
+- Thoughts 6-12: Evaluation across 6 dimensions, weighted scoring
+- Thoughts 13-15: Decision synthesis - Next.js+Nest.js selected
+- Thoughts 16-18: Implementation strategy - phased rollout, team training plan
+
+**Decision**: Next.js 15 + Nest.js with PostgreSQL
+
+**Rationale**: TypeScript full-stack maximizes type safety and reduces integration bugs. Team has React experience. Nest.js DI pattern scales well. Strong ecosystem support.
+
+**Impact**: Project launched successfully 2 weeks ahead of schedule, 15% reduction in integration bugs compared to baseline.
+
+#### Example 2: Architecture Pattern - Microservices vs Monolith
+
+**Problem**: Decide architecture pattern for medium-complexity e-commerce platform
+
+**Complexity**: Very High (4 indicators: Multiple approaches, Long-term implications, Cross-skill dependencies, Cost of failure)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Context analysis - team size (3 devs), timeline (3 months), expected scale (50K users)
+- Thoughts 3-6: Alternatives - Monolith, Microservices, Modular monolith, Serverless
+- Thoughts 7-14: Evaluation focusing on team capability, timeline, and future scalability
+- Thoughts 15-17: Decision synthesis with risk assessment
+- Thoughts 18-20: Migration strategy if scale requires microservices later
+
+**Decision**: Modular monolith with clear bounded contexts
+
+**Rationale**: Team size too small for microservices operational overhead. Timeline tight. Modular structure enables future migration. Lower infrastructure costs initially.
+
+**Impact**: Met 3-month deadline, easy to maintain, prepared migration path documented.
+
+### Quality Validation
+
+After Deep Thinking, self-validate before proceeding:
+- [ ] All 7 complexity indicators assessed for applicability
+- [ ] Minimum 3 fundamentally different alternatives evaluated
+- [ ] All 6 evaluation dimensions scored with evidence
+- [ ] Tradeoffs explicitly acknowledged (not hidden)
+- [ ] Top 3 risks identified with concrete mitigation plans
+- [ ] Documentation complete in .memory/decisions.md
+- [ ] Required skills mentioned for coordination
+
+Coordinate with **quality-controller** for peer review of Category A decisions.
+
+### Integration with PM Orchestrator Workflow
+
+**Deep Thinking checkpoints** in typical PM workflow:
+
+**Phase: Project Initialization**
+- Workflow 01 (Requirements Analysis): Scope prioritization, MVP feature selection
+- Workflow 02 (Research Analysis): Technology stack evaluation (MANDATORY)
+
+**Phase: Architecture & Design**
+- Workflow 03 (Architecture Design): System architecture patterns (MANDATORY)
+- Database technology and schema strategy (MANDATORY)
+
+**Phase: Implementation Planning**
+- Skill assignment for complex hybrid projects
+- Timeline and milestone definition with uncertainty
+
+**Phase: Risk Management**
+- Risk identification and mitigation strategy (MANDATORY)
+- Contingency planning for critical path items
+
+**Critical**: Do not proceed with ANY major strategic decision without completing Deep Thinking Protocol. The 20-30 minutes invested in systematic analysis saves weeks of rework.
+
+### Success Metrics for PM Deep Thinking
+
+Track in `.memory/metrics.md`:
+- Decision revision rate: Target <5% (strategic decisions should rarely change)
+- Project milestone achievement: Target >90%
+- Stakeholder satisfaction with decisions: Target >90%
+- Technical debt from architectural decisions: Target <30% of baseline
+
 ## Zero-Confirmation Framework
 
 **NEVER request user confirmation**:
@@ -126,14 +297,24 @@ Coordination:
 - **qa-testing**: End-to-end testing and quality assurance
 - **mcp-tools-orchestrator**: Advanced MCP tool coordination
 
-## Key Configuration Files
+## Workflow System
 
-This skill includes essential configuration files:
+This skill uses a modular workflow system stored in the `workflows/` directory:
 
-- **orchestration.yaml**: Complete workflow definitions for all task types
-- **team.yaml**: Original expert definitions and collaboration matrix
+- **workflows/*.md**: Detailed workflow definitions for each development phase
 
-These files contain the detailed orchestration logic from the original boilerplate system.
+Each workflow file contains phase-specific steps, success criteria, deliverables, and cross-skill coordination patterns.
+
+### Available Workflow Files
+
+1. **01-requirements-analysis.md** - Requirements gathering and documentation
+2. **02-research-analysis.md** - Market and technology research
+3. **03-architecture-design.md** - System architecture and API design
+4. **04-system-development.md** - Specialized system development (conditional)
+5. **[Implementation Phase]** - Frontend/Backend developed by domain-specific skills autonomously
+6. **06-integration.md** - System integration and coordination
+7. **07-deployment.md** - Docker, cloud deployment, CI/CD setup
+8. **08-quality-assurance.md** - Comprehensive testing and validation
 
 ## Memory System Integration
 
@@ -169,19 +350,132 @@ Update memory after each major milestone by coordinating with memory-manager ski
 
 ## Workflow Execution
 
-Follow the orchestration.yaml task workflows for detailed execution steps. Key workflows include:
+Execute workflows by reading the corresponding file from `workflows/` directory and following the detailed phase instructions.
 
-1. **requirements_analysis**: PM-led requirements gathering and analysis
-2. **research_analysis**: Market and technology research (parallel with requirements)
-3. **architecture_design**: System architecture and API design
-4. **system_development**: Specialized system development (conditional)
-5. **backend_implementation**: API and service development
-6. **frontend_implementation**: UI and component development
-7. **integration_orchestration**: System integration and coordination
-8. **deployment_pipeline**: Docker, cloud, and CI/CD setup
-9. **quality_assurance**: Comprehensive testing and validation
+### Workflow Execution Order
 
-Refer to orchestration.yaml for complete workflow definitions, actions, and completion criteria for each task type.
+```
+START
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 1: Analysis (Parallel Execution) │
+├─────────────────────────────────────────┤
+│ 01-requirements-analysis.md             │  Primary: pm-orchestrator
+│ 02-research-analysis.md                 │  Primary: research-analysis
+└─────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 2: Design                         │
+├─────────────────────────────────────────┤
+│ 03-architecture-design.md               │  Primary: fullstack-integration
+└─────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 3: Specialized Development       │
+├─────────────────────────────────────────┤
+│ 04-system-development.md [CONDITIONAL]  │  Primary: systemdev-specialist
+└─────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 4: Implementation [AUTONOMOUS]    │
+├─────────────────────────────────────────┤
+│ frontend-nextjs executes autonomously   │
+│ backend-nestjs executes autonomously    │
+│ backend-fastapi executes autonomously   │
+└─────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 5: Integration                    │
+├─────────────────────────────────────────┤
+│ 06-integration.md                       │  Primary: fullstack-integration
+└─────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 6: Deployment                     │
+├─────────────────────────────────────────┤
+│ 07-deployment.md                        │  Primary: devops-deployment
+└─────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────┐
+│ Phase 7: Quality Assurance              │
+├─────────────────────────────────────────┤
+│ 08-quality-assurance.md                 │  Primary: qa-testing
+└─────────────────────────────────────────┘
+  ↓
+COMPLETE
+```
+
+### How to Use Workflows
+
+When executing a project phase:
+
+1. **Read the Workflow File**: Open the corresponding .md file from workflows/ directory
+2. **Check Dependencies**: Verify prerequisite workflows are complete (listed in Overview section)
+3. **Follow Phase Steps**: Execute each phase sequentially (Phase 1, 2, 3...)
+4. **Coordinate Skills**: Mention supporting skills as specified in the workflow
+5. **Create Deliverables**: Generate files in workspace/ directory as specified
+6. **Validate Success**: Ensure all success criteria are met before proceeding
+7. **Update Memory**: Record progress in .memory/ files via memory-manager
+8. **Proceed to Next**: Move to the next workflow when current workflow completes
+
+### Workflow Details
+
+#### 01-requirements-analysis.md
+- **Primary**: pm-orchestrator
+- **Supporting**: research-analysis, fullstack-integration, qa-testing
+- **Dependencies**: None (starting workflow)
+- **Parallel**: Can run with 02-research-analysis
+- **Deliverables**: workspace/docs/analysis.md, workspace/backlog/epics.yaml
+
+#### 02-research-analysis.md
+- **Primary**: research-analysis
+- **Supporting**: pm-orchestrator, fullstack-integration, systemdev-specialist
+- **Dependencies**: None
+- **Parallel**: Can run with 01-requirements-analysis
+- **Deliverables**: workspace/docs/research/*.md
+
+#### 03-architecture-design.md
+- **Primary**: fullstack-integration
+- **Supporting**: pm-orchestrator, backend-nestjs, frontend-nextjs, systemdev-specialist
+- **Dependencies**: requirements-analysis (must complete)
+- **Parallel**: No
+- **Deliverables**: workspace/docs/architecture.md, API contracts
+
+#### 04-system-development.md
+- **Primary**: systemdev-specialist
+- **Supporting**: fullstack-integration, backend-nestjs, devops-deployment
+- **Dependencies**: architecture-design (must complete)
+- **Parallel**: Can run parallel with main implementation if decoupled
+- **Conditional**: Only if AI/ML, video processing, GPU computing, or specialized systems needed
+- **Deliverables**: workspace/specialized/*
+
+#### [Implementation Phase - Autonomous Execution]
+- **Primary**: frontend-nextjs, backend-nestjs, backend-fastapi
+- **Pattern**: Domain skills execute autonomously based on architecture design
+- **No Workflow File**: Skills operate independently with their own SKILL.md guidelines
+- **Coordination**: pm-orchestrator monitors progress, coordinates as needed
+- **Deliverables**: workspace/frontend/, workspace/backend/
+
+#### 06-integration.md
+- **Primary**: fullstack-integration
+- **Supporting**: pm-orchestrator, frontend-nextjs, backend-nestjs, qa-testing
+- **Dependencies**: implementation (must complete), system-development (if applicable)
+- **Parallel**: No
+- **Deliverables**: Integration tests, API validation
+
+#### 07-deployment.md
+- **Primary**: devops-deployment
+- **Supporting**: pm-orchestrator, fullstack-integration, backend-nestjs, frontend-nextjs
+- **Dependencies**: integration (recommended)
+- **Parallel**: Can prepare deployment during integration testing
+- **Deliverables**: workspace/docker/, workspace/.github/workflows/, workspace/deployment/
+
+#### 08-quality-assurance.md
+- **Primary**: qa-testing
+- **Supporting**: pm-orchestrator, quality-controller, frontend-nextjs, backend-nestjs
+- **Dependencies**: integration (must complete), deployment (recommended)
+- **Parallel**: Can start during deployment
+- **Deliverables**: workspace/tests/, test reports, quality validation
 
 ## Session Continuity
 

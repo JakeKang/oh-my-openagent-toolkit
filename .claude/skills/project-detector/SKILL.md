@@ -48,6 +48,89 @@ This skill implements a sophisticated keyword-based scoring algorithm to classif
    - Based on detected project type, recommend appropriate skills
    - Use auto_experts mapping from project-detection.yaml
 
+## Deep Thinking Protocol
+
+**CONDITIONAL**: project-detector should use Sequential Thinking MCP + ultrathink only when encountering ambiguous, hybrid, or novel project types. Clear project types (>70 score) use standard detection algorithm efficiently.
+
+### When to Apply Deep Thinking
+
+**Use Deep Thinking when**:
+- **Ambiguous Project Type**: Scoring <50 points, unclear signals from user description
+- **Hybrid Projects**: Multiple project types score >40 (e.g., AI-powered mobile web app)
+- **Novel Project Categories**: Project doesn't fit standard 6 types clearly
+- **Conflicting Skill Recommendations**: Detected type doesn't match actual technical needs
+
+**Do NOT use for** (most cases - ~90%):
+- Clear project type match (>70 score)
+- Standard technology stacks clearly mentioned
+- Obvious skill requirements
+- Projects matching established patterns
+
+### Complexity Threshold
+
+Use Deep Thinking only when:
+1. **Project score <50** (ambiguous type detection)
+2. **Multiple types score >40** (hybrid project characteristics)
+3. **Novel requirements** not matching standard 6 types
+4. **Skill recommendation conflicts** with project needs
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with project-detector-specific focus:
+
+**Evaluation Dimensions**:
+- **Accuracy** (40%): Correct project type detection
+- **Skill Recommendation Quality** (30%): Appropriate team assembly
+- **Ambiguity Resolution** (20%): Handling unclear requirements
+- **Speed** (10%): Quick detection for clear cases
+
+**Expected Thought Investment**: 8-12 thoughts for ambiguous project detection
+
+### Documentation Requirements
+
+Document in `.memory/decisions.md` with minimal format:
+- **Problem**: What project type ambiguity encountered
+- **Decision**: What type and skills chosen
+
+### Domain-Specific Example
+
+#### Hybrid AI Video Platform with Multi-Platform Apps
+
+**Problem**: Detect project type for "AI-powered video processing platform with real-time collaborative editing, iOS/Android mobile apps, and desktop app for professionals with GPU acceleration"
+
+**Complexity**: Very High (Multiple types score high: ai_ml_system 65, mobile_application 55, desktop_application 45, web_application 40 - hybrid project)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Analysis - AI/ML video processing (primary), mobile apps (secondary), desktop app (tertiary), real-time web features (supporting)
+- Thoughts 3-5: Type scoring validation - AI/ML highest but mobile/desktop significant, not standard single-type
+- Thoughts 6-8: Skill requirements analysis - systemdev-specialist (AI/video lead), frontend-nextjs (web), backend-fastapi (async AI serving), research-analysis, devops-deployment
+- Thoughts 9-12: Team assembly decision - Lead with AI/ML specialty, support with multi-platform skills
+
+**Decision**: Primary type: **ai_ml_system** (score: 65), Secondary: **mobile_application** (score: 55)
+
+**Recommended Skills**: systemdev-specialist (lead - AI/video processing), frontend-nextjs (web UI), backend-fastapi (async model serving), research-analysis (AI frameworks), devops-deployment (GPU infrastructure), qa-testing
+
+**Rationale**: AI video processing is core value proposition (primary type). Mobile/desktop are delivery platforms (secondary consideration). Skill team reflects this: systemdev-specialist leads with AI/ML/video expertise, backend-fastapi handles async model serving, frontend-nextjs for web interface, research-analysis for framework selection.
+
+**Impact**: Correct detection enabled proper skill team assembly with AI/video expertise leading. Project completed successfully with specialized team. Alternative incorrect detection as "mobile_application" would have missed critical AI/video requirements.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Detected type aligns with core project value
+- [ ] Skill recommendations cover all technical requirements
+- [ ] Hybrid characteristics properly identified
+- [ ] Team assembly practical and balanced
+
+Coordinate with **pm-orchestrator** for team assembly approval and **research-analysis** for technology validation when novel requirements identified.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- Detection accuracy: Target >95% (correct type for project)
+- Skill recommendation quality: Target >90% (team satisfaction)
+- Ambiguity resolution rate: Target >85% (successful hybrid/novel handling)
+
 ## Skill Recommendations by Project Type
 
 ### Web Application

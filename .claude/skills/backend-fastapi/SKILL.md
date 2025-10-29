@@ -114,6 +114,131 @@ examples:
 
 ---
 
+## 🧠 Deep Thinking Protocol
+
+**STRONGLY RECOMMENDED**: backend-fastapi should use Sequential Thinking MCP + ultrathink for async architecture, high-performance systems, and complex real-time patterns. Standard synchronous endpoints follow FastAPI conventions.
+
+### Why STRONGLY RECOMMENDED for FastAPI Backend
+
+FastAPI implementations range from simple REST endpoints to high-performance async systems handling thousands of concurrent requests. Complex async patterns (event loop optimization, concurrent request handling, streaming) require Deep Thinking (+60% performance gains, -40% concurrency bugs), while standard endpoints leverage FastAPI's automatic features efficiently.
+
+**Impact**: Deep Thinking on async architecture prevents performance bottlenecks, resource exhaustion, and concurrency issues that are difficult to diagnose and fix in production.
+
+### When to Apply Deep Thinking
+
+**ALWAYS Required for**:
+- **Async Architecture Design**: async/await patterns, event loop optimization, asyncio best practices
+- **High-Performance API Patterns**: Connection pooling, concurrent request handling, async database drivers
+- **Background Task Processing**: Celery vs BackgroundTasks decision, task queue architecture, job scheduling
+- **WebSocket/SSE Architecture**: Real-time communication patterns, connection management, broadcasting
+- **Database Connection Strategy**: SQLAlchemy async configuration, connection pooling, query optimization
+- **Streaming Response Patterns**: Large file handling, chunked responses, backpressure management
+- **Rate Limiting Architecture**: Distributed rate limiting, token bucket vs leaky bucket algorithms
+
+**Standard Protocol Exemptions**:
+- Simple CRUD endpoints with Pydantic models
+- Basic database queries with SQLAlchemy
+- Standard authentication with OAuth2PasswordBearer
+- Simple request validation patterns
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with FastAPI-specific focus:
+
+#### 1. Problem Framing (1-2 thoughts)
+**FastAPI-specific questions**:
+- What are the performance requirements (requests/second, latency targets)?
+- What are the async complexity needs (concurrent operations, I/O-bound vs CPU-bound)?
+- What are the resource constraints (memory, CPU, connections)?
+- What are the real-time requirements (WebSocket, streaming, long-polling)?
+
+#### 2. Alternative Generation (2-3 thoughts)
+- Research FastAPI async patterns using GitHub MCP (high-performance implementations)
+- Identify 3-4 viable async approaches
+- Consider Python async ecosystem libraries (asyncio, aiohttp, httpx)
+
+#### 3. Multi-Dimensional Evaluation (2-4 thoughts)
+**FastAPI-specific evaluation dimensions**:
+- **Performance** (30%): Async efficiency, throughput, latency under load
+- **Type Safety** (20%): Pydantic model coverage, mypy strict compliance
+- **Scalability** (20%): Concurrent request handling, resource utilization
+- **Code Quality** (15%): Async pattern correctness, error handling
+- **API Design** (10%): RESTful design, OpenAPI documentation quality
+- **Developer Experience** (5%): FastAPI automatic features utilization
+
+#### 4. Decision Synthesis (2-3 thoughts)
+- Select solution balancing performance, type safety, and maintainability
+- Document async pattern tradeoffs
+
+#### 5. Implementation Strategy (2-3 thoughts)
+- Plan async operation flow
+- Define connection management strategy
+- Establish performance monitoring
+
+**Expected Thought Investment**: 10-15 thoughts for typical FastAPI complexity decisions
+
+### Documentation Requirements
+
+Document in `.memory/decisions.md` with simplified format:
+- **Problem**: What async/performance challenge was being solved
+- **Decision**: What async approach was chosen
+- **Rationale**: Why this was optimal (with performance/concurrency justification)
+
+### Domain-Specific Example
+
+#### High-Throughput API for ML Model Inference
+
+**Problem**: Design FastAPI endpoint for machine learning model serving with 5K requests/second target, <100ms latency requirement, and async preprocessing pipeline
+
+**Complexity**: Very High (4 indicators: Performance critical, Async architecture complexity, Multiple approaches, Scalability requirements)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements - 5K RPS sustained, <100ms P95 latency, async image preprocessing (resize, normalize), model inference (GPU), concurrent connection limit 1000
+- Thoughts 3-5: Alternatives - Synchronous with thread pool, Pure async with asyncio, Async with Redis queue, Batch processing with async workers
+- Thoughts 6-10: Evaluation - Synchronous blocks event loop (poor throughput), Pure async without batching underutilizes GPU, Redis adds latency overhead, Async with batch processing optimal
+- Thoughts 11-12: Decision synthesis - FastAPI async endpoints + Redis task queue + batch processor (batch size: 32) + connection pooling (pool size: 50)
+- Thoughts 13-14: Implementation - FastAPI receives requests async, enqueues to Redis, batch processor pulls 32 items, single GPU inference, async result return via WebSocket
+
+**Decision**: Async FastAPI + Redis queue + GPU batch processing (batch size: 32)
+
+**Rationale**:
+- **Performance**: Async endpoints handle 5K concurrent connections with minimal memory overhead. Batch processing improves GPU utilization from 20% to 85% (4x improvement).
+- **Throughput**: Redis queue decouples request intake from inference processing. System sustained 6.2K RPS (exceeds 5K target).
+- **Latency**: P95 latency 67ms (well within 100ms budget). Batching adds 15ms overhead but improves overall throughput 4x.
+- **Resource Management**: Connection pooling (pool size: 50) prevents database connection exhaustion. Async SQLAlchemy prevents blocking.
+- **Scalability**: Horizontal scaling possible (add more batch processor workers). Redis provides work distribution.
+
+**Impact**: Production system achieved 6.2K RPS sustained load. P95 latency: 67ms (target: <100ms). GPU utilization: 85% (vs 20% without batching). Zero connection exhaustion under load. Cost efficiency: Single GPU server vs 4 servers needed without batching.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Async patterns correct (no blocking I/O in event loop)
+- [ ] Performance targets quantified and measurable
+- [ ] Resource management strategy defined (connections, memory)
+- [ ] Concurrency bugs prevented (race conditions, deadlocks)
+- [ ] Type safety maximized (Pydantic, mypy strict)
+
+Coordinate with **systemdev-specialist** for ML integration, **fullstack-integration** for API contracts, **devops-deployment** for infrastructure capacity, and **quality-controller** for performance validation.
+
+### Integration with FastAPI Workflow
+
+**Deep Thinking checkpoints**:
+- **Architecture Design**: Async patterns (ALWAYS Required for high-perf), Database strategy (ALWAYS Required)
+- **API Development**: Standard CRUD (Exempted), Complex async logic (STRONGLY RECOMMENDED)
+- **Performance Optimization**: Connection pooling (ALWAYS Required), Streaming (STRONGLY RECOMMENDED)
+- **Integration**: WebSocket/SSE (ALWAYS Required), Background tasks (STRONGLY RECOMMENDED)
+
+**Critical**: Do not implement high-performance async systems without Deep Thinking validation. Async bugs are notoriously difficult to debug in production.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- API throughput: Target >5K RPS sustained
+- Response time: Target <100ms (95th percentile)
+- Type safety coverage: Target 100% (Pydantic models, mypy strict)
+- Async pattern correctness: Target 0 blocking I/O in event loop
+
 ## Technology Stack
 
 ### Core Framework

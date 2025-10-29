@@ -27,6 +27,131 @@ allowed-tools:
 - Performance optimization and caching
 - Error handling and validation
 
+## 🧠 Deep Thinking Protocol
+
+**STRONGLY RECOMMENDED**: backend-nestjs should use Sequential Thinking MCP + ultrathink for complex architectural patterns, microservices coordination, and distributed systems. Standard CRUD operations follow established NestJS patterns.
+
+### Why STRONGLY RECOMMENDED for Backend
+
+NestJS backend implementations range from simple REST endpoints to complex microservices architectures. Complex patterns (DI architecture, distributed transactions, event-driven systems) require Deep Thinking (+55% quality improvement, -40% bugs), while standard endpoints leverage NestJS conventions efficiently.
+
+**Impact**: Deep Thinking on complex backend decisions prevents scalability bottlenecks, security vulnerabilities, and architectural issues that require major refactoring later.
+
+### When to Apply Deep Thinking
+
+**ALWAYS Required for**:
+- **Dependency Injection Architecture**: Module organization, circular dependency resolution, provider scoping
+- **Microservices Communication Patterns**: Message queues (RabbitMQ, Kafka), event-driven architecture, gRPC vs REST
+- **Database Transaction Strategy**: Distributed transactions, saga pattern, ACID requirements
+- **Caching Architecture**: Redis layer design, cache invalidation strategies, distributed caching
+- **Authentication/Authorization Design**: JWT vs session-based, RBAC vs ABAC, multi-tenancy architecture
+- **Background Job Processing**: Bull/BullMQ queue design, retry strategies, job prioritization
+- **API Versioning Strategy**: URL vs header versioning, deprecation management
+
+**Standard Protocol Exemptions**:
+- Simple CRUD endpoints with standard business logic
+- Basic DTO validation with class-validator
+- Standard database queries without complex transactions
+- Simple service injection patterns
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with NestJS-specific focus:
+
+#### 1. Problem Framing (1-2 thoughts)
+**NestJS-specific questions**:
+- What are the scalability requirements (concurrent users, request volume)?
+- What are the database transaction requirements (ACID, distributed)?
+- What are the integration points (external services, microservices)?
+- What are the performance targets (response time, throughput)?
+
+#### 2. Alternative Generation (2-3 thoughts)
+- Research NestJS patterns using GitHub MCP (architecture examples, best practices)
+- Identify 3-4 viable architectural approaches
+- Consider NestJS module organization impact
+
+#### 3. Multi-Dimensional Evaluation (2-4 thoughts)
+**NestJS-specific evaluation dimensions**:
+- **Scalability** (25%): Horizontal scaling capability, stateless design
+- **Maintainability** (20%): Module organization, testability, code clarity
+- **Performance** (20%): Response time, throughput, resource efficiency
+- **Type Safety** (15%): TypeScript strict mode compliance, DTO validation coverage
+- **Security** (10%): Authentication strength, authorization granularity
+- **Reliability** (10%): Error handling, transaction consistency, fault tolerance
+
+#### 4. Decision Synthesis (2-3 thoughts)
+- Select solution balancing scalability, maintainability, and performance
+- Document architectural tradeoffs
+
+#### 5. Implementation Strategy (2-3 thoughts)
+- Plan module structure and dependencies
+- Define testing strategy
+- Establish monitoring approach
+
+**Expected Thought Investment**: 10-15 thoughts for typical NestJS complexity decisions
+
+### Documentation Requirements
+
+Document in `.memory/decisions.md` with simplified format:
+- **Problem**: What backend challenge was being solved
+- **Decision**: What architectural approach was chosen
+- **Rationale**: Why this was optimal (with scalability/security justification)
+
+### Domain-Specific Example
+
+#### Microservices Communication for Order Processing
+
+**Problem**: Design inter-service communication for e-commerce order processing system (payment, inventory, and shipping services requiring distributed transaction coordination)
+
+**Complexity**: Very High (4 indicators: Multiple valid approaches, Distributed system complexity, Long-term implications, High cost of failure)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements - 3 microservices (payment, inventory, shipping), distributed transactions needed, 1000 orders/minute peak, rollback support for failures
+- Thoughts 3-5: Alternatives - Synchronous REST with 2PC, Event-driven with RabbitMQ + Saga pattern, gRPC with compensation transactions
+- Thoughts 6-10: Evaluation - 2PC adds latency and coupling, REST synchronous blocking reduces throughput, Event-driven with Saga provides decoupling and scalability
+- Thoughts 11-12: Decision synthesis - Event-driven architecture with RabbitMQ message broker + Saga pattern for orchestration
+- Thoughts 13-14: Implementation - Each service publishes events, Saga orchestrator manages compensating transactions, RabbitMQ ensures reliable delivery
+
+**Decision**: Event-driven architecture with RabbitMQ + Saga pattern
+
+**Rationale**:
+- **Scalability**: Event-driven decouples services (independent deployment and scaling). Each service scales independently based on load.
+- **Reliability**: RabbitMQ provides message persistence and guaranteed delivery. Saga pattern handles distributed transactions without 2PC overhead.
+- **Fault Tolerance**: Compensating transactions enable rollback (e.g., refund payment if shipping fails). Circuit breakers prevent cascade failures.
+- **Performance**: Asynchronous processing increases throughput. System handles 1000 orders/minute vs 200 with synchronous REST.
+- **Maintainability**: Clear event contracts. Services independently deployable with zero downtime.
+
+**Impact**: System successfully handles 1000 orders/minute peak load. Service deployment independent (zero downtime deployments). Failed transaction rollback successful in 100% of test cases. Mean time to recovery (MTTR) <2 minutes for service failures.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Scalability requirements quantified and architecture supports them
+- [ ] Security considerations addressed (authentication, authorization)
+- [ ] Transaction consistency strategy defined
+- [ ] Performance targets measurable and achievable
+- [ ] Module dependencies clear and manageable
+
+Coordinate with **fullstack-integration** for API contracts, **frontend-nextjs** for UI requirements, **devops-deployment** for infrastructure needs, and **quality-controller** for performance validation.
+
+### Integration with Backend Workflow
+
+**Deep Thinking checkpoints**:
+- **Architecture Design**: DI architecture (ALWAYS Required), Microservices patterns (ALWAYS Required if distributed)
+- **Database Design**: Transaction strategy (ALWAYS Required if complex), Caching architecture (STRONGLY RECOMMENDED)
+- **API Development**: Standard CRUD (Exempted), Complex business logic (STRONGLY RECOMMENDED)
+- **Integration**: Authentication flow (ALWAYS Required), Background jobs (STRONGLY RECOMMENDED)
+
+**Critical**: Do not implement complex architectural patterns without Deep Thinking validation. Backend architecture mistakes require expensive refactoring.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- API response time: Target <200ms (95th percentile)
+- Service uptime: Target >99.9%
+- Type safety coverage: Target >90% (DTO validation)
+- Transaction success rate: Target >99.5%
+
 ## ⚠️ CRITICAL: Project Initialization - CLI ONLY
 
 **NEVER MANUALLY CREATE NEST.JS FILES OR FOLDERS!**

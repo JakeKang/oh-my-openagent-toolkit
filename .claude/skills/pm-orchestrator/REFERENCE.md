@@ -270,20 +270,10 @@ PM Orchestrator has **exclusive responsibility** for .memory/ folder management:
 
 ### Core Configuration Files
 
-**orchestration-legacy.yaml** (Reference Only):
-- Original expert-based workflow system
-- Preserved for reference
-- NOT used in skills-based system
-
-**team.yaml** (Reference Only):
-- Original expert definitions
-- Preserved for reference
-- Skills defined in individual SKILL.md files
-
 **workflows/*.md** (Active):
 - Skills-based workflow guides
 - Primary coordination reference
-- Updated for autonomous skill system
+- Each workflow file contains detailed phase instructions for project execution
 
 ### Configuration Reference Protocol
 

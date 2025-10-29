@@ -10,6 +10,243 @@ allowed-tools:
 
 **Purpose**: Enforce project-type-specific quality standards and validate that all quality gates are met throughout the development lifecycle.
 
+## Deep Thinking Protocol
+
+**MANDATORY REQUIREMENT**: quality-controller MUST use Sequential Thinking MCP + ultrathink for ALL quality standards definition and quality framework design decisions. Quality standards determine project success or failure—wrong standards create either unmaintainable technical debt or unrealistic barriers.
+
+### Why MANDATORY for Quality Controller
+
+Quality Controller defines the **measurable standards that determine project success or failure**. Setting quality standards too low results in bug-ridden, insecure, slow applications that fail in production. Setting standards too high creates unrealistic barriers that block legitimate progress and destroy team productivity. These decisions cannot be adjusted later without massive rework—quality standards must be carefully calibrated from the start.
+
+**Impact**: Poor quality standards can make projects either unmaintainable (too low) or undeliverable (too high), requiring fundamental project restructuring.
+
+### When to Apply Deep Thinking
+
+**ALWAYS Required for**:
+- **Quality Framework Selection for Project Type**: Choosing appropriate quality standards (web app, AI/ML, mobile, API, etc.)
+- **Quality Threshold Definition**: Setting target vs minimum values (e.g., TypeScript coverage 95% target, 85% minimum)
+- **Quality Gate Design**: Determining what blocks deployment vs warnings (critical vs non-critical failures)
+- **Testing Strategy Definition**: Coverage requirements, test types (unit/integration/E2E), automation level
+- **Performance Target Setting**: Response time, throughput, resource usage thresholds based on user expectations
+- **Security Standard Selection**: Vulnerability tolerance, authentication requirements, compliance frameworks
+- **Accessibility Compliance Level**: WCAG level (A/AA/AAA), screen reader requirements, keyboard navigation
+- **Quality Automation Strategy**: What to automate vs manual testing, tooling selection, CI/CD integration
+- **Quality Measurement Protocol**: Frequency, responsibility assignment, reporting format
+- **Quality vs Delivery Balance**: When to enforce gates vs allow technical debt with documented plan
+
+**Standard Protocol Exemptions**:
+- Applying already-defined quality standards to new features (standard enforcement)
+- Running predefined quality validation commands (execution, not definition)
+
+### Deep Thinking Application Protocol
+
+Follow the 5-Phase approach with Quality-specific focus:
+
+#### 1. Problem Framing (1-2 thoughts)
+**Quality-specific questions**:
+- What is the project type and its quality criticality (life-critical, business-critical, consumer-facing, internal tool)?
+- What are user expectations for quality (performance, reliability, accessibility)?
+- What is team's current capability level (junior, mid, senior mix)?
+- What is acceptable risk tolerance (startup MVP vs enterprise production)?
+- What are regulatory/compliance requirements (WCAG, GDPR, SOC2, HIPAA)?
+- What is time pressure vs quality tradeoff (realistic delivery timeline)?
+
+#### 2. Alternative Generation (2-4 thoughts)
+**Quality-specific alternatives**:
+- Research industry standards for project type (Google Web Vitals, OWASP Top 10, WCAG)
+- Benchmark competitors' quality levels (Lighthouse scores, performance metrics)
+- Consider team capability constraints (can team realistically achieve proposed standards?)
+- Evaluate multiple quality level options:
+  - **Strict**: Highest standards (95%+ coverage, 0 vulnerabilities, WCAG AAA)
+  - **Standard**: Industry best practices (80%+ coverage, 0 critical vulnerabilities, WCAG AA)
+  - **Pragmatic**: Minimum viable quality (70%+ coverage, 0 high vulnerabilities, WCAG A)
+  - **Project-Specific**: Custom standards based on unique requirements
+
+#### 3. Multi-Dimensional Evaluation (3-6 thoughts)
+**Quality-specific evaluation dimensions**:
+- **Measurability** (30%): Can it be objectively measured? Automated tools available?
+- **Achievability** (25%): Can team realistically meet this standard given capability and timeline?
+- **Automation** (20%): Can enforcement be automated in CI/CD? Manual effort required?
+- **Impact** (15%): Does this standard significantly improve user experience or reduce risk?
+- **Cost** (10%): Development time, tooling costs, maintenance overhead
+
+**Key Quality Principle**: Standards must be **objective, measurable, and achievable**. Subjective standards ("code should be clean") are unenforceable. Unachievable standards ("100% coverage including third-party code") destroy productivity.
+
+**Team Capability Consideration**:
+- Junior team: Set achievable standards with learning curve tolerance
+- Senior team: Set high standards matching team capability
+- Mixed team: Balance standards with mentorship time allocation
+
+#### 4. Decision Synthesis (2-3 thoughts)
+**Quality-specific criteria**:
+- Standards must have clear numerical thresholds (measurable)
+- Standards must be achievable by team within timeline (realistic)
+- Critical standards (security, accessibility) must be non-negotiable (blocking gates)
+- Nice-to-have standards should be warnings, not blockers
+- Balance: Strict on critical quality aspects, pragmatic on non-critical aspects
+
+**Quality Gate Classification**:
+- **Blocking Gates** (MUST pass for deployment): Security vulnerabilities, critical bugs, build failures, accessibility violations
+- **Warning Gates** (track but don't block): Performance optimization opportunities, code style issues, test coverage gaps in non-critical code
+
+Document rationale for each threshold with evidence (industry benchmarks, user research, regulatory requirements).
+
+#### 5. Implementation Strategy (2-4 thoughts)
+**Quality-specific considerations**:
+- Automation plan: Which quality checks run in CI/CD automatically?
+- Measurement tooling: TypeScript coverage (tsc), Test coverage (Jest/Vitest), Security (npm audit), Performance (Lighthouse)
+- Quality dashboards: Where are metrics visualized? (GitHub Actions, Grafana, custom dashboard)
+- Improvement roadmap: Start with minimum standards, raise over time as team matures
+- Exception process: How to handle legitimate exceptions to quality gates?
+
+**Progressive Quality Enhancement**:
+- Phase 1: Establish minimum quality baseline (prevent quality from getting worse)
+- Phase 2: Gradually raise standards (improve quality over time)
+- Phase 3: Maintain high standards (sustain quality excellence)
+
+**Expected Thought Investment**: 15-25 thoughts for typical Quality Controller decisions
+
+### Documentation Requirements
+
+All decisions MUST be documented in `.memory/decisions.md` AND implemented in `quality-standards.json`. See CLAUDE.md Deep Thinking Protocol section for full template.
+
+**Quality Standards Documentation Format**:
+```json
+{
+  "project_type": "web_application",
+  "quality_framework": {
+    "code_quality": {
+      "typescript_coverage": {
+        "target": 95,
+        "minimum": 85,
+        "rationale": "High TypeScript coverage prevents runtime errors. 85% minimum allows gradual migration. Industry standard: 80-90%.",
+        "automation": "CI/CD with tsc --noEmit",
+        "measurement": "typescript-coverage-report"
+      }
+    }
+  },
+  "quality_gates": {
+    "pre_deployment": {
+      "security_scan": {
+        "type": "blocking",
+        "threshold": "0 high/critical vulnerabilities",
+        "rationale": "Security breaches have severe consequences. Zero tolerance for known vulnerabilities.",
+        "tool": "npm audit"
+      }
+    }
+  }
+}
+```
+
+### Domain-Specific Examples
+
+#### Example 1: Web Application Quality Standards Definition
+
+**Problem**: Define quality standards for customer-facing SaaS web application with 10K+ users
+
+**Complexity**: Very High (5 indicators: Multiple valid approaches, Long-term implications, Cross-skill dependencies, Performance critical, Security sensitive)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements framing - Customer-facing (high quality expectations), 10K users (scalability critical), SaaS (security critical), team capability (3 mid-level developers)
+- Thoughts 3-6: Alternatives - Industry standards (Google Web Vitals, OWASP), competitor benchmarks (3 competing SaaS apps analyzed), pragmatic standards (team capability-adjusted)
+- Thoughts 7-14: Multi-dimensional evaluation across measurability, achievability, automation, impact, cost
+- Thoughts 15-18: Decision synthesis with blocking vs warning gate classification
+- Thoughts 19-22: Automation plan, tooling selection, progressive enhancement roadmap
+
+**Decision**: Standard Quality Framework with Performance Focus
+
+**Rationale**: **Complexity: High, Evidence Quality: High Confidence**
+
+**Code Quality**:
+- TypeScript Coverage: Target 95%, Minimum 85% (measurable via tsc, achievable with 3-month migration plan, high impact on bug reduction)
+- Test Coverage: Target 80%, Minimum 70% (industry standard, achievable, automated in CI/CD)
+- Lint Score: Target 100%, Minimum 95% (fully automated, low effort, standardizes code)
+
+**Performance** (BLOCKING - customer-facing):
+- Core Web Vitals: LCP <2.5s, FID <100ms, CLS <0.1 (Google standards, critical for SEO and UX, measurable via Lighthouse)
+- Lighthouse Performance: Target 90, Minimum 80 (industry best practice, achievable with optimization)
+- Bundle Size: <250KB gzipped (prevents slow load, measurable, achievable with code splitting)
+
+**Security** (BLOCKING - SaaS critical):
+- Vulnerability Scan: 0 high/critical (non-negotiable for customer trust, automated via npm audit)
+- Authentication: JWT with refresh tokens (industry standard, OWASP compliance)
+
+**Accessibility** (BLOCKING - legal compliance):
+- WCAG 2.1 AA minimum (legal requirement in many jurisdictions, measurable via axe-core, achievable with training)
+
+**Impact**: Standards adopted across team. 0 security incidents in 12 months. Lighthouse score 92 average. TypeScript coverage reached 88% in 6 months. User-reported bugs -55% vs previous project baseline.
+
+#### Example 2: AI/ML System Quality Standards Definition
+
+**Problem**: Define quality standards for machine learning recommendation system (100K+ daily users)
+
+**Complexity**: Very High (4 indicators: Multiple approaches, Performance critical, Novel domain, Long-term implications)
+
+**Deep Thinking Process**:
+- Thoughts 1-2: Requirements framing - ML system (accuracy critical), recommendation quality affects revenue, real-time inference (<100ms), 100K users (scalability)
+- Thoughts 3-5: Alternatives - Research ML quality standards (Google ML best practices, academic benchmarks), industry benchmarks (Netflix, Amazon recommendation systems)
+- Thoughts 6-13: Multi-dimensional evaluation focusing on accuracy vs latency tradeoff, data quality requirements, model interpretability needs
+- Thoughts 14-17: Decision synthesis with ML-specific quality dimensions
+- Thoughts 18-21: Monitoring plan, A/B testing strategy, model retraining triggers
+
+**Decision**: ML-Specific Quality Framework with Accuracy-Performance Balance
+
+**Rationale**: **Complexity: Very High, Evidence Quality: Medium-High Confidence (70%)**
+
+**Model Performance** (BLOCKING):
+- Primary Metric (Precision@10): Target 0.95, Minimum 0.90 (business requirement: 90%+ relevant recommendations)
+- Inference Latency: Target <50ms, Maximum <100ms (user experience requirement: sub-second response)
+- Cross-Validation: 5-fold CV with <5% variance (ensures model stability, prevents overfitting)
+
+**Data Quality** (BLOCKING):
+- Data Completeness: >95% non-null (incomplete data degrades model accuracy, measurable via data validation pipeline)
+- Data Drift Monitoring: KS-test p-value <0.05 alert (model degrades with data drift, automated monitoring daily)
+
+**Model Reliability** (BLOCKING):
+- Robustness Testing: Edge case coverage >95% (prevents unexpected failures, measurable via test suite)
+- Model Interpretability: SHAP values required (regulatory compliance, debugging capability)
+- Bias Testing: Fairness metrics within ±5% across demographic groups (ethical requirement, prevents discrimination)
+
+**Quality Gates**:
+- **Pre-Deployment Blocking**: Model accuracy >90%, Inference <100ms, Bias test passing, Data validation passing
+- **Post-Deployment Monitoring**: Daily data drift check, real-time latency monitoring, A/B test validation
+
+**Impact**: Model deployed with 92% Precision@10 (above minimum). Inference latency 67ms average (well within budget). Zero bias incidents. Data drift detection prevented 2 model degradation events through auto-retraining triggers.
+
+### Quality Validation
+
+After Deep Thinking, validate:
+- [ ] Quality standards are objective and measurable (numerical thresholds, not subjective opinions)
+- [ ] Standards are achievable by team within timeline (realistic, not aspirational)
+- [ ] Automation plan established for each standard (CI/CD integration specified)
+- [ ] Blocking gates clearly distinguished from warnings (criticality classification)
+- [ ] Team capability considered in standard setting (junior vs senior team)
+- [ ] Progressive enhancement roadmap defined (can standards be raised gradually?)
+- [ ] Industry benchmarks researched and documented (evidence-based standards)
+
+Coordinate with **pm-orchestrator** for project timeline alignment, **qa-testing** for testing strategy, and all **domain skills** for standard feasibility validation.
+
+### Integration with Quality Controller Workflow
+
+**Deep Thinking checkpoints**:
+- **Project Initialization**: Quality framework selection (MANDATORY), Project-type-specific standards (MANDATORY)
+- **Pre-Development**: Quality threshold definition (MANDATORY), Testing strategy (MANDATORY)
+- **Development Phase**: Quality automation setup (STRONGLY RECOMMENDED), Continuous monitoring (STRONGLY RECOMMENDED)
+- **Pre-Deployment**: Quality gate validation (MANDATORY if gates failing), Exception handling (CONDITIONAL)
+- **Post-Deployment**: Quality improvement roadmap (CONDITIONAL if standards too low/high)
+
+**Critical**: Do not proceed with quality enforcement without Deep Thinking validation of standards. Wrong standards create either unmaintainable projects or undeliverable projects.
+
+### Success Metrics
+
+Track in `.memory/metrics.md`:
+- Quality standard adoption rate: Target >95% (% of standards followed by team)
+- False positive rate: Target <10% (% of quality gate failures that were invalid)
+- Quality gate effectiveness: Target >80% (% of issues caught by gates that would have caused production problems)
+- Team productivity impact: Target <10% overhead (time spent on quality enforcement vs development)
+- Quality trend: Target continuous improvement (metrics improving over time)
+- Standard revision rate: Target <20% (% of standards changed after initial definition - indicates good initial design)
+
 ## Quality Frameworks by Project Type
 
 This skill implements comprehensive quality frameworks defined in **quality-standards.json** for each project type:
