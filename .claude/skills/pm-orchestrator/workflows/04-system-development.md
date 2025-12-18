@@ -90,6 +90,15 @@
    - CDN: CloudFront, Cloudflare Stream
    - Adaptive Bitrate: HLS/DASH
 
+   **Computer Vision / Image Analysis**:
+   - Core Framework: OpenCV 4.x, scikit-image
+   - Image Processing: Pillow (PIL), imageio
+   - Graph Analysis: NetworkX (spatial graphs, connectivity)
+   - Detection: Custom models or pre-trained (YOLO, Detectron2)
+   - Deployment: Docker with Python CV dependencies
+   - Use Cases: Floor plan analysis, blueprint detection, wall/room segmentation, spatial graph construction
+   - Output Formats: JSON (detection results), SVG/PNG (visualizations), GraphML (spatial graphs)
+
 3. **Integration Architecture**:
    - Define API contracts with main application
    - Plan message queues (if async processing)

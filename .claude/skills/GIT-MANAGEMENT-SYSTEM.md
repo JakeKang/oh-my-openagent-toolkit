@@ -41,6 +41,13 @@ workspace/
 │   ├── .git/
 │   └── src/
 │
+├── specialized/        # Git Repository - AI/ML/CV/GPU processing → GPU Server
+│   ├── .git/
+│   ├── ml/
+│   ├── cv/
+│   ├── video/
+│   └── gpu/
+│
 ├── docs/               # NOT a Git repo (stays in project memory)
 ├── specs/              # NOT a Git repo (API specs, architecture)
 └── deployment/         # NOT a Git repo (deployment configs reference)
@@ -58,6 +65,7 @@ workspace/
 | `workspace/frontend/` | Next.js web application | Vercel, Netlify, AWS Amplify | If web_application or fullstack |
 | `workspace/backend/` | NestJS or FastAPI backend API | Railway, Render, AWS ECS | If backend required |
 | `workspace/mobile/` | React Native mobile app | EAS Build, App Store, Play Store | If mobile_application |
+| `workspace/specialized/` | AI/ML, CV, Video, GPU processing systems | GPU instances, AWS SageMaker, processing servers | If ai_ml_system or specialized processing required |
 
 ### Non-Repository Directories
 
@@ -227,6 +235,72 @@ android/app/build/
 # Expo
 .expo/
 .expo-shared/
+```
+
+**Specialized (AI/ML/CV/GPU)**:
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# ML/AI specific
+*.h5
+*.hdf5
+*.pkl
+*.joblib
+*.onnx
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+models/
+checkpoints/
+runs/
+mlruns/
+
+# Data files (large)
+data/
+datasets/
+*.csv
+*.parquet
+*.feather
+!data/.gitkeep
+
+# Notebooks
+.ipynb_checkpoints/
+*.ipynb_metadata
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# GPU/CUDA
+*.cubin
+*.fatbin
+
+# OpenCV/CV specific
+*.weights
+*.cfg
+output/
+results/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env
+.env.local
 ```
 
 ---
@@ -463,6 +537,33 @@ Remote repository setup is **semi-automated** by devops-deployment skill:
 - fix(ios): resolve keyboard overlap issue
 - chore(android): update gradle config
 - feat(native): add biometric authentication
+```
+
+### systemdev-specialist
+
+```markdown
+## Git Repository Management
+
+**Repository**: `workspace/specialized/`
+**Deploy Target**: GPU instances, AWS SageMaker, dedicated processing servers
+
+### Commit Triggers
+- ML model/pipeline implementation
+- CV algorithm development
+- Video processing pipeline changes
+- GPU optimization work
+- Performance improvements
+- Data preprocessing changes
+
+### Typical Commits
+- feat(ml): add image classification pipeline
+- feat(cv): implement wall detection with Hough Transform
+- feat(video): add HLS transcoding pipeline
+- perf(gpu): optimize batch processing for inference
+- fix(cv): resolve memory leak in contour detection
+- refactor(ml): extract feature engineering module
+- test(cv): add edge detection accuracy tests
+- chore(config): update GPU memory allocation settings
 ```
 
 ---
@@ -797,3 +898,4 @@ git commit --amend -m "new message"
 - [pm-orchestrator/SKILL.md](./pm-orchestrator/SKILL.md) - Git initialization coordination
 - [devops-deployment/SKILL.md](./devops-deployment/SKILL.md) - Remote setup and CI/CD
 - [memory-manager/SKILL.md](./memory-manager/SKILL.md) - Git state tracking
+- [systemdev-specialist/SKILL.md](./systemdev-specialist/SKILL.md) - Specialized systems Git management

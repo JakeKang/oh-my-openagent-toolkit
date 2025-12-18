@@ -295,6 +295,16 @@ Track in `.memory/metrics.md`:
 - celery: Distributed task queue for long-running jobs
 ```
 
+### Optional (Computer Vision / Image Analysis)
+```
+- opencv-python: Image processing, edge detection, contour analysis
+- Pillow (PIL): Image loading, format conversion, basic manipulation
+- scikit-image: Advanced image processing algorithms
+- networkx: Graph data structures for spatial analysis
+- matplotlib: Visualization and image annotation
+- aiofiles: Async file operations for image I/O
+```
+
 ---
 
 ## Development Workflow
@@ -423,6 +433,12 @@ This skill operates with **complete autonomy**, requiring **zero user confirmati
 - GPU resource management with ThreadPoolExecutor
 - Batch processing optimization
 - Python scientific computing library integration (numpy, pandas)
+- **Computer Vision pipeline integration**:
+  - Image upload endpoints with file validation
+  - OpenCV/scikit-image processing orchestration
+  - Async image analysis with BackgroundTasks or Celery
+  - Spatial graph (NetworkX) serialization to JSON
+  - Result caching for repeated analysis
 
 **devops-deployment:**
 - Docker containerization with exec-form CMD (CRITICAL)
@@ -555,6 +571,44 @@ This skill provides comprehensive production-ready examples:
    - Dependency override for mocking
    - Test database fixtures
    - Coverage tracking and CI/CD integration
+
+5. **Computer Vision / Image Analysis Pipeline** (`examples/05-cv-image-pipeline.md`):
+   - Image upload endpoint with validation (file type, size, dimensions)
+   - Async image processing with BackgroundTasks
+   - OpenCV integration patterns (preprocessing, detection, analysis)
+   - Result storage and retrieval
+   - WebSocket for real-time processing status
+   - Example endpoints:
+     ```python
+     POST /api/v1/analysis/upload          # Upload image for analysis
+     GET  /api/v1/analysis/{task_id}/status # Check processing status
+     GET  /api/v1/analysis/{task_id}/result # Get analysis results
+     WS   /api/v1/analysis/{task_id}/stream # Real-time progress stream
+     ```
+   - Response schemas for CV results:
+     ```python
+     class WallDetection(BaseModel):
+         id: str
+         start_point: tuple[int, int]
+         end_point: tuple[int, int]
+         thickness: float
+         confidence: float
+     
+     class RoomNode(BaseModel):
+         id: str
+         room_type: str
+         area: float
+         centroid: tuple[float, float]
+         connected_rooms: list[str]
+     
+     class AnalysisResult(BaseModel):
+         task_id: str
+         status: str
+         walls: list[WallDetection]
+         rooms: list[RoomNode]
+         spatial_graph: dict  # NetworkX graph as JSON
+         annotated_image_url: str
+     ```
 
 ---
 

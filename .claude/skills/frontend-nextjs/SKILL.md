@@ -495,6 +495,45 @@ The following comprehensive examples demonstrate production-ready implementation
 
 **Key Patterns**: Performance optimization, Code splitting, Asset optimization
 
+### 05. Image Upload and Analysis Visualization (CV Projects)
+**File**: `examples/05-image-upload-visualization.md`
+**Demonstrates**:
+- Drag-and-drop image upload component (react-dropzone)
+- File type validation and size limits
+- Image preview before upload
+- Upload progress indicator
+- Backend integration for image processing
+- Analysis result visualization:
+  - Annotated image overlay (detected walls, doors, rooms)
+  - SVG/Canvas overlay for bounding boxes and annotations
+  - Interactive element highlighting
+  - Graph visualization with react-flow or d3.js (spatial graphs)
+  - JSON result display with syntax highlighting
+- Real-time processing status with polling/WebSocket
+- Error handling for failed analysis
+- Export functionality (PNG, SVG, JSON)
+
+**Key Patterns**: File upload, Canvas/SVG overlay, Graph visualization, Real-time status
+
+**Component Structure for CV Projects**:
+```
+workspace/frontend/src/
+├── components/
+│   ├── upload/
+│   │   ├── ImageDropzone.tsx       # Drag-drop upload
+│   │   ├── UploadProgress.tsx      # Progress indicator
+│   │   └── ImagePreview.tsx        # Preview before upload
+│   ├── analysis/
+│   │   ├── AnnotatedImage.tsx      # Image with overlays
+│   │   ├── BoundingBoxOverlay.tsx  # Detection boxes
+│   │   ├── SpatialGraph.tsx        # Graph visualization
+│   │   └── AnalysisResults.tsx     # JSON/structured results
+│   └── visualization/
+│       ├── FloorPlanViewer.tsx     # Interactive floor plan
+│       ├── RoomHighlighter.tsx     # Room selection
+│       └── ExportPanel.tsx         # Export options
+```
+
 ## Using These Examples
 
 Each example includes:

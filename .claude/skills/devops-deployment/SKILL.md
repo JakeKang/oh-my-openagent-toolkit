@@ -226,6 +226,134 @@ volumes:
   postgres_data:
 ```
 
+### CV/Image Processing Docker Requirements
+
+For Computer Vision and image analysis applications:
+
+#### Base Image Selection
+```dockerfile
+# Option 1: Python slim with OpenCV build (smaller, longer build)
+FROM python:3.11-slim AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    libopencv-dev \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Option 2: Pre-built OpenCV image (faster builds, larger image)
+FROM jjanzic/docker-python3-opencv:latest
+
+# Option 3: GPU-enabled for CUDA acceleration
+FROM nvidia/cuda:12.1-runtime-ubuntu22.04
+```
+
+#### Multi-stage Build for CV Applications
+```dockerfile
+# workspace/docker/cv-processor.Dockerfile
+FROM python:3.11-slim AS builder
+
+# Install build dependencies for OpenCV
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    pkg-config \
+    libopencv-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Production stage
+FROM python:3.11-slim AS production
+
+# Runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libopencv-core4.5d \
+    libopencv-imgproc4.5d \
+    libopencv-imgcodecs4.5d \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY . .
+
+# Health check for CV service
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+#### GPU Support (CUDA) for Deep Learning Models
+```dockerfile
+# workspace/docker/cv-processor-gpu.Dockerfile
+FROM nvidia/cuda:12.1-cudnn8-runtime-ubuntu22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3-pip \
+    libopencv-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY requirements-gpu.txt .
+RUN pip install --no-cache-dir -r requirements-gpu.txt
+
+COPY . .
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+#### Docker Compose for CV Stack
+```yaml
+# workspace/docker-compose.cv.yml
+version: '3.8'
+services:
+  cv-processor:
+    build:
+      context: ./backend
+      dockerfile: ../docker/cv-processor.Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads        # Input images
+      - ./results:/app/results        # Output results
+    environment:
+      - MAX_IMAGE_SIZE_MB=50
+      - PROCESSING_WORKERS=4
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+
+  cv-processor-gpu:
+    build:
+      context: ./backend
+      dockerfile: ../docker/cv-processor-gpu.Dockerfile
+    runtime: nvidia                   # Requires nvidia-docker
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+```
+
+#### CI/CD Considerations for CV Applications
+- **Large Image Handling**: Configure artifact storage for test images
+- **Build Caching**: Cache OpenCV compilation layers
+- **Resource Limits**: Set memory limits for CV processing in CI
+- **Test Data**: Use small sample images in CI, full datasets in staging
+
 ## Cloud Deployment Options
 
 - **Vercel**: Next.js frontend (preferred for web apps)

@@ -176,6 +176,84 @@ workspace/
 - **Prisma**: Schema definition, migrations, client generation
 - **SQLAlchemy** (FastAPI): Models, alembic migrations
 
+### Spatial Data & Graph Storage
+
+For Computer Vision and spatial analysis projects requiring geometric data storage:
+
+#### PostgreSQL + PostGIS
+- **Spatial Types**: POINT, LINESTRING, POLYGON, MULTIPOLYGON
+- **Spatial Indexes**: GiST indexes for geometric queries
+- **Spatial Functions**: ST_Contains, ST_Intersects, ST_Distance, ST_Area
+- **Use Cases**: Room boundaries, wall segments, floor plan geometry
+
+```sql
+-- Enable PostGIS extension
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Spatial table for room boundaries
+CREATE TABLE rooms (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  floor_plan_id UUID REFERENCES floor_plans(id),
+  label VARCHAR(100),
+  boundary GEOMETRY(POLYGON, 4326),
+  area_sqm DECIMAL(10,2) GENERATED ALWAYS AS (ST_Area(boundary::geography)) STORED,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Spatial index for efficient queries
+CREATE INDEX idx_rooms_boundary ON rooms USING GIST(boundary);
+
+-- Find rooms containing a point
+SELECT * FROM rooms WHERE ST_Contains(boundary, ST_Point(-73.9857, 40.7484));
+```
+
+#### JSONB for Graph Storage
+- **Graph Representation**: Adjacency lists, node attributes
+- **Flexible Schema**: Dynamic properties per node/edge
+- **Indexing**: GIN indexes for JSON queries
+
+```sql
+-- Spatial graph storage
+CREATE TABLE spatial_graphs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  floor_plan_id UUID REFERENCES floor_plans(id),
+  graph_data JSONB NOT NULL,
+  -- Example structure:
+  -- {
+  --   "nodes": [{"id": "room_1", "type": "room", "label": "Living Room", "centroid": [x, y]}],
+  --   "edges": [{"source": "room_1", "target": "room_2", "type": "door", "properties": {...}}]
+  -- }
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- GIN index for efficient JSON queries
+CREATE INDEX idx_spatial_graphs_data ON spatial_graphs USING GIN(graph_data);
+
+-- Query rooms by type
+SELECT * FROM spatial_graphs 
+WHERE graph_data @> '{"nodes": [{"type": "room"}]}';
+```
+
+#### CV Analysis Results Storage
+```sql
+-- Detection results storage
+CREATE TABLE detection_results (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  image_id UUID REFERENCES images(id),
+  element_type VARCHAR(50), -- 'wall', 'door', 'window', 'room'
+  bounding_box BOX,
+  polygon GEOMETRY(POLYGON),
+  confidence DECIMAL(4,3),
+  properties JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index for element type queries
+CREATE INDEX idx_detection_element_type ON detection_results(element_type);
+CREATE INDEX idx_detection_confidence ON detection_results(confidence);
+```
+
 ## Deep Thinking Protocol
 
 **STRONGLY RECOMMENDED** for database decisions due to:

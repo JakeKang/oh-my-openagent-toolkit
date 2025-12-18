@@ -18,12 +18,62 @@ project_types:
   ai_ml_system:
     name: "AI/ML System"
     triggers:
-      keywords: ["AI", "machine learning", "deep learning", "model development", "data analysis", "prediction model", "natural language processing", "computer vision", "recommendation system", "model serving", "inference API"]
-      frameworks: ["tensorflow", "pytorch", "keras", "scikit-learn", "huggingface", "openai", "fastapi"]
-      technologies: ["python", "jupyter", "pandas", "numpy", "cuda", "gpu", "async", "pydantic"]
-    auto_experts: ["pm", "systemdev", "research", "backend", "qa", "mcp"]
+      keywords:
+        - "AI"
+        - "machine learning"
+        - "deep learning"
+        - "model development"
+        - "data analysis"
+        - "prediction model"
+        - "natural language processing"
+        - "computer vision"
+        - "recommendation system"
+        - "model serving"
+        - "inference API"
+        - "OpenCV"
+        - "image analysis"
+        - "image processing"
+        - "blueprint"
+        - "floor plan"
+        - "CAD"
+        - "document analysis"
+        - "OCR"
+        - "object detection"
+        - "segmentation"
+        - "contour"
+        - "edge detection"
+        - "spatial analysis"
+        - "graph analysis"
+        - "feature extraction"
+        - "pattern recognition"
+        - "wall detection"
+        - "room detection"
+      frameworks:
+        - "tensorflow"
+        - "pytorch"
+        - "keras"
+        - "scikit-learn"
+        - "huggingface"
+        - "openai"
+        - "fastapi"
+        - "opencv"
+        - "pillow"
+        - "scikit-image"
+      technologies:
+        - "python"
+        - "jupyter"
+        - "pandas"
+        - "numpy"
+        - "cuda"
+        - "gpu"
+        - "async"
+        - "pydantic"
+        - "networkx"
+        - "matplotlib"
+        - "plotly"
+    auto_experts: ["pm", "systemdev", "research", "backend", "frontend", "qa", "mcp"]
     memory_template: "ai-system"
-    workflow_priority: ["requirements_analysis", "research_analysis", "architecture_design", "system_development", "backend_implementation", "integration_orchestration", "deployment_pipeline", "quality_assurance"]
+    workflow_priority: ["requirements_analysis", "research_analysis", "architecture_design", "system_development", "backend_implementation", "frontend_implementation", "integration_orchestration", "deployment_pipeline", "quality_assurance"]
     
   mobile_application:
     name: "Mobile Application"
@@ -107,19 +157,28 @@ request_analysis_patterns:
     - "(.+) data(.+) pipeline(.+)"
   
   # Technology stack based inference
+  # Format: "pattern -> project_type"
   tech_stack_patterns:
-    - "Next.js(.+)" -> "web_application"
-    - "React Native(.+)" -> "mobile_application"  
-    - "TensorFlow(.+)" -> "ai_ml_system"
-    - "FastAPI(.+)" -> "api_microservice"
-    - "Electron(.+)" -> "desktop_application"
+    - "Next.js(.+) -> web_application"
+    - "React Native(.+) -> mobile_application"
+    - "TensorFlow(.+) -> ai_ml_system"
+    - "FastAPI(.+) -> api_microservice"
+    - "Electron(.+) -> desktop_application"
+    - "OpenCV(.+) -> ai_ml_system"
+    - "scikit-image(.+) -> ai_ml_system"
   
   # Feature based inference
+  # Format: "pattern -> project_type"
   feature_patterns:
-    - "(.+)login(.+)registration(.+)" -> "web_application"
-    - "(.+)prediction(.+)analysis(.+)" -> "ai_ml_system"
-    - "(.+)real-time(.+)chat(.+)" -> "web_application"
-    - "(.+)data(.+)collection(.+)processing(.+)" -> "data_processing_system"
+    - "(.+)login(.+)registration(.+) -> web_application"
+    - "(.+)prediction(.+)analysis(.+) -> ai_ml_system"
+    - "(.+)real-time(.+)chat(.+) -> web_application"
+    - "(.+)data(.+)collection(.+)processing(.+) -> data_processing_system"
+    - "(.+)image(.+)analysis(.+) -> ai_ml_system"
+    - "(.+)floor(.+)plan(.+) -> ai_ml_system"
+    - "(.+)blueprint(.+)detection(.+) -> ai_ml_system"
+    - "(.+)wall(.+)detection(.+) -> ai_ml_system"
+    - "(.+)spatial(.+)graph(.+) -> ai_ml_system"
 
 # Development AI Agent Team Pattern Application
 novel_analysis_integration:

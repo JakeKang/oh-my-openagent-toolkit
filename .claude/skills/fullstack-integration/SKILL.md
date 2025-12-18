@@ -272,6 +272,104 @@ The following examples demonstrate complete fullstack integration patterns:
 **File**: `examples/04-api-integration-patterns.md`
 **Demonstrates**: Best practices for frontend-backend API integration, including error handling, loading states, caching strategies, and optimistic updates.
 
+### 05. Computer Vision / Image Analysis Architecture
+**File**: `examples/05-cv-analysis-architecture.md`
+**Demonstrates**: Complete architecture for CV/image analysis projects (e.g., floor plan analysis, document processing, object detection).
+
+**Architecture Pattern**:
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Frontend (Next.js)                       │
+├─────────────────────────────────────────────────────────────────┤
+│  ImageDropzone → UploadProgress → AnalysisResults → GraphView  │
+│         │              │                │              │        │
+│         └──────────────┴────────────────┴──────────────┘        │
+│                              │                                  │
+│                        REST/WebSocket                           │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+┌─────────────────────────────────────────────────────────────────┐
+│                      Backend (FastAPI)                          │
+├─────────────────────────────────────────────────────────────────┤
+│  POST /upload → BackgroundTask → GET /status → GET /result      │
+│         │              │                │              │        │
+│    Validation    Task Queue      Status Check     Results       │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+┌─────────────────────────────────────────────────────────────────┐
+│                   CV Pipeline (systemdev-specialist)            │
+├─────────────────────────────────────────────────────────────────┤
+│  Preprocessing → Feature Extraction → Analysis → Graph Build    │
+│  (OpenCV)         (Hough Lines)       (Connected    (NetworkX)  │
+│                   (Contours)           Components)              │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+┌─────────────────────────────────────────────────────────────────┐
+│                        Storage Layer                            │
+├─────────────────────────────────────────────────────────────────┤
+│  Input Images    Task Status    Analysis Results    Graphs      │
+│  (S3/Local)      (Redis)        (PostgreSQL)        (JSON)      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Integration Points**:
+1. **Frontend → Backend**: Multipart file upload, polling/WebSocket for status
+2. **Backend → CV Pipeline**: Async task dispatch, result collection
+3. **CV Pipeline → Storage**: Image I/O, result persistence, graph serialization
+4. **Backend → Frontend**: JSON results, annotated image URLs, graph data
+
+**Shared Types** (`workspace/shared/types/cv-analysis.types.ts`):
+```typescript
+interface AnalysisTask {
+  taskId: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  progress: number;
+  createdAt: string;
+}
+
+interface WallDetection {
+  id: string;
+  startPoint: [number, number];
+  endPoint: [number, number];
+  thickness: number;
+  confidence: number;
+}
+
+interface RoomNode {
+  id: string;
+  roomType: string;
+  area: number;
+  centroid: [number, number];
+  connectedRooms: string[];
+}
+
+interface SpatialGraph {
+  nodes: RoomNode[];
+  edges: Array<{ source: string; target: string; connectionType: string }>;
+}
+
+interface AnalysisResult {
+  taskId: string;
+  walls: WallDetection[];
+  rooms: RoomNode[];
+  spatialGraph: SpatialGraph;
+  annotatedImageUrl: string;
+  metadata: {
+    processingTimeMs: number;
+    imageSize: [number, number];
+    detectionConfidence: number;
+  };
+}
+```
+
+**Key Coordination Points**:
+- **pm-orchestrator**: Project detection (ai_ml_system with CV keywords)
+- **frontend-nextjs**: Upload UI, result visualization, graph rendering
+- **backend-fastapi**: API endpoints, task management, async processing
+- **systemdev-specialist**: CV pipeline implementation (OpenCV, NetworkX)
+- **database-specialist**: Result storage schema, spatial data types
+- **research-analysis**: Domain knowledge (architecture, Space Syntax theory)
+
 ## Using These Examples
 
 Each example provides complete system architecture showing how frontend, backend, and database work together as a cohesive system.

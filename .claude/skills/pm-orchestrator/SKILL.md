@@ -266,10 +266,11 @@ When starting a new project:
   - **api_microservice**: backend-nestjs OR backend-fastapi, database-specialist, security-specialist, fullstack-integration, devops-deployment, qa-testing
   - **data_processing_system**: systemdev-specialist, backend-nestjs OR backend-fastapi, database-specialist, research-analysis, devops-deployment
   - **desktop_application**: frontend-nextjs, systemdev-specialist, devops-deployment, qa-testing
+  - **computer_vision_analysis** (sub-type of ai_ml_system): systemdev-specialist (primary - OpenCV, image processing, spatial analysis), backend-fastapi (API server), frontend-nextjs (visualization UI), database-specialist (spatial data storage), research-analysis (domain knowledge - architecture, Space Syntax), fullstack-integration (system architecture), qa-testing
 
 **Backend Selection Criteria**:
 - **backend-nestjs**: TypeScript full-stack projects, enterprise architecture, GraphQL primary, Angular-style DI patterns
-- **backend-fastapi**: Python ecosystem projects, AI/ML integration, async performance critical, scientific computing, data processing
+- **backend-fastapi**: Python ecosystem projects, AI/ML integration, async performance critical, scientific computing, data processing, **computer vision/image analysis** (OpenCV, Pillow, scikit-image integration)
 
 **Specialist Skill Activation Criteria**:
 - **database-specialist**: Always include for projects with database requirements (schema design, migrations, query optimization)

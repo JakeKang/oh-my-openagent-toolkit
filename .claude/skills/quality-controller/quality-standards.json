@@ -190,6 +190,70 @@
             "fairness_metrics": "demographic parity",
             "ethical_review": "completed"
           }
+        },
+        "computer_vision": {
+          "detection_metrics": {
+            "precision": {
+              "target": 0.90,
+              "minimum": 0.85,
+              "measurement": "true positives / (true positives + false positives)"
+            },
+            "recall": {
+              "target": 0.90,
+              "minimum": 0.85,
+              "measurement": "true positives / (true positives + false negatives)"
+            },
+            "iou_threshold": {
+              "target": 0.5,
+              "minimum": 0.3,
+              "measurement": "intersection over union for bounding boxes"
+            },
+            "mean_average_precision": {
+              "target": 0.85,
+              "minimum": 0.75,
+              "measurement": "mAP across all detection classes"
+            }
+          },
+          "processing_performance": {
+            "throughput": {
+              "target": "> 5 images/second",
+              "minimum": "> 1 image/second",
+              "measurement": "sustained processing rate"
+            },
+            "memory_usage": {
+              "target": "< 2GB per image",
+              "maximum": "< 4GB per image",
+              "measurement": "peak memory during processing"
+            },
+            "inference_latency": {
+              "target": "< 500ms",
+              "maximum": "< 2000ms",
+              "measurement": "single image processing time"
+            }
+          },
+          "spatial_analysis": {
+            "graph_validity": {
+              "target": "> 95%",
+              "minimum": "> 90%",
+              "measurement": "valid node connections in spatial graph"
+            },
+            "topology_accuracy": {
+              "target": "> 90%",
+              "minimum": "> 85%",
+              "measurement": "correct spatial relationships detected"
+            },
+            "boundary_precision": {
+              "target": "< 5px error",
+              "maximum": "< 10px error",
+              "measurement": "detected boundary deviation from ground truth"
+            }
+          },
+          "image_preprocessing": {
+            "normalization": "required",
+            "noise_reduction": "as needed",
+            "resolution_handling": "configurable input sizes",
+            "format_support": ["PNG", "JPEG", "TIFF", "PDF"]
+          }
         }
       }
     },

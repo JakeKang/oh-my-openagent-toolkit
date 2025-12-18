@@ -281,6 +281,59 @@ memory_templates:
       initialization: "Create ai-system memory structure when AI/ML project detected"
       expert_access: ["systemdev", "research", "backend", "qa"]
       collaboration_triggers: ["model_architecture_decisions", "data_pipeline_changes", "performance_optimization"]
+    
+    # CV/Image Analysis Extension (for ai_ml_system with computer vision focus)
+    cv_analysis_files:
+      cv-analysis-context.md:
+        purpose: "CV/Image analysis pipeline status and results tracking"
+        update_triggers: ["image_upload", "detection_complete", "graph_generation", "analysis_milestone"]
+        access_pattern: "read_on_cv_task, update_during_analysis"
+        template_content: |
+          # CV Analysis Context
+          
+          ## Project Overview
+          - **Analysis Type**: [Floor Plan / Blueprint / Medical / Satellite / etc]
+          - **Current Phase**: [preprocessing/detection/segmentation/graph-construction/validation]
+          - **Input Format**: [PNG/JPEG/TIFF/PDF]
+          - **Output Requirements**: [JSON results, visualizations, spatial graph]
+          
+          ## Image Preprocessing Status
+          - **Normalization**: [Applied / Pending]
+          - **Noise Reduction**: [Applied / Not Required]
+          - **Resolution**: [Original dimensions, processing resolution]
+          - **Color Space**: [RGB / Grayscale / Binary]
+          
+          ## Detection Results
+          ### Detected Elements
+          - **Walls**: [count, confidence scores]
+          - **Doors**: [count, types detected]
+          - **Windows**: [count, positions]
+          - **Rooms**: [count, labels assigned]
+          - **Other Elements**: [stairs, furniture, fixtures]
+          
+          ### Detection Metrics
+          - **Precision**: [current value vs target]
+          - **Recall**: [current value vs target]
+          - **IoU Threshold**: [configured value]
+          - **Processing Time**: [per image]
+          
+          ## Spatial Graph Status
+          - **Nodes**: [room count, element count]
+          - **Edges**: [connectivity relationships]
+          - **Graph Validity**: [validation status]
+          - **Topology Accuracy**: [correctness of relationships]
+          
+          ## Analysis Pipeline Progress
+          - [ ] Image upload and validation
+          - [ ] Preprocessing complete
+          - [ ] Element detection complete
+          - [ ] Segmentation complete
+          - [ ] Spatial graph constructed
+          - [ ] Results validated
+          - [ ] Output generated
+          
+          ## Known Issues / Refinements Needed
+          - [List any detection issues, edge cases, or refinement requirements]
 
   # Mobile Application Memory Structure
   mobile-app:
