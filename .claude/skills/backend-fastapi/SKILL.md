@@ -580,6 +580,108 @@ This skill provides autonomous FastAPI backend development with Python 3.10+, Py
 
 ---
 
+## Git Repository Management
+
+**Repository**: `workspace/backend/`
+**Deploy Target**: Railway, Render, AWS ECS, Heroku
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### When to Commit
+
+| Trigger | Commit Type | Example |
+|---------|-------------|---------|
+| Module/router creation | feat | `feat(auth): add authentication router` |
+| Endpoint addition | feat | `feat(users): add user CRUD endpoints` |
+| Model/schema change | feat | `feat(models): add Order model` |
+| Bug fix | fix | `fix(api): resolve async session leak` |
+| Service refactoring | refactor | `refactor(services): extract validation logic` |
+| Config updates | chore | `chore(config): update database pool settings` |
+| Migration | feat/fix | `feat(migration): add user roles table` |
+| Test addition | test | `test(auth): add JWT validation tests` |
+| Dependency update | chore | `chore(deps): upgrade FastAPI to 0.115.x` |
+
+### Commit Workflow
+
+```bash
+# After completing a router module
+git add src/routers/auth.py src/services/auth.py src/schemas/auth.py
+git commit -m "feat(auth): add JWT authentication with OAuth2 password flow"
+
+# After database migration
+git add alembic/versions/
+git commit -m "feat(migration): add orders table with foreign keys"
+
+# After fixing an API bug
+git add src/routers/users.py
+git commit -m "fix(users): resolve async session not closing properly"
+
+# After adding tests
+git add tests/test_auth.py
+git commit -m "test(auth): add token generation and validation tests"
+```
+
+### Branch Strategy
+
+- **Feature development**: Create `feature/FEAT-123-module-name` branch
+- **Bug fixes**: Create `fix/BUG-456-description` branch
+- **Database migrations**: Include in feature branch or separate `migration/` branch
+- **Merge to**: `develop` branch (or `main` for small projects)
+
+### Memory Update After Commit
+
+After each commit, update `.memory/project-state.json`:
+```json
+{
+  "git_repositories": {
+    "backend": {
+      "last_commit": "<commit-hash>",
+      "last_commit_message": "feat(auth): add JWT authentication with OAuth2 password flow",
+      "dirty": false
+    }
+  }
+}
+```
+
+### Python-Specific .gitignore
+
+The backend repository should include Python-specific ignores:
+
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# FastAPI/Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Environment
+.env
+.env.local
+```
+
+---
+
 ## Enterprise Standards Compliance
 
 This skill follows team-wide enterprise standards.

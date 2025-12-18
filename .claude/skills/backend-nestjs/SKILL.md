@@ -546,6 +546,66 @@ Refer to reference.md for complete backend development guidelines.
 
 ---
 
+## Git Repository Management
+
+**Repository**: `workspace/backend/`
+**Deploy Target**: Railway, Render, AWS ECS, Heroku
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### When to Commit
+
+| Trigger | Commit Type | Example |
+|---------|-------------|---------|
+| Module creation | feat | `feat(auth): add authentication module` |
+| Endpoint addition | feat | `feat(users): add user CRUD endpoints` |
+| Entity/Model change | feat | `feat(entities): add Order entity` |
+| Bug fix | fix | `fix(api): resolve N+1 query issue` |
+| Service refactoring | refactor | `refactor(services): extract validation logic` |
+| Config updates | chore | `chore(config): update database config` |
+| Migration | feat/fix | `feat(migration): add user roles table` |
+| Test addition | test | `test(auth): add JWT validation tests` |
+
+### Commit Workflow
+
+```bash
+# After completing a module
+git add src/modules/auth/
+git commit -m "feat(auth): add JWT authentication module with guards"
+
+# After database migration
+git add src/migrations/
+git commit -m "feat(migration): add orders table with foreign keys"
+
+# After fixing an API bug
+git add src/modules/users/
+git commit -m "fix(users): resolve pagination offset error"
+```
+
+### Branch Strategy
+
+- **Feature development**: Create `feature/FEAT-123-module-name` branch
+- **Bug fixes**: Create `fix/BUG-456-description` branch
+- **Database migrations**: Include in feature branch or separate `migration/` branch
+- **Merge to**: `develop` branch (or `main` for small projects)
+
+### Memory Update After Commit
+
+After each commit, update `.memory/project-state.json`:
+```json
+{
+  "git_repositories": {
+    "backend": {
+      "last_commit": "<commit-hash>",
+      "last_commit_message": "feat(auth): add JWT authentication module",
+      "dirty": false
+    }
+  }
+}
+```
+
+---
+
 ## Enterprise Standards Compliance
 
 This skill follows team-wide enterprise standards.

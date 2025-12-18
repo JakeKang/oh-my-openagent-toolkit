@@ -766,6 +766,76 @@ Refer to reference.md for complete mobile development guidelines.
 
 ---
 
+## Git Repository Management
+
+**Repository**: `workspace/mobile/`
+**Deploy Target**: EAS Build → App Store (iOS) / Play Store (Android)
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### When to Commit
+
+| Trigger | Commit Type | Example |
+|---------|-------------|---------|
+| Screen creation | feat | `feat(screens): add login screen` |
+| Component implementation | feat | `feat(components): add BottomSheet component` |
+| Navigation update | feat | `feat(nav): implement bottom tab navigation` |
+| Bug fix | fix | `fix(ios): resolve keyboard overlap issue` |
+| Platform-specific fix | fix | `fix(android): resolve back button handling` |
+| Native module | feat | `feat(native): add biometric authentication` |
+| Config updates | chore | `chore(config): update app.json version` |
+| Test addition | test | `test(screens): add login flow tests` |
+
+### Commit Workflow
+
+```bash
+# After completing a screen
+git add src/screens/Login/
+git commit -m "feat(screens): add login screen with form validation"
+
+# After platform-specific fix
+git add ios/
+git commit -m "fix(ios): resolve SafeAreaView insets on iPhone 15"
+
+# After native module integration
+git add src/native/ android/ ios/
+git commit -m "feat(native): add biometric authentication module"
+```
+
+### Branch Strategy
+
+- **Feature development**: Create `feature/FEAT-123-screen-name` branch
+- **Bug fixes**: Create `fix/BUG-456-description` branch
+- **Platform-specific**: Create `fix/ios-description` or `fix/android-description`
+- **Merge to**: `develop` branch (or `main` for small projects)
+
+### Version Management for App Stores
+
+```bash
+# Before app store submission, bump version
+# Update app.json or app.config.js
+git add app.json
+git commit -m "chore(release): bump version to 1.2.0"
+git tag -a v1.2.0 -m "Release v1.2.0"
+```
+
+### Memory Update After Commit
+
+After each commit, update `.memory/project-state.json`:
+```json
+{
+  "git_repositories": {
+    "mobile": {
+      "last_commit": "<commit-hash>",
+      "last_commit_message": "feat(screens): add login screen",
+      "dirty": false
+    }
+  }
+}
+```
+
+---
+
 ## Enterprise Standards Compliance
 
 This skill follows team-wide enterprise standards.

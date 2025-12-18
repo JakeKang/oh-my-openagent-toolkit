@@ -1258,3 +1258,120 @@ The SessionStart hook (configured in `.claude/settings.json`) automates this res
 - Maintain professional, concise communication
 - For lifecycle transitions, announce state change: "Transitioning to continuous_development state. Initializing continuous development memory files..."
 - For version decisions, announce version bump: "Planning MINOR version release: v1.2.3 → v1.3.0 (new feature: email notifications)"
+
+## Git Repository Coordination
+
+pm-orchestrator is responsible for coordinating multi-repository Git initialization and tracking across the development lifecycle.
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### Git Initialization Trigger
+
+Git repositories are initialized **after architecture design** (03-architecture-design.md completion).
+
+**Trigger Conditions**:
+1. Architecture design workflow complete
+2. Repository structure decided (which components: frontend, backend, mobile, shared)
+3. Component boundaries clear
+
+**Initialization Workflow**:
+```
+03-architecture-design.md COMPLETE
+    ↓
+pm-orchestrator triggers Git initialization:
+    ↓
+1. Read .memory/active-context.md → Extract component list
+2. Determine required repositories based on project type:
+   - web_application: frontend/, backend/, shared/
+   - mobile_application: mobile/, backend/, shared/
+   - fullstack: frontend/, mobile/, backend/, shared/
+   - api_microservice: backend/, shared/
+    ↓
+3. For each required repository:
+   a. Create directory if not exists
+   b. git init
+   c. Create .gitignore (component-specific)
+   d. Create README.md
+   e. Initial commit: "chore: initialize repository"
+    ↓
+4. Invoke memory-manager to update project-state.json with git_repositories
+    ↓
+5. Announce: "Git repositories initialized: frontend/, backend/"
+```
+
+### Repository Selection by Project Type
+
+| Project Type | Repositories |
+|--------------|--------------|
+| web_application | `frontend/`, `backend/`, `shared/` |
+| mobile_application | `mobile/`, `backend/`, `shared/` |
+| fullstack (web + mobile) | `frontend/`, `mobile/`, `backend/`, `shared/` |
+| api_microservice | `backend/`, `shared/` |
+| ai_ml_system | `backend/` (FastAPI), `shared/` |
+| desktop_application | `frontend/`, `shared/` |
+
+### Coordination with Domain Skills
+
+After Git initialization, domain skills (frontend-nextjs, backend-nestjs, backend-fastapi, mobile-react-native) commit their changes as they develop:
+
+```
+┌─────────────────────────────────────────┐
+│ pm-orchestrator coordinates:            │
+│                                         │
+│ 1. Git initialization (after arch)      │
+│ 2. Domain skills commit independently   │
+│ 3. memory-manager tracks git state      │
+│ 4. devops-deployment sets up remotes    │
+└─────────────────────────────────────────┘
+```
+
+### Memory Updates for Git State
+
+After Git operations, pm-orchestrator coordinates with memory-manager:
+
+```json
+// .memory/project-state.json update
+{
+  "git_repositories": {
+    "frontend": {
+      "initialized": true,
+      "path": "workspace/frontend",
+      "current_branch": "main",
+      "last_commit": "abc1234",
+      "last_commit_message": "chore: initialize repository"
+    },
+    "backend": {
+      "initialized": true,
+      "path": "workspace/backend",
+      "current_branch": "main",
+      "last_commit": "def5678",
+      "last_commit_message": "chore: initialize repository"
+    }
+  }
+}
+```
+
+### Session Continuity with Git
+
+When resuming a session, pm-orchestrator reads git_repositories from project-state.json:
+
+1. Check which repositories are initialized
+2. Verify .git directories exist
+3. Check for uncommitted changes (dirty state)
+4. Report Git status in session summary:
+   ```
+   "Git repositories:
+    - frontend (main): clean
+    - backend (develop): 3 uncommitted changes"
+   ```
+
+### Integration with Workflows
+
+| Workflow | Git Action |
+|----------|------------|
+| 03-architecture-design.md | **Initialize repositories** after design complete |
+| Implementation Phase | Domain skills commit as they develop |
+| 06-integration.md | Commit shared types, integration configs |
+| 07-deployment.md | devops-deployment sets up remotes |
+| 09-continuous-development.md | Feature branches, version commits |
+| release-management.md | Tag releases, merge to main |

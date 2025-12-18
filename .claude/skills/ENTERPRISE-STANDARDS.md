@@ -647,6 +647,8 @@ logger.log({ user: user }); // May contain password hash, tokens, etc.
 
 ## 6. Git Conventions {#git-conventions}
 
+**Multi-Repository Reference**: For comprehensive multi-repository management, see [GIT-MANAGEMENT-SYSTEM.md](./GIT-MANAGEMENT-SYSTEM.md).
+
 ### 6.1 Branch Naming
 
 ```

@@ -749,3 +749,195 @@ Before completing any memory write operation, verify:
 5. **Preserve Context**: Include enough context for future restoration
 6. **Use Timestamps**: Always timestamp changes for historical analysis
 7. **Use Atomic Writes**: Follow atomic write protocol for all multi-writer files (CRITICAL)
+
+## Git Repository State Tracking
+
+memory-manager tracks Git repository state as part of the project memory system. This enables session continuity with full Git context.
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### Git State in project-state.json
+
+The `git_repositories` field in `.memory/project-state.json` tracks all initialized repositories:
+
+```json
+{
+  "git_repositories": {
+    "shared": {
+      "initialized": true,
+      "path": "workspace/shared",
+      "remote": "https://github.com/user/project-shared",
+      "current_branch": "main",
+      "last_commit": "abc1234",
+      "last_commit_message": "feat(types): add User interface",
+      "last_commit_date": "2025-12-18T10:30:00Z",
+      "dirty": false
+    },
+    "frontend": {
+      "initialized": true,
+      "path": "workspace/frontend",
+      "remote": "https://github.com/user/project-frontend",
+      "current_branch": "develop",
+      "last_commit": "def5678",
+      "last_commit_message": "feat(auth): add login page",
+      "last_commit_date": "2025-12-18T11:00:00Z",
+      "dirty": true
+    },
+    "backend": {
+      "initialized": true,
+      "path": "workspace/backend",
+      "remote": null,
+      "current_branch": "main",
+      "last_commit": "ghi9012",
+      "last_commit_message": "feat(users): add user module",
+      "last_commit_date": "2025-12-18T10:45:00Z",
+      "dirty": false
+    },
+    "mobile": {
+      "initialized": false,
+      "path": "workspace/mobile",
+      "remote": null,
+      "current_branch": null,
+      "last_commit": null,
+      "last_commit_message": null,
+      "last_commit_date": null,
+      "dirty": false
+    }
+  }
+}
+```
+
+### Git State Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `initialized` | boolean | Whether `git init` has been run |
+| `path` | string | Relative path to repository root |
+| `remote` | string/null | Remote origin URL (null if not set) |
+| `current_branch` | string/null | Current checked-out branch |
+| `last_commit` | string/null | Short hash of last commit |
+| `last_commit_message` | string/null | Last commit message |
+| `last_commit_date` | ISO8601/null | Timestamp of last commit |
+| `dirty` | boolean | Whether there are uncommitted changes |
+
+### When to Update Git State
+
+memory-manager updates `git_repositories` when:
+
+| Event | Trigger | Updated Fields |
+|-------|---------|----------------|
+| Repository initialized | pm-orchestrator git init | `initialized`, `path`, `current_branch`, `last_commit` |
+| Commit made | Any domain skill commits | `last_commit`, `last_commit_message`, `last_commit_date`, `dirty` |
+| Branch changed | Skill switches branch | `current_branch` |
+| Remote added | devops-deployment adds remote | `remote` |
+| Push completed | Any skill pushes | (verify remote state) |
+| Session start | Verify actual git state | All fields (reconcile with filesystem) |
+
+### Git State Update Protocol
+
+**After any Git operation**, the skill that performed the operation requests memory update:
+
+```
+1. Skill performs git operation (commit, branch, etc.)
+2. Skill requests memory-manager update:
+   - Repository name (frontend, backend, mobile, shared)
+   - Updated fields
+3. memory-manager reads current project-state.json
+4. memory-manager updates git_repositories.{repo}
+5. memory-manager writes atomically (atomic write protocol)
+6. memory-manager logs update in .logs/system/
+```
+
+### Git Commands for State Collection
+
+memory-manager uses these commands to verify/collect Git state:
+
+```bash
+# Get last commit hash
+git rev-parse --short HEAD
+
+# Get last commit message
+git log -1 --pretty=%B
+
+# Get last commit date (ISO 8601)
+git log -1 --format=%cI
+
+# Check if working directory is dirty
+git status --porcelain
+# (non-empty output = dirty)
+
+# Get current branch
+git branch --show-current
+
+# Get remote URL
+git remote get-url origin 2>/dev/null || echo "null"
+```
+
+### Session Continuity with Git
+
+**On Session Start**, memory-manager verifies Git state:
+
+```
+1. Read .memory/project-state.json → git_repositories
+2. For each repository with initialized=true:
+   a. Verify .git directory exists
+   b. Run git status --porcelain → Check dirty state
+   c. Run git branch --show-current → Verify branch
+   d. Run git rev-parse --short HEAD → Verify last commit
+   e. Compare with stored state
+   f. Report discrepancies
+3. Update project-state.json if filesystem state differs
+4. Report Git summary to pm-orchestrator:
+   "Git repositories:
+    - frontend (develop): 3 uncommitted changes
+    - backend (main): clean
+    - shared (main): clean"
+```
+
+### Dirty State Detection
+
+**Dirty state** = uncommitted changes exist:
+
+```bash
+# Check for uncommitted changes
+if [ -n "$(git status --porcelain)" ]; then
+  echo "dirty=true"
+else
+  echo "dirty=false"
+fi
+```
+
+**Report dirty state at session start**:
+- Warn user about uncommitted changes
+- Suggest commit or stash before major operations
+- Track in active-context.md as "uncommitted work"
+
+### Integration with Continuous Development
+
+**During continuous development** (09-continuous-development.md):
+
+```
+1. Feature branch created → Update current_branch
+2. Each commit → Update last_commit, last_commit_message, last_commit_date
+3. Merge to develop → Update current_branch
+4. Release tagged → Log in version-history.md + update git state
+5. Push to remote → Verify remote sync
+```
+
+### Error Handling
+
+**If Git state cannot be determined**:
+
+1. Log error in `.logs/errors/git-state-{date}.log`
+2. Mark repository as `needs_verification: true`
+3. Alert pm-orchestrator
+4. Do NOT overwrite existing state (preserve last known good)
+
+**Recovery**:
+```bash
+# Reinitialize git state from filesystem
+cd workspace/{repo}
+git status  # Verify repository is valid
+# Re-read all state fields
+# Update project-state.json
+```

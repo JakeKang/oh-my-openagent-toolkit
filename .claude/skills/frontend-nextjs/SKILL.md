@@ -508,6 +508,64 @@ Refer to reference.md for complete frontend development guidelines.
 
 ---
 
+## Git Repository Management
+
+**Repository**: `workspace/frontend/`
+**Deploy Target**: Vercel, Netlify, AWS Amplify
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### When to Commit
+
+| Trigger | Commit Type | Example |
+|---------|-------------|---------|
+| Component creation | feat | `feat(components): add UserProfile component` |
+| Page addition | feat | `feat(pages): add dashboard page` |
+| Hook implementation | feat | `feat(hooks): add useAuth custom hook` |
+| Bug fix | fix | `fix(auth): resolve login redirect issue` |
+| Style changes | style | `style(ui): update button hover states` |
+| Config updates | chore | `chore(config): update Next.js config` |
+| Test addition | test | `test(components): add UserProfile tests` |
+
+### Commit Workflow
+
+```bash
+# After completing a component or feature
+git add src/components/UserProfile/
+git commit -m "feat(components): add UserProfile component with avatar support"
+
+# After fixing a bug
+git add src/app/auth/
+git commit -m "fix(auth): resolve redirect loop on login page"
+
+# After session work (if incomplete, mark as WIP)
+git add .
+git commit -m "chore(wip): progress on dashboard charts"
+```
+
+### Branch Strategy
+
+- **Feature development**: Create `feature/FEAT-123-component-name` branch
+- **Bug fixes**: Create `fix/BUG-456-description` branch
+- **Merge to**: `develop` branch (or `main` for small projects)
+
+### Memory Update After Commit
+
+After each commit, update `.memory/project-state.json`:
+```json
+{
+  "git_repositories": {
+    "frontend": {
+      "last_commit": "<commit-hash>",
+      "last_commit_message": "feat(components): add UserProfile component",
+      "dirty": false
+    }
+  }
+}
+```
+
+---
+
 ## Enterprise Standards Compliance
 
 This skill follows team-wide enterprise standards.

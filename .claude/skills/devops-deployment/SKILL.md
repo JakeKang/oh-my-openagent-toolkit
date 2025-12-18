@@ -270,6 +270,105 @@ Refer to reference.md for complete deployment guidelines.
 
 ---
 
+## Git Repository Management & Remote Setup
+
+**Role**: devops-deployment is responsible for setting up Git remotes and CI/CD integration for all repositories.
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md) for complete multi-repository management guidelines.
+
+### Remote Repository Setup
+
+devops-deployment generates setup commands for each repository:
+
+```bash
+# Frontend repository → Vercel
+cd workspace/frontend
+gh repo create {project}-frontend --public --source=. --push
+# Or manual:
+git remote add origin https://github.com/{user}/{project}-frontend.git
+git push -u origin main
+
+# Backend repository → Railway
+cd workspace/backend
+gh repo create {project}-backend --public --source=. --push
+# Or manual:
+git remote add origin https://github.com/{user}/{project}-backend.git
+git push -u origin main
+
+# Mobile repository → EAS Build
+cd workspace/mobile
+gh repo create {project}-mobile --public --source=. --push
+```
+
+### CI/CD Integration
+
+Generate GitHub Actions workflows that trigger on repository pushes:
+
+**Frontend (Vercel Auto-Deploy)**:
+- Connect GitHub repo to Vercel Dashboard
+- Auto-deploy on push to `main`
+
+**Backend (Railway Auto-Deploy)**:
+```yaml
+# workspace/backend/.github/workflows/deploy.yml
+name: Deploy to Railway
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: railwayapp/setup-railway@v1
+      - run: railway up
+```
+
+**Mobile (EAS Build)**:
+```yaml
+# workspace/mobile/.github/workflows/eas-build.yml
+name: EAS Build
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - run: eas build --platform all --non-interactive
+```
+
+### Deployment Guide Generation
+
+Create deployment documentation in `workspace/docs/deployment-guide.md`:
+
+```markdown
+# Deployment Guide
+
+## Repository Setup
+1. Frontend: `gh repo create {project}-frontend --source=workspace/frontend`
+2. Backend: `gh repo create {project}-backend --source=workspace/backend`
+3. Mobile: `gh repo create {project}-mobile --source=workspace/mobile`
+
+## Platform Connections
+- Frontend → Vercel: Connect via Vercel Dashboard
+- Backend → Railway: Connect via Railway Dashboard
+- Mobile → EAS: Run `eas build:configure`
+
+## Environment Variables
+- Frontend: Set in Vercel Dashboard
+- Backend: Set in Railway Dashboard
+- Mobile: Set in eas.json or EAS Dashboard
+```
+
+---
+
 ## Enterprise Standards Compliance
 
 This skill follows team-wide enterprise standards.
