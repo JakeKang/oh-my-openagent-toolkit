@@ -1275,6 +1275,39 @@ Git repositories are initialized **after architecture design** (03-architecture-
 2. Repository structure decided (which components: frontend, backend, mobile, shared)
 3. Component boundaries clear
 
+### Default Repository Architecture
+
+**CRITICAL DEFAULT**: Always use **Polyrepo** (separate repositories per component) unless user **EXPLICITLY** requests monorepo.
+
+**Decision Logic**:
+```
+User Request Analysis:
+├── Contains "monorepo", "single repo", "combined repo", "turborepo", "nx"
+│   └─→ Use Monorepo (Exception)
+├── Contains explicit repository preference
+│   └─→ Follow user preference
+└── No repository preference specified
+    └─→ DEFAULT: Polyrepo (Separate repositories)
+```
+
+**Why Polyrepo is DEFAULT**:
+1. **Each SKILL owns its deployment independently** - frontend-nextjs deploys to Vercel, backend-nestjs deploys to Railway
+2. **Platform expectations** - Vercel/Railway/EAS expect separate repos for auto-deploy
+3. **Long-term maintainability** - Monorepo becomes legacy management burden
+4. **Independent versioning** - Different release cycles per component
+5. **Simpler CI/CD** - Each repo has its own pipeline
+
+**Initialization Announcement**:
+When initializing repositories, explicitly state the architecture:
+```
+"Initializing Polyrepo structure (separate repositories):
+ - workspace/frontend/ → Independent Git repo (deploy: Vercel)
+ - workspace/backend/ → Independent Git repo (deploy: Railway)
+ - workspace/shared/ → Independent Git repo (npm package)"
+```
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md#default-repository-strategy) for complete strategy.
+
 **Initialization Workflow**:
 ```
 03-architecture-design.md COMPLETE

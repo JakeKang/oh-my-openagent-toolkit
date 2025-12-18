@@ -20,6 +20,52 @@ The Agentic Dev AI Team uses a **Hybrid Polyrepo** architecture:
 4. **Platform Integration**: Easy integration with platform-specific CI/CD (Vercel, Railway, etc.)
 5. **Team Scalability**: Different teams/skills can work independently
 
+### Default Repository Strategy
+
+**CRITICAL**: The Agentic Dev AI Team uses **Polyrepo (separate repositories)** as the **DEFAULT** architecture.
+
+#### DEFAULT Behavior (No User Specification)
+
+When a user requests a project WITHOUT specifying repository structure:
+- `workspace/frontend/` → **Separate Git repository** → Deploy to Vercel/Netlify
+- `workspace/backend/` → **Separate Git repository** → Deploy to Railway/Render
+- `workspace/mobile/` → **Separate Git repository** → Deploy via EAS Build
+- `workspace/specialized/` → **Separate Git repository** → Deploy to GPU servers
+- `workspace/shared/` → **Separate Git repository** → npm package or Git reference
+
+Each directory above is an **independent Git repository** with its own `.git/`, version history, and deployment pipeline.
+
+#### Monorepo Exception
+
+**ONLY** use monorepo if the user **EXPLICITLY** requests:
+- "Create a monorepo project"
+- "Use single repository structure"
+- "Combine frontend and backend in one repo"
+- "Use Turborepo/Nx monorepo"
+
+#### Decision Logic
+
+```
+User Request Analysis:
+├── Contains "monorepo", "single repo", "combined repo", "turborepo", "nx" 
+│   └─→ Monorepo (Exception)
+├── Contains explicit repository preference 
+│   └─→ Follow user preference
+└── No repository preference specified 
+    └─→ DEFAULT: Polyrepo (Separate repositories)
+```
+
+#### Rationale for Polyrepo Default
+
+| Benefit | Explanation |
+|---------|-------------|
+| **Independent Deployment** | Vercel expects frontend repo, Railway expects backend repo |
+| **Independent Versioning** | Frontend v2.1.0 can coexist with Backend v1.5.3 |
+| **Long-term Maintainability** | Monorepo becomes legacy management burden over time |
+| **Platform Native CI/CD** | Auto-deploy on push works naturally per-component |
+| **Team Scalability** | Different skills/teams work completely independently |
+| **Simpler Rollbacks** | Roll back one component without affecting others |
+
 ### System Architecture
 
 ```

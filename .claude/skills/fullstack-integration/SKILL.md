@@ -52,6 +52,36 @@ workspace/
         └── e2e/
 ```
 
+## Repository Architecture
+
+**DEFAULT**: Polyrepo (separate Git repositories per component)
+
+### Important: This is NOT a Monorepo
+
+Each directory in the Output Structure above is a **separate Git repository**:
+
+| Directory | Repository | Deploy Target | CI/CD |
+|-----------|------------|---------------|-------|
+| `workspace/frontend/` | Independent `.git/` | Vercel/Netlify | Auto-deploy on push |
+| `workspace/backend/` | Independent `.git/` | Railway/Render | Auto-deploy on push |
+| `workspace/shared/` | Independent `.git/` | npm package or Git ref | Publish on tag |
+| `workspace/mobile/` | Independent `.git/` | EAS Build | Build on push |
+| `workspace/specialized/` | Independent `.git/` | GPU servers | Deploy on push |
+
+### Each Component Has:
+- Its own `.git/` directory (independent version control)
+- Independent version history (`frontend` v2.1.0, `backend` v1.5.3)
+- Its own deployment pipeline
+- Independent release cycle
+
+### Monorepo Alternative
+
+**ONLY** used if user explicitly requests combined repository structure (e.g., "use monorepo", "turborepo", "nx").
+
+### Reference
+
+See: [GIT-MANAGEMENT-SYSTEM.md](../GIT-MANAGEMENT-SYSTEM.md#default-repository-strategy) for complete repository strategy.
+
 ## Core Responsibilities
 
 - System architecture design

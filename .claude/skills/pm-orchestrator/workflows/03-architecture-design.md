@@ -49,6 +49,64 @@
    - Determine component boundaries
    - Plan inter-component communication
 
+### Phase 2.5: Repository Structure Decision
+
+**Objective**: Determine repository architecture (Polyrepo vs Monorepo)
+
+**CRITICAL DEFAULT**: Use **Polyrepo** (separate repositories) unless user explicitly requests monorepo.
+
+**Actions**:
+
+1. **Check User Requirements for Repository Preference**:
+   ```
+   Scan requirements for explicit monorepo keywords:
+   ├── "monorepo", "single repo", "combined repo", "turborepo", "nx"
+   │   └─→ Use Monorepo (Exception)
+   └── No explicit monorepo request found
+       └─→ DEFAULT: Polyrepo (Separate repositories)
+   ```
+
+2. **Polyrepo Structure** (DEFAULT - no user specification needed):
+   ```
+   workspace/
+   ├── frontend/     # Separate Git repo → Vercel/Netlify
+   │   └── .git/
+   ├── backend/      # Separate Git repo → Railway/Render
+   │   └── .git/
+   ├── mobile/       # Separate Git repo → EAS Build (if mobile project)
+   │   └── .git/
+   ├── specialized/  # Separate Git repo → GPU server (if AI/ML/CV)
+   │   └── .git/
+   └── shared/       # Separate Git repo → npm package
+       └── .git/
+   ```
+
+3. **Monorepo Structure** (ONLY if user explicitly requests):
+   ```
+   workspace/
+   └── monorepo/     # Single Git repo containing all components
+       ├── .git/
+       ├── packages/
+       │   ├── frontend/
+       │   ├── backend/
+       │   └── shared/
+       ├── turbo.json (or nx.json)
+       └── package.json
+   ```
+
+4. **Document Repository Decision**:
+   - Record in `.memory/decisions.md`:
+     ```markdown
+     ## Repository Architecture Decision
+     **Decision**: Polyrepo (separate repositories)
+     **Rationale**: Default architecture - independent deployment, versioning, and CI/CD
+     **Components**: frontend/, backend/, shared/
+     ```
+
+**Reference**: See [GIT-MANAGEMENT-SYSTEM.md](../../GIT-MANAGEMENT-SYSTEM.md#default-repository-strategy) for complete repository strategy.
+
+### Phase 2.6: Data Architecture Planning
+
 3. **Data Architecture Planning** (coordinate with **database-specialist**):
    - Entity relationship design
    - Data flow patterns
