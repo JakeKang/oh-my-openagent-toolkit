@@ -115,6 +115,66 @@ project_types:
     memory_template: "desktop-app"
     workflow_priority: ["requirements_analysis", "architecture_design", "frontend_implementation", "system_development", "deployment_pipeline", "quality_assurance"]
 
+  rust_systems:
+    name: "Rust Systems Development"
+    triggers:
+      keywords:
+        - "Rust"
+        - "Cargo"
+        - "systems programming"
+        - "memory safe"
+        - "zero-cost abstractions"
+        - "async Rust"
+        - "Tokio"
+        - "WASM"
+        - "WebAssembly"
+        - "PyO3"
+        - "Python extension"
+        - "native module"
+        - "FFI"
+        - "embedded"
+        - "CLI tool"
+        - "command line"
+        - "high performance"
+        - "low latency"
+      frameworks:
+        - "actix-web"
+        - "axum"
+        - "rocket"
+        - "tokio"
+        - "async-std"
+        - "warp"
+        - "tonic"
+        - "diesel"
+        - "sqlx"
+        - "sea-orm"
+        - "clap"
+        - "pyo3"
+        - "wasm-bindgen"
+        - "yew"
+        - "leptos"
+        - "dioxus"
+        - "tauri"
+      technologies:
+        - "rust"
+        - "cargo"
+        - "rustup"
+        - "wasm"
+        - "webassembly"
+        - "musl"
+        - "llvm"
+        - "grpc"
+        - "protobuf"
+    auto_experts: ["pm", "rust-systems", "systemdev", "backend", "devops", "qa", "mcp"]
+    memory_template: "rust-system"
+    workflow_priority: ["requirements_analysis", "architecture_design", "system_development", "backend_implementation", "deployment_pipeline", "quality_assurance"]
+    file_patterns:
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "*.rs"
+      - "rust-toolchain.toml"
+      - ".cargo/config.toml"
+
 # Automatic Detection Algorithm Configuration
 detection_algorithm:
   scoring_weights:
@@ -133,8 +193,9 @@ expert_assignment_rules:
   always_include: ["pm", "mcp"] # Always required for all projects
   conditional_include:
     research: ["ai_ml_system", "data_processing_system"] # Projects where research is important
-    systemdev: ["ai_ml_system", "data_processing_system", "desktop_application"] # Projects requiring system development
-    devops: ["web_application", "mobile_application", "api_microservice"] # Projects where deployment is important
+    systemdev: ["ai_ml_system", "data_processing_system", "desktop_application", "rust_systems"] # Projects requiring system development
+    devops: ["web_application", "mobile_application", "api_microservice", "rust_systems"] # Projects where deployment is important
+    rust-systems: ["rust_systems"] # Rust-specific expert
   
   collaboration_matrix:
     frontend: ["backend", "fullstack", "qa"]
@@ -166,6 +227,13 @@ request_analysis_patterns:
     - "Electron(.+) -> desktop_application"
     - "OpenCV(.+) -> ai_ml_system"
     - "scikit-image(.+) -> ai_ml_system"
+    - "Actix(.+) -> rust_systems"
+    - "Axum(.+) -> rust_systems"
+    - "Tokio(.+) -> rust_systems"
+    - "Cargo.toml(.+) -> rust_systems"
+    - "PyO3(.+) -> rust_systems"
+    - "wasm-bindgen(.+) -> rust_systems"
+    - "Tauri(.+) -> rust_systems"
   
   # Feature based inference
   # Format: "pattern -> project_type"

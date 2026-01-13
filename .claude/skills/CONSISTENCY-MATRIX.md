@@ -18,6 +18,7 @@ This document records the consistency verification results across all developmen
 | mobile-react-native | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | backend-nestjs | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | backend-fastapi | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| rust-systems | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | systemdev-specialist | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | database-specialist | ✅ | ✅ | N/A | ✅ | ✅ | ✅ | ✅ |
 | security-specialist | ✅ | N/A | N/A | ✅ | N/A | ✅ | ✅ |
@@ -37,6 +38,7 @@ This document records the consistency verification results across all developmen
 | mobile-react-native | ✅ | STRONGLY RECOMMENDED | Native integration, performance, offline support |
 | backend-nestjs | ✅ | STRONGLY RECOMMENDED | Auth/authz, data model, API design |
 | backend-fastapi | ✅ | STRONGLY RECOMMENDED | Async patterns, data model, API design |
+| rust-systems | ✅ | STRONGLY RECOMMENDED | Async architecture, FFI design, WASM modules, performance |
 | systemdev-specialist | ✅ | MANDATORY | System architecture, performance optimization |
 | database-specialist | ✅ | MANDATORY (migrations) | Schema design, migrations, sharding |
 | security-specialist | - | N/A | OWASP-based checklist applied |
@@ -68,7 +70,19 @@ This document records the consistency verification results across all developmen
 | Test Framework | pytest | pytest |
 | Coverage Target | 80% | 70% |
 
-### 3.3 Infrastructure/QA Skills
+### 3.3 Rust Skills (rust-systems)
+
+| Item | rust-systems |
+|------|--------------|
+| clippy warn | ✅ Required |
+| rustfmt | ✅ Required |
+| Edition | 2021 |
+| Test Framework | cargo test |
+| Coverage Target | 80% (tarpaulin) |
+| Error Handling | thiserror |
+| Async Runtime | Tokio |
+
+### 3.4 Infrastructure/QA Skills
 
 | Item | database | security | devops | qa-testing |
 |------|----------|----------|--------|------------|
@@ -99,8 +113,8 @@ This document records the consistency verification results across all developmen
 
 ### 4.2 pm-orchestrator Integration
 
-All 10 domain skills are referenced in pm-orchestrator:
-- ✅ All 16 skills registered in Related Skills section
+All 11 domain skills are referenced in pm-orchestrator:
+- ✅ All 17 skills registered in Related Skills section
 - ✅ Project type-based team assembly in Expert Team Assembly
 
 ---
@@ -132,6 +146,7 @@ All 10 domain skills are referenced in pm-orchestrator:
 | mobile-react-native | 7 | New Architecture, Expo, native code |
 | backend-nestjs | 8 | Module structure, TypeORM, Guards/Pipes |
 | backend-fastapi | 8 | Pydantic, SQLAlchemy, OpenAPI |
+| rust-systems | 8 | Actix/Axum, SQLx, PyO3, WASM, Tokio |
 | systemdev-specialist | 7 | Streams, Worker Threads, GPU |
 | database-specialist | 6 | 3NF, indexes, migrations |
 | security-specialist | 4 | OWASP Top 10, bcrypt, JWT |

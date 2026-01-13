@@ -2,14 +2,14 @@
 
 **Claude Code Specialized Guidelines for Skills-Based Development System**
 
-> **System Architecture**: 16 autonomous skills with contextual invocation
+> **System Architecture**: 17 autonomous skills with contextual invocation
 > **Powered by**: Hans(HanTaek) Lim - Transformed for Claude Code Agent Skills
 
 ---
 
 ## System Overview
 
-This is an autonomous development system consisting of 16 specialized skills that work together through contextual invocation. Unlike traditional explicit-signal-based systems, skills are automatically invoked by Claude based on context matching.
+This is an autonomous development system consisting of 17 specialized skills that work together through contextual invocation. Unlike traditional explicit-signal-based systems, skills are automatically invoked by Claude based on context matching.
 
 ### Core Architecture Principles
 
@@ -21,7 +21,7 @@ This is an autonomous development system consisting of 16 specialized skills tha
 
 **Skills Organization**:
 - **4 Infrastructure Skills**: pm-orchestrator, project-detector, memory-manager, quality-controller
-- **12 Domain Skills**: frontend-nextjs, mobile-react-native, backend-nestjs, backend-fastapi, database-specialist, security-specialist, fullstack-integration, systemdev-specialist, devops-deployment, qa-testing, research-analysis, mcp-tools-orchestrator
+- **13 Domain Skills**: frontend-nextjs, mobile-react-native, backend-nestjs, backend-fastapi, rust-systems, database-specialist, security-specialist, fullstack-integration, systemdev-specialist, devops-deployment, qa-testing, research-analysis, mcp-tools-orchestrator
 
 ---
 
@@ -56,6 +56,12 @@ frontend-nextjs: "API integration required. Backend-nestjs skill should provide 
 
 systemdev-specialist: "ML model serving needed. Backend-fastapi skill will create async endpoints."
 → Claude invokes: backend-fastapi
+
+rust-systems: "High-performance service needed. Creating Actix-web API with async handlers."
+→ Claude invokes: rust-systems
+
+frontend-nextjs: "Heavy computation in browser needed. Coordinating with rust-systems for WASM module."
+→ Claude invokes: rust-systems
 ```
 
 ### Coordination Triggers
@@ -480,6 +486,7 @@ quality-controller enforces standards from quality-standards.json:
 | **frontend-nextjs** | NO EMOJIS. Lucide Icons only. TypeScript strict. Tailwind CSS (no inline). Shadcn/ui. App Router only. |
 | **backend-nestjs** | NO EMOJIS. Text-only. TypeScript strict. class-validator. OpenAPI/Swagger required. |
 | **backend-fastapi** | NO EMOJIS. Text-only. mypy strict 100%. async def all endpoints. Pydantic v2. OpenAPI auto. bcrypt passwords. JWT env-only. Exec-form CMD. pytest+httpx.AsyncClient 80%+. |
+| **rust-systems** | NO EMOJIS. Text-only. clippy warn-level minimum. rustfmt enforced. Rust 1.75+ edition 2021. thiserror for errors. Async-first with Tokio. SQLx compile-time checks. cargo-tarpaulin 80%+. Multi-stage Docker. |
 | **mobile-react-native** | NO EMOJIS. TypeScript 5+ strict. RN 0.82+ (Fabric+TurboModules+JSI). Hermes. HIG+Material Design. Type-safe navigation. Performance (cold <3s, warm <1s, 60fps, <150MB). Jest+RNTL+Detox. EAS Build. Secure storage, HTTPS, no hardcoded secrets. WCAG (screen reader, 44x44pt/48x48dp). |
 | **qa-testing** | Playwright MCP only. WCAG 2.1 AA. Vulnerability scanning. Cross-browser (Chrome/Firefox/Safari/Edge). |
 | **devops-deployment** | Docker latest. Compose V2. Automated backups. Health checks required. |
@@ -1039,13 +1046,13 @@ All files in `.memory/` directory:
 
 ---
 
-**Ready to Build**: All 16 skills configured and ready. Simply describe your project to Claude, and the skills will coordinate automatically to deliver production-ready code with ZERO user confirmations required.
+**Ready to Build**: All 17 skills configured and ready. Simply describe your project to Claude, and the skills will coordinate automatically to deliver production-ready code with ZERO user confirmations required.
 
-### Skill Summary (16 Total)
+### Skill Summary (17 Total)
 
 **Infrastructure (4)**: pm-orchestrator, project-detector, memory-manager, quality-controller
 **Frontend/Mobile (2)**: frontend-nextjs, mobile-react-native
-**Backend (2)**: backend-nestjs, backend-fastapi
+**Backend (3)**: backend-nestjs, backend-fastapi, rust-systems
 **Data & Security (2)**: database-specialist, security-specialist
 **Architecture (1)**: fullstack-integration
 **Specialized (1)**: systemdev-specialist

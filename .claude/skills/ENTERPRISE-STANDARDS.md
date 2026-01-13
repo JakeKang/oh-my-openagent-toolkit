@@ -68,6 +68,44 @@ class userService:  # Classes should be PascalCase
     def GetUserById(self):  # Functions should be snake_case
 ```
 
+#### Rust (rust-systems)
+
+| Type | Convention | Example |
+|------|------------|---------|
+| **Files** | snake_case | `user_service.rs` |
+| **Modules** | snake_case | `mod user_service;` |
+| **Structs** | PascalCase | `UserService` |
+| **Traits** | PascalCase | `Repository` |
+| **Functions** | snake_case | `get_user_by_id` |
+| **Constants** | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT` |
+| **Variables** | snake_case | `user_profile` |
+| **Lifetimes** | lowercase short | `'a`, `'ctx` |
+| **Type Parameters** | PascalCase single letter | `T`, `E`, `R` |
+
+```rust
+// ✅ Good
+const MAX_RETRY_COUNT: u32 = 3;
+
+pub struct UserService {
+    pool: PgPool,
+}
+
+impl UserService {
+    pub async fn get_user_by_id(&self, user_id: Uuid) -> Result<User, AppError> {
+        // ...
+    }
+}
+
+// ❌ Bad
+pub struct userService {  // Structs should be PascalCase
+    Pool: PgPool,         // Fields should be snake_case
+}
+
+impl userService {
+    pub async fn GetUserById(&self) { }  // Functions should be snake_case
+}
+```
+
 #### SQL/Database
 
 | Type | Convention | Example |
@@ -293,6 +331,45 @@ def get_user_by_id(user_id):  # Missing type hints
     ...
 ```
 
+### 2.3 Rust Type Safety
+
+**MANDATORY**: All Rust projects MUST use strict clippy and proper Result/Option handling.
+
+```toml
+# Cargo.toml
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+```
+
+**Prohibited Patterns**:
+
+```rust
+// ❌ NEVER use these
+let data = response.unwrap();          // Panic on error
+let value = option.expect("msg");      // Panic with message
+unsafe { /* code */ }                  // Unsafe blocks (unless absolutely necessary)
+
+// ✅ Use proper error handling
+let data = response.map_err(|e| AppError::from(e))?;
+let value = option.ok_or_else(|| AppError::not_found("value"))?;
+
+// ✅ Proper Result/Option handling
+match result {
+    Ok(value) => process(value),
+    Err(e) => return Err(e.into()),
+}
+
+// ✅ If-let for Option
+if let Some(user) = maybe_user {
+    process_user(user);
+}
+```
+
 ---
 
 ## 3. Error Handling {#error-handling}
@@ -457,6 +534,60 @@ async def app_exception_handler(request: Request, exc: AppException) -> JSONResp
 
 # main.py
 app.add_exception_handler(AppException, app_exception_handler)
+```
+
+#### Rust Error Handling (thiserror + impl IntoResponse)
+
+```rust
+// src/error.rs
+use axum::{http::StatusCode, response::{IntoResponse, Response}, Json};
+use serde::Serialize;
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum AppError {
+    #[error("Not found: {0}")]
+    NotFound(String),
+
+    #[error("Validation error: {0}")]
+    Validation(String),
+
+    #[error("Unauthorized")]
+    Unauthorized,
+
+    #[error("Database error: {0}")]
+    Database(#[from] sqlx::Error),
+
+    #[error("Internal error: {0}")]
+    Internal(String),
+}
+
+#[derive(Serialize)]
+struct ErrorResponse {
+    code: String,
+    message: String,
+    timestamp: String,
+}
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
+        let (status, code) = match &self {
+            Self::NotFound(_) => (StatusCode::NOT_FOUND, "NOT_FOUND"),
+            Self::Validation(_) => (StatusCode::BAD_REQUEST, "VALIDATION_ERROR"),
+            Self::Unauthorized => (StatusCode::UNAUTHORIZED, "UNAUTHORIZED"),
+            Self::Database(_) => (StatusCode::INTERNAL_SERVER_ERROR, "DATABASE_ERROR"),
+            Self::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "INTERNAL_ERROR"),
+        };
+
+        let body = Json(ErrorResponse {
+            code: code.to_string(),
+            message: self.to_string(),
+            timestamp: chrono::Utc::now().to_rfc3339(),
+        });
+
+        (status, body).into_response()
+    }
+}
 ```
 
 ### 3.3 Error Response Format
