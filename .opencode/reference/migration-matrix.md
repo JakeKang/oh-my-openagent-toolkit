@@ -1,0 +1,117 @@
+# Migration Matrix
+
+This document is the authoritative legacy-to-OpenCode mapping for phase 1 of the `agentic-dev-ai-team` cutover. It freezes the required legacy inventory, the allowed migration classifications, the 17-pack target taxonomy, and the curated upstream `impeccable` imports that downstream tasks must follow exactly.
+
+## Locked phase-1 decisions
+
+- Canonical target is project-local `.opencode/` with plural `skills/`, `commands/`, and `reference/` directories.
+- Phase 1 has no local custom agents. Orchestration stays with harness built-ins plus thin local routing docs and one routing command.
+- `.memory/` is a hard delete. It is not archived, mirrored, or preserved as an active target behavior.
+- `.logs/` continuation and audit expectations are also dropped in phase 1 because they exist only to support the legacy `.memory/` runtime.
+- The target model is exactly 17 expert packs plus 7 curated `impeccable` imports.
+- The `impeccable` imports are a supplementary anti-slop UI/UX layer, not a replacement for the 17 expert packs.
+- Inventory discrepancy to preserve in downstream docs: `README.md` still claims 16 skills, but `.claude/skills/` actually contains 17 skill directories plus 4 top-level shared docs files.
+
+## Classification legend
+
+- `migrate as skill` — becomes an OpenCode skill/expert pack.
+- `migrate as command` — becomes a thin local command surface.
+- `migrate as shared asset` — becomes shared reference, QA, design, or authoring material.
+- `replace with harness built-in` — do not recreate locally; rely on Oh My OpenCode / OpenCode harness capability.
+- `drop` — remove outright from phase 1 target behavior.
+
+## Parsing contract for automated verification
+
+Automated checks should parse only the tables under these headings:
+
+1. `## Legacy surface migration matrix`
+2. `## Frozen target expert packs`
+3. `## Curated upstream impeccable imports`
+
+In the legacy matrix, root runtime rows begin with `.` and all other rows are relative to `.claude/skills/`.
+
+## Legacy surface migration matrix
+
+| Legacy surface | Legacy role | Classification | Target surface | Notes |
+| --- | --- | --- | --- | --- |
+| .claude/CLAUDE.md | Claude runtime system guide, orchestration policy, and auto-invocation contract | replace with harness built-in | Harness built-ins, AGENTS.md, route-domain command, routing/reference docs | Keep only durable routing, quality, and cutover guidance. Do not port Claude-specific auto-invocation, lifecycle-state restoration, or memory continuity semantics. |
+| .claude/settings.json | Claude hook, permission, and session lifecycle config | replace with harness built-in | Harness runtime behavior and supported local config only where needed later | SessionStart, PreCompact, and UserPromptSubmit hooks are not migrated. Phase 1 forbids recreating local custom-agent hook logic. |
+| .memory/ | Stateful continuation and project memory store | drop | None | Hard-delete policy for phase 1. No archive, no compatibility shim, no hidden continuation layer. |
+| .logs/ | Historical logging and continuation sidecar expected by the legacy runtime | drop | None | Drop alongside `.memory/`. Legacy expectations include sessions, skills/experts, collaboration, quality, performance, errors, system, archive, backup, and memory-snapshot style logs. |
+| pm-orchestrator | Central orchestration persona and lifecycle authority | replace with harness built-in | Harness built-ins plus local routing docs and route-domain command | Explicit decision: `pm-orchestrator` -> harness built-ins + local routing docs/command. No duplicate local orchestrator authority. |
+| pm-orchestrator/workflows/ | Workflow corpus for requirements, research, architecture, implementation, integration, deployment, QA, continuous routing, and release management | migrate as shared asset | routing-matrix.md, quality-gates.md, shared reference docs | Source family is 18 markdown files total: 01-09, `release-management.md`, and 8 continuous sub-workflows. Preserve as reference material, not runtime control flow. |
+| pm-orchestrator/workflows/08-quality-assurance.md | Canonical QA workflow playbook | migrate as shared asset | quality-gates.md and reference/qa assets | Primary upstream QA reference for gate order, Playwright-only validation expectations, accessibility, security, and performance coverage. |
+| project-detector | Project type detection and team routing persona | migrate as command | route-domain command and routing-matrix.md | Explicit decision: `project-detector` -> routing matrix + route command only. No standalone detector persona survives phase 1. |
+| memory-manager | Memory and logging persona for session continuity | drop | None | Explicit decision: `memory-manager` -> drop. This row is mandatory for verification and for the negative-path deletion test. |
+| memory-manager/logging-system.yaml | `.logs/` topology and retention structure | drop | None | Documents legacy `.logs/` layout: sessions, experts, collaboration, quality, performance, errors, system, archive, backup. Kept only as migration evidence. |
+| memory-manager/memory-logging-integration.yaml | Automatic `.memory/` <-> `.logs/` trigger map | drop | None | Legacy integration expects `.memory/` writes to fan out into `.logs/`. Phase 1 intentionally removes the entire mechanism. |
+| quality-controller | Quality gate persona and standards authority | migrate as shared asset | quality-gates.md plus qa-validation | Explicit decision: `quality-controller` -> shared quality assets + `qa-validation`. Do not preserve it as a separate runtime controller. |
+| quality-controller/quality-standards.json | Structured quality thresholds by project type | migrate as shared asset | quality-gates.md and reference quality assets | Shared source of truth for measurable quality gates, adapted to the harness-native validation model. |
+| quality-controller/examples/01-quality-gate-validation.md | Worked example of pre-release gate execution | migrate as shared asset | reference/qa/examples/ | One of the best legacy QA exemplars; keep as a shared example, not as an executable persona artifact. |
+| quality-controller/validation-scripts/* | Portable validation utilities and reports | migrate as shared asset | reference/qa/validation assets | Source family includes `verify-skill-consistency.py`, `validate-api-quality.sh`, `validate-mobile-quality.sh`, `validate-aiml-quality.py`, `generate-quality-report.js`, and `validate-web-app-quality.sh`. |
+| frontend-nextjs | Next.js and React web UI specialist | migrate as skill | frontend-web | Explicit decision: `frontend-nextjs` -> `frontend-web` with framework overlays. Keep `nextjs` as an overlay inside reference assets instead of a top-level pack. |
+| mobile-react-native | React Native mobile specialist | migrate as skill | mobile-app | Explicit decision: `mobile-react-native` -> `mobile-app` with `react-native`, `flutter`, `swiftui`, and `jetpack-compose` overlays in reference material. |
+| backend-nestjs | TypeScript / NestJS backend specialist | migrate as skill | backend-node | Explicit decision: `backend-nestjs` -> `backend-node` with `nestjs`, `express`, `fastify`, and `hono` overlays in reference material. |
+| backend-fastapi | Async Python / FastAPI backend specialist | migrate as skill | backend-python | Explicit decision: `backend-fastapi` -> `backend-python` with `fastapi`, `django`, and `flask` overlays in reference material. |
+| rust-systems | Rust systems, WASM, and native-extension specialist | migrate as skill | systems-rust | Explicit decision: `rust-systems` -> `systems-rust`. |
+| database-specialist | Database architecture, migrations, and optimization specialist | migrate as skill | database-engineering | Explicit decision: `database-specialist` -> `database-engineering`. |
+| security-specialist | Security architecture and vulnerability specialist | migrate as skill | security-engineering | Explicit decision: `security-specialist` -> `security-engineering`. |
+| fullstack-integration | System architecture and integration specialist | migrate as skill | architecture-integration | Consolidates the architecture, API-contract, and cross-boundary guidance into the new architecture pack. |
+| systemdev-specialist | AI/ML, CV, GPU, streaming, and specialized systems expert | migrate as skill | data-ml-platform | Explicit decision: `systemdev-specialist` -> `data-ml-platform`. Preserve the broad specialized-systems remit as a language/domain pack, not a one-off persona. |
+| devops-deployment | Deployment, CI/CD, and infrastructure specialist | migrate as skill | devops-platform | Explicit decision: `devops-deployment` + release-management patterns -> `devops-platform`. |
+| qa-testing | QA execution and Playwright-centered validation specialist | migrate as skill | qa-validation | Explicit decision: `qa-testing` + portable quality enforcement -> `qa-validation`. |
+| qa-testing/examples/01-e2e-test-suite.md | Playwright MCP E2E example corpus | migrate as shared asset | reference/qa/examples/ | Preserve as shared QA example material for harness-native validation work. |
+| qa-testing/examples/02-accessibility-testing.md | Accessibility QA example corpus | migrate as shared asset | reference/qa/examples/ | Shared accessibility reference for WCAG validation patterns. |
+| qa-testing/examples/03-performance-testing.md | Performance QA example corpus | migrate as shared asset | reference/qa/examples/ | Shared performance and measurement reference for QA validation. |
+| research-analysis | Strategic research and comparative analysis persona | replace with harness built-in | Harness librarian, Context7, and websearch | Explicit decision: `research-analysis` -> harness `librarian` / `context7` / `websearch`. No standalone local research persona is recreated. |
+| mcp-tools-orchestrator | Multi-tool MCP coordination persona | replace with harness built-in | Harness built-in MCP system | Explicit decision: `mcp-tools-orchestrator` -> harness built-in MCP system. |
+| SKILL-MANIFEST-SPEC.md | Legacy skill authoring and manifest contract | migrate as shared asset | Shared OpenCode authoring reference | Preserve the useful authoring constraints and frontmatter patterns as shared documentation, adapted to OpenCode surfaces. |
+| CONSISTENCY-MATRIX.md | Cross-skill consistency reference | migrate as shared asset | Shared migration and authoring reference | Useful as a normalization aid for downstream pack migration work. |
+| ENTERPRISE-STANDARDS.md | Cross-cutting standards reference | migrate as shared asset | Shared quality/design/reference assets | Preserve durable conventions, but remove Claude-specific assumptions. |
+| GIT-MANAGEMENT-SYSTEM.md | Repository and release strategy reference | migrate as shared asset | Shared reference assets | Preserve useful repo-strategy guidance as reference only; do not make it a runtime orchestrator dependency. |
+
+## Frozen target expert packs
+
+These are the only top-level expert packs for phase 1. Framework specificity moves into overlays and reference material rather than new top-level packs.
+
+| Expert pack | Primary legacy source(s) | Why it exists in the target taxonomy |
+| --- | --- | --- |
+| architecture-integration | fullstack-integration | Retains architecture, API-contract, and integration authority as a dedicated cross-stack pack. |
+| frontend-web | frontend-nextjs | Generalizes the web UI surface into a framework-overlay model instead of a Next.js-only persona. |
+| mobile-app | mobile-react-native | Generalizes mobile work into one pack with multiple framework overlays. |
+| backend-node | backend-nestjs | Covers Node backends broadly while keeping NestJS as one overlay among several. |
+| backend-python | backend-fastapi | Covers Python backends broadly while keeping FastAPI as one overlay among several. |
+| backend-jvm | Coverage gap added explicitly | Added to cover major JVM backends not represented by a legacy Claude pack. |
+| backend-dotnet | Coverage gap added explicitly | Added to cover .NET backends not represented by a legacy Claude pack. |
+| backend-go | Coverage gap added explicitly | Added to cover Go backends not represented by a legacy Claude pack. |
+| systems-rust | rust-systems | Keeps Rust systems and native-extension expertise as a dedicated systems pack. |
+| systems-c-cpp | Coverage gap added explicitly | Added to cover C and C++ systems work that the legacy portfolio did not isolate cleanly. |
+| functional-platform | Coverage gap added explicitly | Added to cover functional-language platform work absent from the legacy skill roster. |
+| php-ruby-platform | Coverage gap added explicitly | Added to cover PHP and Ruby ecosystems absent from the legacy skill roster. |
+| data-ml-platform | systemdev-specialist | Converts the broad AI/ML and specialized systems persona into a reusable platform pack. |
+| database-engineering | database-specialist | Retains database architecture and performance work as a dedicated engineering pack. |
+| security-engineering | security-specialist | Retains security architecture and validation as a dedicated engineering pack. |
+| devops-platform | devops-deployment, release-management patterns | Retains deployment, infra, CI/CD, and release operations as a dedicated platform pack. |
+| qa-validation | qa-testing, quality-controller assets | Combines QA execution with shared quality assets instead of preserving a separate runtime controller. |
+
+## Curated upstream impeccable imports
+
+These seven imports are the only approved `impeccable` adoptions for phase 1. They remain supplementary to the 17 expert packs.
+
+| Impeccable import | Role in the target bundle | Why it is curated instead of expanded |
+| --- | --- | --- |
+| impeccable | Umbrella anti-slop UI/UX guidance layer | Preserves the upstream bundle identity while keeping it clearly supplementary to the expert-pack taxonomy. |
+| audit | UI/UX review and flaw detection | Useful as a focused critique import without creating another local design persona. |
+| critique | Structured design and product feedback | Keeps explicit critique behavior available where upstream OpenCode behavior depends on it. |
+| polish | Finishing and refinement pass | Provides a lightweight, user-invocable refinement layer on top of domain packs. |
+| typeset | Typography and layout refinement | Retains upstream typography specialization as a narrow import, not a full local pack. |
+| colorize | Color-system and palette refinement | Retains upstream color specialization as a narrow import, not a full local pack. |
+| adapt | Contextual adaptation for platform or style changes | Preserves the upstream adaptation workflow without expanding the local taxonomy. |
+
+## Notes for downstream tasks
+
+- `README.md` is stale and must be treated as evidence of the inventory discrepancy, not as the authoritative skill count.
+- `.claude/CLAUDE.md` is internally consistent with the 17-skill count; the stale `README.md` is the outlier.
+- The legacy runtime expects both `.memory/` and `.logs/` to exist together. Phase 1 intentionally preserves neither runtime surface.
+- Shared QA/reference source families already confirmed during inventory: `pm-orchestrator/workflows/08-quality-assurance.md`, `quality-controller/examples/01-quality-gate-validation.md`, `quality-controller/validation-scripts/*`, and `qa-testing/examples/*`.
+- New top-level packs such as `backend-jvm`, `backend-dotnet`, `backend-go`, `systems-c-cpp`, `functional-platform`, and `php-ruby-platform` are deliberate taxonomy additions to close legacy coverage gaps instead of forcing a naive 1:1 Claude port.
