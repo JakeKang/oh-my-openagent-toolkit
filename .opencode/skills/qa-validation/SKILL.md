@@ -1,0 +1,48 @@
+---
+name: qa-validation
+description: Deliver evidence-oriented QA guidance for browser validation, accessibility, performance, security, and cross-browser coverage while pointing detailed thresholds and examples to shared reference assets.
+---
+
+# QA Validation
+
+Use this pack for validation work: browser-based testing, accessibility review, performance checks, security validation, cross-browser coverage, and evidence capture for release readiness.
+
+This pack defines what to verify and what evidence to gather. Detailed thresholds, reusable examples, and shared QA references belong in `../../reference/quality-gates.md` and `../../reference/qa/examples/` instead of being duplicated here.
+
+## Core focus
+
+- Validate real user journeys with browser-based checks, including happy paths, edge cases, and failure handling.
+- Cover accessibility with WCAG-oriented checks for semantics, keyboard use, focus order, labels, contrast, and assistive-technology signals.
+- Measure performance with Core Web Vitals, page responsiveness, and regression-aware runtime checks.
+- Include security validation for auth flows, authorization boundaries, headers, input handling, and vulnerability-scanning results.
+- Verify cross-browser and multi-viewport behavior on the flows that matter most.
+- Keep the output evidence-oriented: screenshots, snapshots, logs, metrics, and concise pass or fail findings.
+
+## Shared QA standards
+
+- Prefer live browser validation for critical user flows instead of relying only on isolated unit behavior.
+- Record enough evidence for another engineer to understand what was tested, where it ran, and why it passed or failed.
+- Treat accessibility, performance, and security as first-class QA dimensions, not optional extras after functional checks.
+- Verify both success paths and failure paths: invalid input, unauthorized access, degraded network behavior, and recovery states.
+- Use the shared QA assets in `../../reference/quality-gates.md` and `../../reference/qa/examples/` as the canonical source for thresholds, examples, and reusable checklists.
+
+## Default workflow
+
+1. Inspect the feature risk, critical flows, supported browsers, and likely failure modes.
+2. Pull thresholds and reusable examples from `../../reference/quality-gates.md` and `../../reference/qa/examples/`.
+3. Run browser, accessibility, performance, security, and cross-browser checks at the depth the change requires.
+4. Capture screenshots, accessibility snapshots, logs, and metric output so the result is evidence-backed.
+5. Run `review-work` after substantial validation or release-readiness work.
+
+## Collaboration in this repo
+
+- Use `Explore` before editing or validating so new checks match local flow names, routes, and fixtures.
+- Use harness browser helpers such as `agent-browser` or `dev-browser` for live browser execution, and use `review-work` for a final review sweep.
+- Pair with `security-engineering` when auth, authorization, or vulnerability findings need deeper analysis.
+- Pair with `devops-platform` when release readiness depends on environment health, deployment shape, or rollout evidence.
+
+## Guardrails
+
+- Do not duplicate shared threshold tables, QA examples, or anti-slop reference material inside this pack.
+- Do not hardcode one browser harness or one MCP path as the only valid execution surface.
+- Do not turn this pack into a release authority or gatekeeper persona.
