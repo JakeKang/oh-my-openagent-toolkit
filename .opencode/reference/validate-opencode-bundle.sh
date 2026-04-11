@@ -4,12 +4,19 @@ set -u
 
 ROOT_DIR="agentic-dev-ai-team"
 CONFIG_FILE="$ROOT_DIR/.opencode/oh-my-openagent.jsonc"
+CAPABILITY_MATRIX_FILE="$ROOT_DIR/.opencode/reference/capability-matrix.json"
 MATRIX_FILE="$ROOT_DIR/.opencode/reference/migration-matrix.md"
 RUNTIME_ROUTE_FILE="$ROOT_DIR/.opencode/commands/route-domain.md"
 ROUTING_MATRIX_FILE="$ROOT_DIR/.opencode/reference/routing-matrix.md"
 QUALITY_GATES_FILE="$ROOT_DIR/.opencode/reference/quality-gates.md"
 DESIGN_ANTI_SLOP_FILE="$ROOT_DIR/.opencode/reference/design-anti-slop.md"
 QA_EXAMPLES_DIR="$ROOT_DIR/.opencode/reference/qa/examples"
+CURRENT_STATE_DOCS="
+$ROOT_DIR/README.md
+$ROOT_DIR/AGENTS.md
+$ROOT_DIR/.opencode/reference/routing-matrix.md
+$ROOT_DIR/.opencode/reference/workspace-model.md
+"
 
 FULL_EXPECTED_SKILLS="
 architecture-integration
@@ -193,6 +200,51 @@ check_workspace_model_coherence() {
   fi
 }
 
+check_manifest_and_public_claims() {
+  require_file 'Capability manifest' "$CAPABILITY_MATRIX_FILE"
+
+  if python3 - "$CAPABILITY_MATRIX_FILE" "$ROOT_DIR/README.md" "$ROOT_DIR/AGENTS.md" "$ROOT_DIR/.opencode/reference/routing-matrix.md" "$ROOT_DIR/.opencode/reference/workspace-model.md" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+manifest_path = Path(sys.argv[1])
+doc_paths = [Path(arg) for arg in sys.argv[2:]]
+path = manifest_path
+data = json.loads(path.read_text())
+allowed = {"validated", "guided", "planned"}
+planned_ids = {cap["id"] for cap in data["capabilities"] if cap.get("support_level") == "planned"}
+
+if set(data["support_tiers"]) != allowed:
+    raise AssertionError(f"support_tiers must be exactly {sorted(allowed)}")
+if len(data["flagship_workflows"]) != 4:
+    raise AssertionError("flagship_workflows must contain exactly 4 IDs")
+if data["public_claims"]["readme_supported_now_requires"] != "validated":
+    raise AssertionError("readme_supported_now_requires must be validated")
+
+for capability in data["capabilities"]:
+    tier = capability.get("support_level")
+    if tier not in allowed:
+        raise AssertionError(f"unsupported support tier for {capability.get('id')}: {tier}")
+
+for doc_path in doc_paths:
+    text = doc_path.read_text()
+    if not re.search(r"supported[\s-]+now", text, re.IGNORECASE):
+        continue
+    for planned_id in planned_ids:
+        if planned_id in text:
+            raise AssertionError(f"{doc_path} advertises planned capability {planned_id} as supported now")
+
+print("manifest checks passed")
+PY
+  then
+    pass 'Capability manifest contract' 'manifest parses and frozen support-tier / workflow constraints are satisfied'
+  else
+    fail 'Capability manifest contract' 'manifest JSON or support-tier contract is invalid'
+  fi
+}
+
 check_full() {
   printf '%s\n' 'Mode: full'
   check_foundation
@@ -201,6 +253,8 @@ check_full() {
   require_file 'Routing matrix' "$ROUTING_MATRIX_FILE"
   require_file 'Quality gates' "$QUALITY_GATES_FILE"
   require_file 'Design anti-slop' "$DESIGN_ANTI_SLOP_FILE"
+
+  check_manifest_and_public_claims
 
   check_expected_skill_dirs
   check_workspace_model_coherence
