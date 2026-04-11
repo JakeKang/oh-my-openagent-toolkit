@@ -42,6 +42,7 @@ From the repo root, this bundle keeps local routing thin. The local layer classi
 | Prometheus | The request needs a plan or a clean execution breakdown before implementation starts |
 | Oracle | You need a strong second pass on architecture, quality, or security decisions |
 | Librarian | The work depends on repo context, docs lookup, or source-of-truth gathering |
+| Context7 | The work depends on official library or framework reference material, API examples, or source-backed docs detail |
 | Explore | You need fast codebase discovery or pattern hunting before editing |
 | review-work | The implementation is substantial and needs a final review sweep |
 | frontend-ui-ux | UI work needs stronger product, layout, or interaction judgment |
