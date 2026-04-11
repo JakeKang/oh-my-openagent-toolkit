@@ -36,6 +36,7 @@ Any parser or validator that consumes the manifest must enforce all of the follo
 2. `flagship_workflows` contains exactly four workflow IDs.
 3. Every entry in `capabilities` has a `support_level` drawn from `support_tiers`.
 4. `public_claims.readme_supported_now_requires` is `validated`.
+5. The set of manifest entries marked `validated` matches `flagship_workflows` exactly.
 
 The minimal parser check for this governance freeze is:
 
@@ -49,6 +50,11 @@ allowed = {"validated", "guided", "planned"}
 assert set(data["support_tiers"]) == allowed
 assert len(data["flagship_workflows"]) == 4
 assert data["public_claims"]["readme_supported_now_requires"] == "validated"
+assert {
+    capability["id"]
+    for capability in data["capabilities"]
+    if capability["support_level"] == "validated"
+} == set(data["flagship_workflows"])
 
 for capability in data["capabilities"]:
     tier = capability["support_level"]
