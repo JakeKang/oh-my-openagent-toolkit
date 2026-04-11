@@ -7,7 +7,7 @@ description: Deliver browser UI, interaction flows, and web design systems acros
 
 Use this pack for browser UI work: web screens, component systems, interaction flows, accessibility, frontend performance, and delivery patterns that live in the web stack.
 
-This is the general web UI pack for the repo. It is not limited to one framework. Use the overlays in `reference/` to tune decisions for a specific stack while keeping the shared browser-quality bar intact. When anti-slop design review matters, use `../../reference/design-anti-slop.md` as the shared ban list.
+This is the general web UI pack for the repo. It is not limited to one framework. Use the overlays in `reference/` to tune decisions for a specific stack while keeping the shared browser-quality bar intact and without creating separate top-level frontend packs. When anti-slop design review matters, use `../../reference/design-anti-slop.md` as the shared ban list.
 
 ## Core focus
 
@@ -30,7 +30,7 @@ This is the general web UI pack for the repo. It is not limited to one framework
 ## Default workflow
 
 1. Inspect the existing UI patterns, component boundaries, and design tokens.
-2. Choose the closest framework overlay from `reference/nextjs.md` or `reference/react-web.md`.
+2. Choose the closest framework overlay from `reference/nextjs.md`, `reference/react-web.md`, `reference/vue-nuxt.md`, `reference/svelte-astro.md`, or `reference/angular.md`.
 3. Implement structure first, then state flow, then accessibility and performance details.
 4. Add `impeccable`, `audit`, `critique`, `polish`, `typeset`, `colorize`, or `adapt` only when the request clearly needs that layer.
 5. Run `review-work` after substantial UI changes.
@@ -45,8 +45,12 @@ This is the general web UI pack for the repo. It is not limited to one framework
 
 ## Overlays
 
+- Keep `frontend-web` as the single top-level web pack. Use the narrowest overlay that matches the dominant component, routing, and runtime model.
 - `reference/nextjs.md` for App Router, server/client boundaries, caching, and server-driven web delivery.
 - `reference/react-web.md` for component-heavy React apps, client routing, SPA patterns, and design-system-led browser UI.
+- `reference/vue-nuxt.md` for Vue SFCs, Composition API composables, Nuxt pages/layouts, and SSR-safe route data flows.
+- `reference/svelte-astro.md` for Svelte 5 runes, Astro islands, hydration boundaries, and framework interop inside server-rendered shells.
+- `reference/angular.md` for standalone Angular apps, signals, DI, router-driven feature structure, and reactive forms.
 
 ## Guardrails
 
