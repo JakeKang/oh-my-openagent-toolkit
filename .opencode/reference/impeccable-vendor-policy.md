@@ -11,7 +11,7 @@ This document freezes the local governance model for the full `impeccable` impor
 | Upstream skill content path used for vendoring | `source/skills/` |
 | Pinned snapshot ref | commit `5a22894b1fd7c50f50c7f801ed8ee7f0ca6cb1bf` |
 | Import date for this governance freeze | `2026-04-10` |
-| Local target path | `agentic-dev-ai-team/.opencode/skills/` |
+| Local target path | `.opencode/skills/` |
 
 This bundle uses a vendored snapshot policy. It is a vendored snapshot, not automatic mirroring.
 

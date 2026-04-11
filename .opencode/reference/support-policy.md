@@ -43,7 +43,7 @@ The minimal parser check for this governance freeze is:
 import json
 from pathlib import Path
 
-data = json.loads(Path("agentic-dev-ai-team/.opencode/reference/capability-matrix.json").read_text())
+data = json.loads(Path(".opencode/reference/capability-matrix.json").read_text())
 allowed = {"validated", "guided", "planned"}
 
 assert set(data["support_tiers"]) == allowed

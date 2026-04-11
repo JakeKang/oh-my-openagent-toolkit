@@ -18,7 +18,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - adjacent pack rule: add `architecture-integration` when contracts, auth, or shared cross-stack boundaries dominate; add the owning backend pack only when request shape or auth behavior changes are in scope
 - built-in helper fit: `frontend-ui-ux`, `Explore`, `review-work`
 - support tier: `validated`
-- proof contract: `agentic-dev-ai-team/.opencode/reference/workflows/frontend-product-delivery.md`
+- proof contract: `.opencode/reference/workflows/frontend-product-delivery.md`
 
 ### `backend-service-delivery`
 
@@ -27,7 +27,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - adjacent pack rule: add `architecture-integration` for contract or cross-service boundary work; add `database-engineering` or `security-engineering` when storage or auth risk becomes first-class
 - built-in helper fit: `Oracle`, `Librarian`, `review-work`
 - support tier: `validated`
-- proof contract: `agentic-dev-ai-team/.opencode/reference/workflows/backend-service-delivery.md`
+- proof contract: `.opencode/reference/workflows/backend-service-delivery.md`
 
 ### `cloud-release-readiness`
 
@@ -36,7 +36,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - adjacent pack rule: add `qa-validation` for evidence and release-risk checks; add `security-engineering` when runtime hardening or identity posture is central
 - built-in helper fit: `Prometheus`, `Oracle`, `review-work`
 - support tier: `validated`
-- proof contract: `agentic-dev-ai-team/.opencode/reference/workflows/cloud-release-readiness.md`
+- proof contract: `.opencode/reference/workflows/cloud-release-readiness.md`
 
 ### `ai-data-product-delivery`
 
@@ -45,7 +45,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - adjacent pack rule: add `architecture-integration` when model-serving or product contracts span multiple surfaces; add `database-engineering` when storage, retrieval, or lineage boundaries dominate
 - built-in helper fit: `Librarian`, `Oracle`, `review-work`
 - support tier: `validated`
-- proof contract: `agentic-dev-ai-team/.opencode/reference/workflows/ai-data-product-delivery.md`
+- proof contract: `.opencode/reference/workflows/ai-data-product-delivery.md`
 
 ## Workflow doc contract
 
