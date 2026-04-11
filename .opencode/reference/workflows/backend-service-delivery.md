@@ -12,7 +12,7 @@ Add `architecture-integration` when contract design or cross-service boundaries 
 
 ## Built-in helper fit
 
-Use `Oracle` for architecture and quality challenge passes, `Librarian` for source-of-truth lookup when framework or protocol details matter, and `review-work` for the final implementation sweep after substantial backend changes.
+Use `Oracle` for architecture and quality challenge passes, `Context7` for official framework or protocol reference detail, `Librarian` for broader source-of-truth lookup, and `review-work` for the final implementation sweep after substantial backend changes.
 
 ## Support-tier boundary
 

@@ -12,7 +12,7 @@ Add `architecture-integration` when model-serving or product contracts span mult
 
 ## Built-in helper fit
 
-Use `Librarian` for source-of-truth lookup on frameworks and serving formats, `Oracle` for architecture or quality challenge passes, and `review-work` for the final implementation sweep after substantial data or model changes.
+Use `Context7` for official framework or serving-format reference detail, `Librarian` for broader source-of-truth lookup, `Oracle` for architecture or quality challenge passes, and `review-work` for the final implementation sweep after substantial data or model changes.
 
 ## Support-tier boundary
 

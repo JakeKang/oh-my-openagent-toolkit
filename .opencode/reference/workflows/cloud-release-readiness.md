@@ -12,7 +12,7 @@ Add `qa-validation` for release-risk evidence and finish-pass checks, or add `se
 
 ## Built-in helper fit
 
-Use `Prometheus` when the release path needs a structured breakdown, `Oracle` for quality or security challenge passes before signoff, and `review-work` for the final release-readiness sweep after substantial platform or validation changes.
+Use `Prometheus` when the release path needs a structured breakdown, `Oracle` for quality or security challenge passes before signoff, `Context7` for official platform, registry, or deployment-tool reference detail, and `review-work` for the final release-readiness sweep after substantial platform or validation changes.
 
 ## Support-tier boundary
 

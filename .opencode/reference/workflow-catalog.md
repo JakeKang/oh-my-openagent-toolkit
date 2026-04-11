@@ -25,7 +25,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - dominant bucket: `backend/API`
 - primary route: the owning backend pack (`backend-node`, `backend-python`, `backend-jvm`, `backend-dotnet`, or `backend-go`)
 - adjacent pack rule: add `architecture-integration` for contract or cross-service boundary work; add `database-engineering` or `security-engineering` when storage or auth risk becomes first-class
-- built-in helper fit: `Oracle`, `Librarian`, `review-work`
+- built-in helper fit: `Oracle`, `Context7`, `Librarian`, `review-work`
 - support tier: `validated`
 - proof contract: `.opencode/reference/workflows/backend-service-delivery.md`
 
@@ -34,7 +34,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - dominant bucket: `QA/deployment`
 - primary route: `devops-platform`
 - adjacent pack rule: add `qa-validation` for evidence and release-risk checks; add `security-engineering` when runtime hardening or identity posture is central
-- built-in helper fit: `Prometheus`, `Oracle`, `review-work`
+- built-in helper fit: `Prometheus`, `Oracle`, `Context7`, `review-work`
 - support tier: `validated`
 - proof contract: `.opencode/reference/workflows/cloud-release-readiness.md`
 
@@ -43,7 +43,7 @@ This catalog is the human-readable registry for the four frozen flagship workflo
 - dominant bucket: `data/security`
 - primary route: `data-ml-platform`
 - adjacent pack rule: add `architecture-integration` when model-serving or product contracts span multiple surfaces; add `database-engineering` when storage, retrieval, or lineage boundaries dominate
-- built-in helper fit: `Librarian`, `Oracle`, `review-work`
+- built-in helper fit: `Context7`, `Librarian`, `Oracle`, `review-work`
 - support tier: `validated`
 - proof contract: `.opencode/reference/workflows/ai-data-product-delivery.md`
 
