@@ -1,6 +1,6 @@
 ---
 name: impeccable
-description: Distinctive anti-slop UI and UX umbrella skill for web and mobile work. Use for design direction, context gathering, anti-pattern avoidance, or to route into the curated audit, critique, polish, typeset, colorize, and adapt flows.
+description: Distinctive anti-slop UI and UX umbrella skill for web and mobile work. Use for design direction, context gathering, anti-pattern avoidance, or to work across the full local 23-skill impeccable family, especially audit, critique, polish, typeset, colorize, and adapt.
 license: Apache 2.0
 argument-hint: "[craft|teach|extract]"
 user-invocable: true
@@ -8,13 +8,13 @@ user-invocable: true
 
 # Impeccable
 
-This vendorized pack adapts the upstream `pbakaus/impeccable` skill family to the local OpenCode and Oh My OpenAgent workflow.
+This vendorized pack adapts the upstream `pbakaus/impeccable` skill family into one local-integrated 23-skill layer for the local OpenCode and Oh My OpenAgent workflow.
 
-Treat it as a supplementary layer on top of `frontend-web` and `mobile-app`, not as a replacement for those domain packs.
+Treat it as a supplementary layer on top of `frontend-web` and `mobile-app`, not as a replacement for those domain packs and not as a routing authority of its own.
 
 ## What this skill is for
 
-Use `impeccable` when UI work needs a stronger point of view:
+Use `impeccable` when UI work needs a stronger point of view across the broader local family:
 
 - design context gathering,
 - anti-slop direction setting,
@@ -22,7 +22,7 @@ Use `impeccable` when UI work needs a stronger point of view:
 - structured critique or quality review,
 - or a finishing pass before shipping.
 
-The explicit companion flows in this curated set are:
+The most common companion flows in this local-integrated family are:
 
 - `audit`
 - `critique`
@@ -30,6 +30,8 @@ The explicit companion flows in this curated set are:
 - `typeset`
 - `colorize`
 - `adapt`
+
+The wider imported family also includes focused craft and reference skills plus lightweight deprecated wrappers kept for completeness. Those wrappers are present so the local bundle stays source-complete, but they are not primary entrypoints.
 
 ## Context gathering protocol
 
@@ -52,7 +54,7 @@ Do not infer brand personality from implementation details alone.
 
 ## Shared anti-slop source
 
-Treat [`../../reference/design-anti-slop.md`](../../reference/design-anti-slop.md) as the canonical shared anti-slop ban list for this bundle.
+Treat [`../../reference/design-anti-slop.md`](../../reference/design-anti-slop.md) as the canonical shared anti-slop ban list for this bundle and this entire local `impeccable` family.
 
 - Do not restate or override that file as a second canonical source.
 - Use the local references below to apply the shared bans with better design judgment in typography, color, spacing, motion, responsive behavior, and writing.
@@ -104,7 +106,7 @@ When invoked without an argument, use this flow:
 2. Pick a bold but coherent visual direction that fits the product.
 3. Load the shared anti-slop bans from [`../../reference/design-anti-slop.md`](../../reference/design-anti-slop.md) and the relevant local references for typography, color, spacing, interaction, motion, responsiveness, or writing.
 4. Route execution through `frontend-web` or `mobile-app` for actual implementation.
-5. Use the curated subskills for targeted review or refinement.
+5. Use the focused local `impeccable` skills for targeted review or refinement, and treat any deprecated wrappers as redirects only.
 
 ## Teach mode
 
