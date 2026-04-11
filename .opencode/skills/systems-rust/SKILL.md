@@ -7,7 +7,7 @@ description: Deliver Rust systems work across services, CLIs, WASM, and FFI whil
 
 Use this pack for Rust systems work: performance-sensitive services, async runtimes, command-line tools, WebAssembly modules, native extensions, and cross-language boundaries where memory safety and throughput both matter.
 
-This is the general Rust family pack for the repo. Use the overlay in `reference/axum-actix-wasm.md` to tune decisions for Axum, Actix, and browser-facing WASM delivery while keeping the same expectations for ownership, observability, interop, and runtime clarity.
+This is the general Rust family pack for the repo. Use `reference/axum-actix-wasm.md` for Axum, Actix, and broad browser-facing WASM delivery. Use `reference/wasm-browser-3d-performance.md` only when browser-3D work already owned by `frontend-web` crosses a measured compute or transfer bottleneck and needs a narrow Rust/WASM escalation path.
 
 ## Core focus
 
@@ -28,7 +28,7 @@ This is the general Rust family pack for the repo. Use the overlay in `reference
 ## Default workflow
 
 1. Inspect the workspace layout, crate graph, toolchain pinning, target platforms, and runtime model.
-2. Choose the Rust-specific overlay in `reference/axum-actix-wasm.md`.
+2. Choose the Rust-specific overlay in `reference/axum-actix-wasm.md` or, for measured browser-3D escalation work owned by `frontend-web`, `reference/wasm-browser-3d-performance.md`.
 3. Define ownership, async behavior, boundary contracts, and target assumptions before broad implementation.
 4. Implement crates, boundary code, tests, and benchmarks together so safety and performance stay aligned.
 5. Run `review-work` after substantial Rust systems changes.
@@ -42,6 +42,7 @@ This is the general Rust family pack for the repo. Use the overlay in `reference
 ## Overlays
 
 - `reference/axum-actix-wasm.md` for extractor and middleware choices in Rust HTTP services plus WASM boundary guidance for browser-facing performance work.
+- `reference/wasm-browser-3d-performance.md` for escalation-only browser-3D WASM bottlenecks where measured geometry, simulation, parsing, or transfer pressure justifies the boundary.
 
 ## Guardrails
 
