@@ -290,6 +290,70 @@ check_workspace_model_coherence() {
   fi
 }
 
+check_routing_contract() {
+  require_file 'Routing matrix' "$ROUTING_MATRIX_FILE"
+
+  if grep -n -F 'From the repo root, this matrix is the sole normative local routing/helper source' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
+    pass 'Routing matrix authority' 'routing-matrix.md declares itself the sole normative local routing/helper source'
+  else
+    fail 'Routing matrix authority' 'routing-matrix.md is missing the sole normative local routing/helper source statement'
+  fi
+
+  if grep -n -F 'the authoritative local routing and helper map' "$ROOT_DIR/AGENTS.md" >/dev/null 2>&1 && \
+     grep -n -F 'does not restate the full routing matrix' "$ROOT_DIR/AGENTS.md" >/dev/null 2>&1 && \
+     grep -n -F 'defer the full routing logic to `.opencode/reference/routing-matrix.md`' "$ROOT_DIR/.opencode/commands/route-domain.md" >/dev/null 2>&1; then
+    pass 'Routing doc thinness' 'AGENTS.md and route-domain.md stay matrix-first and do not re-own routing logic'
+  else
+    fail 'Routing doc thinness' 'AGENTS.md or route-domain.md is missing matrix-first defer language'
+  fi
+
+  if grep -n -F 'agent-browser' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'dev-browser' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'Use `frontend-web` as the first route for browser-3D work.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'Use `frontend-ui-ux` when the ask needs product or interaction judgment.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
+    pass 'Browser-helper discoverability' 'routing matrix names browser helpers and the writing/ultrabrain categories explicitly'
+  else
+    fail 'Browser-helper discoverability' 'routing matrix is missing one or more required helper/category references'
+  fi
+
+  if grep -n -F 'Most pack and overlay coverage listed here is current `guided` coverage.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'XR and CAD browser-3D adjacencies remain in that planned category.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'browser-3D verification or release evidence' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
+    pass 'Adjacent-pack tiering' 'adjacent-pack exposure is explicitly tiered and not presented as validated'
+  else
+    fail 'Adjacent-pack tiering' 'adjacent-pack tier wording is missing or not explicit enough'
+  fi
+
+  if grep -n -F 'web-3d' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
+    fail 'Top-level web-3d route' 'routing matrix must not introduce a top-level web-3d route'
+  else
+    pass 'Top-level web-3d route' 'no top-level web-3d route is declared'
+  fi
+
+  if grep -n -F 'Keep `impeccable` supplementary only.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'Deprecated wrappers stay included but non-primary.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
+    pass 'Primary impeccable route' 'impeccable remains supplementary rather than a primary route'
+  else
+    fail 'Primary impeccable route' 'impeccable layering is not clearly supplementary-only'
+  fi
+
+  if grep -n -F 'not a claim that the runtime or `.opencode/oh-my-openagent.jsonc` automatically routes files there' "$ROOT_DIR/.opencode/reference/workspace-model.md" >/dev/null 2>&1 && \
+     grep -n -F 'not a native runtime feature' "$ROOT_DIR/.opencode/reference/workspace-model.md" >/dev/null 2>&1; then
+    pass 'Workspace runtime boundary' 'workspace guidance stays documentation-only and does not claim runtime enforcement'
+  else
+    fail 'Workspace runtime boundary' 'workspace model is missing the documentation-only runtime boundary'
+  fi
+
+  if grep -n -F 'backend/API | Endpoint design, service refactors, auth flows, backend integrations, API hardening, server-side feature delivery | `backend-node`, `backend-python`, `backend-jvm`, `backend-dotnet`, `backend-go` | `quick`' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'Start in `quick` for normal service delivery.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'Escalate to `deep` when the work involves public-contract redesign, auth-model change, or multi-service boundary work.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'Treat `unspecified-low` and `unspecified-high` as fallback-only categories when no better named lane fits.' "$ROOT_DIR/.opencode/commands/route-domain.md" >/dev/null 2>&1; then
+    pass 'Backend routing contract' 'backend routing uses quick for normal delivery, deep for escalation, and keeps route-domain fallback-only wording'
+  else
+    fail 'Backend routing contract' 'backend quick/deep routing or route-domain fallback-only wording is inconsistent'
+  fi
+}
+
 check_manifest_and_public_claims() {
   require_file 'Capability manifest' "$CAPABILITY_MATRIX_FILE"
 
@@ -322,9 +386,24 @@ for capability in data["capabilities"]:
 
 for doc_path in doc_paths:
     text = doc_path.read_text()
-    for planned_id in planned_ids:
-        if planned_id in text:
-            raise AssertionError(f"{doc_path} references planned capability {planned_id} in a public-claim document")
+    if doc_path.name == "routing-matrix.md":
+        lines = text.splitlines()
+        in_planned_adjacent_section = False
+        for line in lines:
+            stripped = line.strip()
+            if stripped.startswith("## "):
+                heading = stripped[3:].lower()
+                in_planned_adjacent_section = "planned" in heading and "adjacent" in heading
+            if any(planned_id in line for planned_id in planned_ids) and not in_planned_adjacent_section:
+                for planned_id in planned_ids:
+                    if planned_id in line:
+                        raise AssertionError(
+                            f"{doc_path} references planned capability {planned_id} outside the explicitly tiered planned-adjacent section"
+                        )
+    else:
+        for planned_id in planned_ids:
+            if planned_id in text:
+                raise AssertionError(f"{doc_path} references planned capability {planned_id} in a public-claim document")
 
 print("manifest checks passed")
 PY
@@ -348,6 +427,7 @@ check_full() {
 
   check_expected_skill_dirs
   check_workspace_model_coherence
+  check_routing_contract
 
   if [ ! -d "$ROOT_DIR/.claude" ]; then
     pass 'Legacy .claude directory' 'absent as required'
