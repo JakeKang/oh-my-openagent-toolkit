@@ -8,7 +8,7 @@ It is not an official upstream distribution of `oh-my-openagent`, and it is not 
 | --- | --- |
 | Foundation | `oh-my-openagent` provides the harness layer and execution model. |
 | Local layer | `agentic-dev-ai-team` adds thin routing, support framing, workspace conventions, and the imported `impeccable` design layer. |
-| Skill surface | The repo exposes 43 top-level skill entrypoints under `.opencode/skills/`: the frozen 40-skill phase-1 core plus 3 planned adjacent packs. |
+| Skill surface | The repo exposes 43 top-level skill entrypoints under `.opencode/skills/`: 40 core skill surfaces plus 3 planned adjacent packs. |
 | Validated now | `frontend-product-delivery`, `backend-service-delivery`, `cloud-release-readiness`, and `ai-data-product-delivery`. |
 | Broader coverage | Additional surfaces are documented as `guided` or `planned`, not blanket `supported now` coverage. |
 | Repo-root convention | Work from the repo root and default new greenfield outputs to `workspace/{project-name}-{domain}`. |
@@ -44,7 +44,7 @@ This repo adds local structure, not local bureaucracy. In practice, that means a
 | --- | --- | --- |
 | Thin routing | Classifies work into six routing buckets, points to the right pack, and names the built-in helpers that fit. | `AGENTS.md`, `.opencode/commands/route-domain.md`, `.opencode/reference/routing-matrix.md` |
 | Governance and usage refs | Makes support boundaries, workflow inventory, and workspace conventions explicit instead of implied. | `.opencode/reference/support-policy.md`, `.opencode/reference/workflow-catalog.md`, `.opencode/reference/workspace-model.md` |
-| Local skill surface | Adds 43 top-level skill entrypoints across major delivery lanes: the frozen 40-skill phase-1 core plus 3 planned adjacent packs. That makes the repo feel like a real working system, not a thin demo layer. | `.opencode/skills/` |
+| Local skill surface | Adds 43 top-level skill entrypoints across major delivery lanes: 40 core skill surfaces plus 3 planned adjacent packs. That makes the repo feel like a real working system, not a thin demo layer. | `.opencode/skills/` |
 | UI refinement layer | Adds the imported `impeccable` family as a supplementary refinement stack for anti-slop review, critique, and polish. | Start with `frontend-web` or `mobile-app`, then layer `impeccable` skills on purpose |
 
 | Skill family | Representative surfaces | Role |
