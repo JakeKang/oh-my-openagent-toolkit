@@ -1,8 +1,12 @@
 # Agentic Dev AI Team
 
-`agentic-dev-ai-team` is a project-local OpenCode bundle for people who want a clearer, more opinionated operating layer on top of the `oh-my-openagent` harness. If you have already cloned this repo and are standing in its root, this README shows how to understand the bundle, where it adds value, and how to use it from there.
+Project-local OpenCode bundle for teams that want a clearer operating layer on top of `oh-my-openagent`, without pretending to be upstream or a second control plane.
 
-It is not an official upstream distribution of `oh-my-openagent`, and it is not a replacement for the harness. It is a companion bundle that adds local routing, support framing, workspace conventions, and an imported `impeccable` design layer so the repo is easier to navigate, operate, and explain in public.
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license) [![Built on OpenCode](https://img.shields.io/badge/built%20on-OpenCode-5b5bd6.svg)](https://opencode.ai/docs) [![Companion to oh-my-openagent](https://img.shields.io/badge/companion-oh--my--openagent-2d7a46.svg)](https://github.com/code-yeongyu/oh-my-openagent) [![Validated surface: 4 workflows](https://img.shields.io/badge/validated%20surface-4%20workflows-8a3ffc.svg)](#what-it-adds-on-top-of-upstream)
+
+`agentic-dev-ai-team` is a project-local OpenCode bundle built on `oh-my-openagent`. It adds thin local routing, support framing, workspace conventions, and the imported `impeccable` design layer so a cloned repo is easier to navigate, operate, and explain.
+
+This repo is a companion to `oh-my-openagent`, not an official upstream distribution and not a replacement for the harness. The skill surface is broad, 43 top-level entrypoints under `.opencode/skills/`, made up of 40 core skill surfaces and 3 planned adjacent packs, but the visible validated surface stays narrow: `frontend-product-delivery`, `backend-service-delivery`, `cloud-release-readiness`, and `ai-data-product-delivery`.
 
 | At a glance | Summary |
 | --- | --- |
@@ -84,24 +88,28 @@ Routed surfaces are not automatically validated surfaces, and broader skill cove
 
 ## Quick start
 
-If you are not in the repo yet:
+Set this up in the same order the stack is built:
+
+1. Install [OpenCode](https://opencode.ai/docs).
+2. Set up [`oh-my-openagent`](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/refs/heads/dev/docs/guide/installation.md).
+3. Clone this bundle and work from the repo root.
 
 ```sh
 git clone <repo-url>
 cd agentic-dev-ai-team
 ```
 
-From the repo root, most people should start here:
+Once you are in this repo, read the local docs in this order:
 
 | Step | Read | Why |
 | --- | --- | --- |
-| 1 | `AGENTS.md` | Top-level routing guide |
-| 2 | `.opencode/reference/routing-matrix.md` | Source-of-truth routing table |
-| 3 | `.opencode/commands/route-domain.md` | Compact request-classification flow |
-| 4 | `.opencode/reference/support-policy.md` and `.opencode/reference/workflow-catalog.md` | Public support boundary and validated workflow inventory |
-| 5 | `.opencode/reference/workspace-model.md` | Repo-root execution model and the `workspace/{project-name}-{domain}` default for new greenfield outputs |
+| 1 | `README.md` | Bundle overview, boundary, and upstream context |
+| 2 | `AGENTS.md` | Top-level local reading order and bundle boundaries |
+| 3 | `.opencode/reference/routing-matrix.md` | Authoritative local routing and helper map |
+| 4 | `.opencode/reference/support-policy.md` and `.opencode/reference/workflow-catalog.md` | Support boundary and the current validated workflow inventory |
+| 5 | `.opencode/reference/workspace-model.md` | Repo-root workspace conventions and the `workspace/{project-name}-{domain}` default for new greenfield outputs |
 
-In practice, that means your in-repo paths and commands should stay repo-root-relative. Read `.opencode/...`, work from `AGENTS.md`, and treat `workspace/{project-name}-{domain}` as the default convention for new projects created from this root. If you are evaluating the repo for the first time, the fastest way to understand it is README -> `AGENTS.md` -> routing matrix -> support policy/workflow catalog.
+That sequence keeps the layers clear: OpenCode is the foundation, `oh-my-openagent` sets up the harness, and this bundle adds local routing, support framing, and workspace conventions from the repo root. For first-pass orientation inside the repo, follow `README.md` -> `AGENTS.md` -> `routing-matrix.md` -> `support-policy.md` and `workflow-catalog.md` -> `workspace-model.md`.
 
 ## Acknowledgements
 
@@ -115,3 +123,20 @@ This bundle is built as a companion to `oh-my-openagent`, which provides the har
 It also includes an imported `impeccable` design layer as a local refinement family for UI work. That layer is acknowledged here as an upstream design influence and bundled asset, not as a claim that this repo is the canonical home for it.
 
 If you are publishing or sharing this repo, that is the right way to describe it: a companion bundle with a clearer local operating model, a broad but well-routed skill surface, explicit support boundaries, and a stronger documentation surface built on top of upstream foundations.
+
+## Support the project
+
+If this bundle saves you time or helps your team get oriented faster, you can help fund continued maintenance and documentation work here:
+
+[![Support via Stripe](https://img.shields.io/badge/support%20this%20project-Stripe-635bff?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/bJe8wQbkobMt4Am6IqaZi00)
+[![Sponsor maintenance](https://img.shields.io/badge/sponsor%20maintenance-Stripe-635bff?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/8x25kE9cgaIpc2O8QyaZi01)
+
+These links are for optional funding only. They are not a paid support tier, they do not expand the validated workflow surface, and they do not change the support-policy boundaries described in this repo.
+
+## Attribution
+
+`agentic-dev-ai-team` is maintained by Nuvreon Corp as a companion bundle built on top of `oh-my-openagent`, with the imported `impeccable` refinement layer included as a local design aid.
+
+## License
+
+This repository is available under the MIT License. See the repository license text when distributed with the bundle, and keep this README wording as the visible OSS license notice for this local copy.
