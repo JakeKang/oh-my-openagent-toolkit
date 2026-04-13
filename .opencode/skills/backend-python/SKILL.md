@@ -7,7 +7,14 @@ description: Deliver Python backends across async FastAPI and Django or Flask se
 
 Use this pack for Python backend work: REST APIs, service layers, auth flows, async I/O, model-serving edges, background work, and backend delivery patterns that live in the Python ecosystem.
 
+Defer first-pass route choice and lane selection to `../../reference/routing-matrix.md`.
+
 This is the general Python backend pack for the repo. Use the overlays in `reference/` to tune decisions for FastAPI or the Django and Flask family while preserving the same expectations for contracts, validation, documentation, and production behavior.
+
+## Setup posture
+
+- Prefer modernizing, refining, or extending an existing project in place.
+- Treat scaffold, `create`, `init`, or `new` flows as greenfield-only and explicit-request-only. Defer to `.opencode/reference/project-setup-policy.md`.
 
 ## Core focus
 

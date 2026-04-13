@@ -7,7 +7,14 @@ description: Deliver Node.js and TypeScript backends across NestJS and lighter H
 
 Use this pack for Node.js backend work: HTTP APIs, service modules, auth flows, background jobs, event-driven edges, and server-side delivery patterns that live in the JavaScript or TypeScript ecosystem.
 
+Defer first-pass route choice and lane selection to `../../reference/routing-matrix.md`.
+
 This is the general Node backend pack for the repo. Use the overlays in `reference/` to tune decisions for NestJS or the lighter Express, Fastify, and Hono family while keeping the same quality bar for contracts, validation, documentation, and operational behavior.
+
+## Setup posture
+
+- Prefer modernizing, refining, or extending an existing project in place.
+- Treat scaffold, `create`, `init`, or `new` flows as greenfield-only and explicit-request-only. Defer to `.opencode/reference/project-setup-policy.md`.
 
 ## Core focus
 

@@ -7,7 +7,14 @@ description: Deliver C# and .NET backends with explicit API, validation, auth, a
 
 Use this pack for .NET backend work: ASP.NET Core APIs, service layers, auth flows, background processing, data access, and server-side delivery patterns that live in the C# ecosystem.
 
+Defer first-pass route choice and lane selection to `../../reference/routing-matrix.md`.
+
 This is the general .NET backend pack for the repo. Use the overlay in `reference/aspnet-core.md` to tune decisions for controllers, minimal APIs, middleware pipelines, and hosted-service behavior while preserving the same quality bar for contracts, validation, documentation, and runtime clarity.
+
+## Setup posture
+
+- Prefer modernizing, refining, or extending an existing project in place.
+- Treat scaffold, `create`, `init`, or `new` flows as greenfield-only and explicit-request-only. Defer to `.opencode/reference/project-setup-policy.md`.
 
 ## Core focus
 

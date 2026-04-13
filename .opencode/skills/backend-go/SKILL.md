@@ -7,7 +7,14 @@ description: Deliver Go backends with clear handler, service, auth, validation, 
 
 Use this pack for Go backend work: HTTP APIs, service boundaries, auth middleware, background workers, streaming paths, and operationally focused backend delivery in the Go ecosystem.
 
+Defer first-pass route choice and lane selection to `../../reference/routing-matrix.md`.
+
 This is the general Go backend pack for the repo. Use the overlay in `reference/gin-echo-fiber.md` to tune decisions for common Go web frameworks while preserving the same expectations for contracts, validation, documentation, and concurrency safety.
+
+## Setup posture
+
+- Prefer modernizing, refining, or extending an existing project in place.
+- Treat scaffold, `create`, `init`, or `new` flows as greenfield-only and explicit-request-only. Defer to `.opencode/reference/project-setup-policy.md`.
 
 ## Core focus
 

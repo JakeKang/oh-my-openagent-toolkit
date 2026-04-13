@@ -7,7 +7,14 @@ description: Deliver Java and Kotlin backends across Spring Boot, Quarkus, and K
 
 Use this pack for JVM backend work: Java or Kotlin APIs, service modules, auth flows, transactional business logic, background execution, and backend delivery patterns that live in the broader JVM ecosystem.
 
+Defer first-pass route choice and lane selection to `../../reference/routing-matrix.md`.
+
 This is the general JVM backend pack for the repo. Use the overlays in `reference/` to tune decisions for Spring Boot or the Quarkus and Ktor family while keeping the shared quality bar for contracts, validation, documentation, and service behavior intact.
+
+## Setup posture
+
+- Prefer modernizing, refining, or extending an existing project in place.
+- Treat scaffold, `create`, `init`, or `new` flows as greenfield-only and explicit-request-only. Defer to `.opencode/reference/project-setup-policy.md`.
 
 ## Core focus
 
