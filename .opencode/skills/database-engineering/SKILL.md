@@ -5,7 +5,7 @@ description: Deliver language-agnostic database design, migration, performance, 
 
 # Database Engineering
 
-Use this pack for database work: schema design, data modeling, migrations, query and index tuning, replication planning, backup and restore strategy, and operational reliability across major datastore families.
+Use this pack for database work: schema design, data modeling, migrations, query and index tuning, replication planning, backup and restore strategy, and operational reliability across major datastore families. Defer first-pass route choice and lane selection to `.opencode/reference/routing-matrix.md`.
 
 This is the general database pack for the repo. Use the overlays in `reference/postgres-mysql-mongodb-redis.md` and `reference/analytics-search-stores.md` to sharpen engine-specific, analytical, and search-serving choices while keeping schema, migration, query-planning, index or mapping contracts, lifecycle policy, freshness, and recovery expectations explicit.
 

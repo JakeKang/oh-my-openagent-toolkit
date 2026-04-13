@@ -5,7 +5,7 @@ description: Deliver C and C++ systems work across native toolchains, CMake, tes
 
 # Systems C Cpp
 
-Use this pack for C and C++ systems work: native libraries, performance-sensitive services, device or firmware-adjacent code, build-toolchain work, cross-compilation, and interoperability with lower-level platform APIs.
+Use this pack for C and C++ systems work: native libraries, performance-sensitive services, device or firmware-adjacent code, build-toolchain work, cross-compilation, and interoperability with lower-level platform APIs. Defer first-pass route choice and lane selection to `.opencode/reference/routing-matrix.md`.
 
 This is the general C and C++ family pack for the repo. Use the overlay in `reference/cmake-gtest-embedded.md` to tune decisions for target-based CMake, gtest or CTest, toolchains, and embedded-adjacent constraints while keeping ABI, memory, and performance choices visible.
 

@@ -5,7 +5,7 @@ description: Shape cross-stack architecture, API contracts, authentication flow,
 
 # Architecture Integration
 
-Use this pack for cross-stack design work where the hard part is not one screen or one endpoint, but the system shape between them.
+Use this pack for cross-stack design work where the hard part is not one screen or one endpoint, but the system shape between them. Defer first-pass route choice and lane selection to `.opencode/reference/routing-matrix.md`.
 
 ## Core focus
 

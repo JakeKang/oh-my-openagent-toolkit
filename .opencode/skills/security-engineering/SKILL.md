@@ -5,7 +5,7 @@ description: Deliver application and platform security guidance for auth, authz,
 
 # Security Engineering
 
-Use this pack for security-sensitive work: authentication, authorization, secure coding, secrets and key handling, vulnerability analysis, security review, and hardening across application and service boundaries.
+Use this pack for security-sensitive work: authentication, authorization, secure coding, secrets and key handling, vulnerability analysis, security review, and hardening across application and service boundaries. Defer first-pass route choice and lane selection to `.opencode/reference/routing-matrix.md`.
 
 This is the general security pack for the repo. Use the overlays in `reference/auth-owasp-secrets.md` and `reference/supply-chain-cloud-security.md` to sharpen authentication, OWASP-style review, secrets, provenance, builder identity, artifact verification, trust-boundary rules, and cloud-security choices while keeping the core guidance language-agnostic and portable.
 
