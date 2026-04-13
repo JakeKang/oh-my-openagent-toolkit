@@ -8,6 +8,7 @@ CONFIG_FILE="$ROOT_DIR/.opencode/oh-my-openagent.jsonc"
 CAPABILITY_MATRIX_FILE="$ROOT_DIR/.opencode/reference/capability-matrix.json"
 RUNTIME_ROUTE_FILE="$ROOT_DIR/.opencode/commands/route-domain.md"
 ROUTING_MATRIX_FILE="$ROOT_DIR/.opencode/reference/routing-matrix.md"
+ROUTING_SIGNALS_FILE="$ROOT_DIR/.opencode/reference/routing-signals.json"
 QUALITY_GATES_FILE="$ROOT_DIR/.opencode/reference/quality-gates.md"
 DESIGN_ANTI_SLOP_FILE="$ROOT_DIR/.opencode/reference/design-anti-slop.md"
 QA_EXAMPLES_DIR="$ROOT_DIR/.opencode/reference/qa/examples"
@@ -355,6 +356,109 @@ check_routing_contract() {
   fi
 }
 
+check_sidecar_scaffolding() {
+  if [ -f "$ROUTING_SIGNALS_FILE" ]; then
+    pass 'Routing sidecar presence' "$ROUTING_SIGNALS_FILE exists"
+  else
+    fail 'Routing sidecar presence' "$ROUTING_SIGNALS_FILE is missing"
+    return
+  fi
+
+  if python3 - "$ROUTING_SIGNALS_FILE" "$ROUTING_MATRIX_FILE" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+signals_path = Path(sys.argv[1])
+matrix_path = Path(sys.argv[2])
+
+signals = json.loads(signals_path.read_text())
+matrix_lines = matrix_path.read_text().splitlines()
+
+if signals.get('schema_version') != 'v1':
+    raise AssertionError("routing-signals schema_version must be v1")
+
+if signals.get('matrix_path') != '.opencode/reference/routing-matrix.md':
+    raise AssertionError("routing-signals matrix_path must use canonical .opencode/reference/routing-matrix.md")
+
+if not signals['matrix_path'].startswith('.opencode/'):
+    raise AssertionError("routing-signals matrix_path must use canonical .opencode/... path style")
+
+allowed_top_keys = {'schema_version', 'matrix_path', 'routes'}
+unexpected_top = sorted(set(signals) - allowed_top_keys)
+if unexpected_top:
+    raise AssertionError(f"unexpected top-level routing-signals keys: {unexpected_top}")
+
+routes = signals.get('routes')
+if not isinstance(routes, list) or len(routes) != 6:
+    raise AssertionError('routing-signals routes must contain exactly 6 entries')
+
+allowed_route_keys = {
+    'route_id', 'bucket', 'primary_pack_ids', 'default_category', 'helper_ids',
+    'browser_helper_ids', 'adjacent_pack_ids', 'posture', 'source_anchor'
+}
+required_route_keys = {
+    'route_id', 'bucket', 'primary_pack_ids', 'default_category', 'helper_ids',
+    'adjacent_pack_ids', 'posture', 'source_anchor'
+}
+for route in routes:
+    if not isinstance(route, dict):
+        raise AssertionError('routing-signals routes must be objects')
+    missing = sorted(required_route_keys - set(route))
+    if missing:
+        raise AssertionError(f"routing-signals route {route.get('route_id')} is missing required keys: {missing}")
+    unexpected = sorted(set(route) - allowed_route_keys)
+    if unexpected:
+        raise AssertionError(f"routing-signals route {route.get('route_id')} has unexpected keys: {unexpected}")
+    if 'support_level' in route or 'tier' in route or 'support' in route:
+        raise AssertionError(f"routing-signals route {route.get('route_id')} must not carry support-tier-like fields")
+    if not isinstance(route.get('matrix_path', '.opencode/reference/routing-matrix.md'), str):
+        raise AssertionError('routing-signals route matrix path metadata is invalid')
+
+expected_rows = {
+    'architecture/integration': '#ZY',
+    'web/mobile UI': '#NV',
+    'backend/API': '#SJ',
+    'systems/performance': '#QZ',
+    'data/security': '#RQ',
+    'QA/deployment': '#HJ',
+}
+for bucket, anchor in expected_rows.items():
+    row_present = any(line.strip().startswith(f'| {bucket} |') for line in matrix_lines)
+    if not row_present:
+        raise AssertionError(f"routing-matrix is missing the bucket row for {bucket}")
+
+route_bucket_to_anchor = {route['bucket']: route['source_anchor'] for route in routes}
+for bucket, anchor in expected_rows.items():
+    if route_bucket_to_anchor.get(bucket) != anchor:
+        raise AssertionError(f"sidecar source_anchor mismatch for {bucket}: expected {anchor}, found {route_bucket_to_anchor.get(bucket)}")
+
+for route in routes:
+    posture = route['posture']
+    if route['route_id'] == 'web_mobile_ui':
+        if posture != 'supplementary':
+            raise AssertionError('web_mobile_ui posture must be supplementary')
+    elif posture != 'none':
+        raise AssertionError(f"{route['route_id']} posture must be none")
+
+    if route['adjacent_pack_ids']:
+        if route['route_id'] == 'web_mobile_ui':
+            raise AssertionError('web_mobile_ui must not advertise adjacent packs in the sidecar')
+
+    for key in ('primary_pack_ids', 'helper_ids', 'adjacent_pack_ids'):
+        if not isinstance(route[key], list):
+            raise AssertionError(f"{route['route_id']} {key} must be a list")
+
+print('routing sidecar contract checks passed')
+PY
+  then
+    pass 'Routing sidecar contract' 'sidecar schema, matrix anchors, posture, and canonical path style are aligned'
+  else
+    fail 'Routing sidecar contract' 'sidecar schema, matrix anchors, posture, or canonical path style is invalid'
+  fi
+}
+
 check_harness_utilization_contract() {
   if python3 - "$ROUTING_MATRIX_FILE" <<'PY'
 from pathlib import Path
@@ -494,6 +598,44 @@ future_named_pack_wording_hook() {
   : "future hook for avoiding scaffold-first default wording"
 }
 
+check_outlier_pack_contract() {
+  outlier_docs="
+/home/hans/dev/AI/dev-ai-agent-team-upgrade/agentic-dev-ai-team/.opencode/skills/architecture-integration/SKILL.md
+/home/hans/dev/AI/dev-ai-agent-team-upgrade/agentic-dev-ai-team/.opencode/skills/systems-c-cpp/SKILL.md
+/home/hans/dev/AI/dev-ai-agent-team-upgrade/agentic-dev-ai-team/.opencode/skills/database-engineering/SKILL.md
+/home/hans/dev/AI/dev-ai-agent-team-upgrade/agentic-dev-ai-team/.opencode/skills/security-engineering/SKILL.md
+"
+  legacy_path='../../reference/routing-matrix.md'
+
+  for path in $outlier_docs; do
+    require_file 'Outlier pack doc' "$path"
+  done
+
+  if python3 - "$legacy_path" $outlier_docs <<'PY'
+from pathlib import Path
+import sys
+
+legacy_path = sys.argv[1]
+doc_paths = [Path(arg) for arg in sys.argv[2:]]
+
+for doc_path in doc_paths:
+    text = doc_path.read_text()
+    if '.opencode/reference/routing-matrix.md' not in text:
+        raise AssertionError(f"{doc_path} must explicitly defer first-pass routing to .opencode/reference/routing-matrix.md")
+    if legacy_path in text:
+        raise AssertionError(f"{doc_path} must not use {legacy_path}")
+    if '../reference/' in text:
+        raise AssertionError(f"{doc_path} must keep same-pack overlay references local to reference/... paths")
+
+print('outlier pack contract checks passed')
+PY
+  then
+    pass 'Outlier pack contract' 'touched outlier packs defer to the matrix and keep same-pack overlays local'
+  else
+    fail 'Outlier pack contract' 'touched outlier packs drifted from matrix-first or local-overlay path style'
+  fi
+}
+
 check_manifest_and_public_claims() {
   require_file 'Capability manifest' "$CAPABILITY_MATRIX_FILE"
 
@@ -566,6 +708,8 @@ check_full() {
   check_manifest_and_public_claims
 
   check_expected_skill_dirs
+  check_sidecar_scaffolding
+  check_outlier_pack_contract
   check_harness_utilization_contract
   check_workspace_model_coherence
   check_routing_contract
