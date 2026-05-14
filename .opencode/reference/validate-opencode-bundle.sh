@@ -11,6 +11,14 @@ ROUTING_MATRIX_FILE="$ROOT_DIR/.opencode/reference/routing-matrix.md"
 ROUTING_SIGNALS_FILE="$ROOT_DIR/.opencode/reference/routing-signals.json"
 QUALITY_GATES_FILE="$ROOT_DIR/.opencode/reference/quality-gates.md"
 DESIGN_ANTI_SLOP_FILE="$ROOT_DIR/.opencode/reference/design-anti-slop.md"
+DESIGN_MD_SOURCE_POLICY_FILE="$ROOT_DIR/.opencode/reference/design-md-source-policy.md"
+DESIGN_MD_SELECTION_PROTOCOL_FILE="$ROOT_DIR/.opencode/reference/design-md-selection-protocol.md"
+DESIGN_MD_CATALOG_FILE="$ROOT_DIR/.opencode/reference/design-md-catalog.md"
+DESIGN_MD_REFERENCE_DIR="$ROOT_DIR/.opencode/reference/design-md"
+DESIGN_MD_EXAMPLES_DIR="$DESIGN_MD_REFERENCE_DIR/examples"
+DESIGN_MD_ATTRIBUTION_FILE="$DESIGN_MD_REFERENCE_DIR/ATTRIBUTION.md"
+DESIGN_MD_README_FILE="$DESIGN_MD_REFERENCE_DIR/README.md"
+IMPECCABLE_DESIGN_MD_FILE="$ROOT_DIR/.opencode/skills/impeccable/reference/design-md.md"
 QA_EXAMPLES_DIR="$ROOT_DIR/.opencode/reference/qa/examples"
 PUBLIC_CLAIM_DOCS="
 $ROOT_DIR/README.md
@@ -173,6 +181,69 @@ check_foundation() {
     pass 'Canonical naming' 'no singular .opencode/command directory detected'
   else
     fail 'Canonical naming' 'singular .opencode/command directory must not exist'
+  fi
+}
+
+
+check_design_md_integration() {
+  require_file 'DESIGN.md source policy' "$DESIGN_MD_SOURCE_POLICY_FILE"
+  require_file 'DESIGN.md selection protocol' "$DESIGN_MD_SELECTION_PROTOCOL_FILE"
+  require_file 'DESIGN.md catalog' "$DESIGN_MD_CATALOG_FILE"
+  require_file 'DESIGN.md reference README' "$DESIGN_MD_README_FILE"
+  require_file 'DESIGN.md attribution' "$DESIGN_MD_ATTRIBUTION_FILE"
+  require_file 'Impeccable DESIGN.md overlay' "$IMPECCABLE_DESIGN_MD_FILE"
+
+  if python3 - "$DESIGN_MD_EXAMPLES_DIR" <<'PY'
+from pathlib import Path
+import sys
+
+examples_dir = Path(sys.argv[1])
+snapshots = sorted(examples_dir.glob("*/DESIGN.md")) if examples_dir.is_dir() else []
+if len(snapshots) != 12:
+    raise AssertionError(f"expected exactly 12 curated DESIGN.md snapshots, found {len(snapshots)}")
+print("curated DESIGN.md snapshot count checks passed")
+PY
+  then
+    pass 'DESIGN.md curated snapshots' 'exactly 12 example DESIGN.md files are present'
+  else
+    fail 'DESIGN.md curated snapshots' 'expected exactly 12 DESIGN.md files under .opencode/reference/design-md/examples/'
+  fi
+
+  if grep -n -F 'f2d6b17d0dd706c9b0942674e6a6a782652cb127' "$DESIGN_MD_ATTRIBUTION_FILE" "$DESIGN_MD_SOURCE_POLICY_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'MIT' "$DESIGN_MD_ATTRIBUTION_FILE" "$DESIGN_MD_SOURCE_POLICY_FILE" >/dev/null 2>&1; then
+    pass 'DESIGN.md source pinning' 'upstream commit and MIT license are documented'
+  else
+    fail 'DESIGN.md source pinning' 'source policy or attribution is missing the pinned commit or MIT license'
+  fi
+
+  if grep -r -n -F 'not a primary route' "$DESIGN_MD_SOURCE_POLICY_FILE" "$DESIGN_MD_SELECTION_PROTOCOL_FILE" "$DESIGN_MD_CATALOG_FILE" "$DESIGN_MD_README_FILE" "$IMPECCABLE_DESIGN_MD_FILE" >/dev/null 2>&1 && \
+     grep -r -n -F 'not a validated support claim' "$DESIGN_MD_SOURCE_POLICY_FILE" "$DESIGN_MD_SELECTION_PROTOCOL_FILE" "$DESIGN_MD_CATALOG_FILE" "$DESIGN_MD_README_FILE" "$IMPECCABLE_DESIGN_MD_FILE" >/dev/null 2>&1; then
+    pass 'DESIGN.md support boundaries' 'reference layer is explicitly not a primary route or validated support claim'
+  else
+    fail 'DESIGN.md support boundaries' 'required non-primary and non-validated boundary phrases are missing'
+  fi
+
+  if [ ! -d "$ROOT_DIR/.opencode/skills/design-md" ]; then
+    pass 'DESIGN.md top-level skill' 'no .opencode/skills/design-md route exists'
+  else
+    fail 'DESIGN.md top-level skill' 'DESIGN.md reference layer must not create a top-level skill route'
+  fi
+
+  if python3 - "$CAPABILITY_MATRIX_FILE" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+data = json.loads(Path(sys.argv[1]).read_text())
+for capability in data.get("capabilities", []):
+    if capability.get("id") == "design-md":
+        raise AssertionError("capability-matrix.json must not define a design-md capability")
+print("no design-md capability checks passed")
+PY
+  then
+    pass 'DESIGN.md capability creep' 'capability-matrix.json does not define design-md'
+  else
+    fail 'DESIGN.md capability creep' 'capability-matrix.json must not define design-md'
   fi
 }
 
@@ -713,6 +784,7 @@ check_full() {
   check_harness_utilization_contract
   check_workspace_model_coherence
   check_routing_contract
+  check_design_md_integration
 
   if [ ! -d "$ROOT_DIR/.claude" ]; then
     pass 'Legacy .claude directory' 'absent as required'
