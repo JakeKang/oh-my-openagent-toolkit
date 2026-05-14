@@ -14,6 +14,8 @@ Defer route choice and lane selection to `../../reference/routing-matrix.md`.
 
 Treat `impeccable` as a supplementary layer on top of `frontend-web` and `mobile-app`, not as a replacement for those domain packs, not as a routing authority of its own, and not as a starting route.
 
+DESIGN.md references are available only as supplementary inspiration and pattern extraction after `frontend-web` or `mobile-app` owns the UI route. Project-root `DESIGN.md` and the existing design system win over external examples. Use `reference/design-md.md` and `../../reference/design-md-selection-protocol.md` for bounded adaptation, not route selection.
+
 ## What this skill is for
 
 Use `impeccable` when UI work has already been routed through `frontend-web` or `mobile-app` and needs a stronger point of view across the broader local family:
@@ -21,6 +23,7 @@ Use `impeccable` when UI work has already been routed through `frontend-web` or 
 - design context gathering,
 - anti-slop direction setting,
 - distinctive typography, color, and spatial decisions,
+- DESIGN.md reference adaptation when a routed UI request asks for a specific visual language,
 - structured critique or quality review,
 - or a finishing pass before shipping.
 
@@ -52,9 +55,12 @@ Use this order:
 
 1. If the current instructions already include a design context, use it.
 2. Otherwise read `.impeccable.md` from the project root if it exists.
-3. If neither source exists, run `impeccable teach` and gather the missing context directly.
+3. Read the project root `DESIGN.md` if it exists, and prefer project `DESIGN.md` over any external catalog example.
+4. If neither source exists, run `impeccable teach` and gather the missing context directly.
 
 Do not infer brand personality from implementation details alone.
+
+When the request names a reference feel, use `reference/design-md.md`, `../../reference/design-md-selection-protocol.md`, and `../../reference/design-md-catalog.md` after the context-gathering steps above. Keep DESIGN.md catalog examples below user/product context, `.impeccable.md`, the project root `DESIGN.md`, accessibility requirements, `quality-gates.md`, and local anti-slop rules. Select one primary external reference and at most one secondary reference; never let the catalog create a route, helper ID, support claim, or brand-copy permission.
 
 ## Shared anti-slop source
 
