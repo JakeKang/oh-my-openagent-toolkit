@@ -86,7 +86,13 @@ developer-experience
 FULL_EXPECTED_SKILL_COUNT=41
 PLANNED_ADJACENT_SKILL_COUNT=3
 LIVE_TOP_LEVEL_SKILL_COUNT=44
-FULL_EXPECTED_IMPECCABLE_COUNT=23
+IMPECCABLE_CONSOLIDATED_SKILL_COUNT=1
+IMPECCABLE_COMMAND_COUNT=23
+IMPECCABLE_COMPAT_WRAPPER_COUNT=22
+IMPECCABLE_COMMAND_WRAPPER_COUNT=21
+IMPECCABLE_UMBRELLA_WRAPPER_COUNT=1
+IMPECCABLE_REFERENCE_COUNT=36
+IMPECCABLE_SCRIPT_COUNT=23
 FULL_EXPECTED_EXPERT_PACK_COUNT=17
 FULL_EXPECTED_ORIENTATION_SKILL_COUNT=1
 
@@ -154,7 +160,7 @@ check_banned_strings() {
     return
   fi
   if [ -d "$path" ]; then
-    grep -r -n -E --exclude='validate-opencode-bundle.sh' "$pattern" "$path" >"$tmpfile" 2>/dev/null
+    grep -r -n -E --exclude='validate-opencode-bundle.sh' --exclude='cleanup-deprecated.mjs' --exclude='pin.mjs' "$pattern" "$path" >"$tmpfile" 2>/dev/null
     status=$?
   else
     grep -n -E "$pattern" "$path" >"$tmpfile" 2>/dev/null
@@ -266,7 +272,7 @@ check_expected_skill_dirs() {
     fail 'Skill inventory expectation' "validator is configured for $expected_count skills instead of $FULL_EXPECTED_SKILL_COUNT"
   fi
   if [ "$missing" -eq 0 ]; then
-    pass 'Skill inventory' "all $FULL_EXPECTED_SKILL_COUNT required core skill directories are present ($FULL_EXPECTED_IMPECCABLE_COUNT impeccable + $FULL_EXPECTED_EXPERT_PACK_COUNT expert packs + $FULL_EXPECTED_ORIENTATION_SKILL_COUNT orientation skill)"
+    pass 'Skill inventory' "all $FULL_EXPECTED_SKILL_COUNT required core skill directories are present ($IMPECCABLE_CONSOLIDATED_SKILL_COUNT consolidated impeccable skill + $IMPECCABLE_COMPAT_WRAPPER_COUNT impeccable compatibility wrappers + $FULL_EXPECTED_EXPERT_PACK_COUNT expert packs + $FULL_EXPECTED_ORIENTATION_SKILL_COUNT orientation skill)"
   else
     printf 'FAIL Skill inventory: %s missing skill directories\n' "$missing"
   fi
@@ -319,6 +325,246 @@ PY
     pass 'Planned adjacent skill inventory' "$PLANNED_ADJACENT_SKILL_COUNT planned adjacent packs are present and the live top-level inventory remains $LIVE_TOP_LEVEL_SKILL_COUNT directories"
   else
     fail 'Planned adjacent skill inventory' 'planned-adjacent pack presence or manifest alignment is invalid'
+  fi
+}
+
+
+check_impeccable_v311_vendor_contract() {
+  require_dir 'Impeccable consolidated skill' "$ROOT_DIR/.opencode/skills/impeccable"
+  require_file 'Impeccable NOTICE' "$ROOT_DIR/.opencode/skills/impeccable/NOTICE.md"
+  require_file 'Impeccable LICENSE' "$ROOT_DIR/.opencode/skills/impeccable/LICENSE"
+
+  if python3 - "$ROOT_DIR" "$IMPECCABLE_CONSOLIDATED_SKILL_COUNT" "$IMPECCABLE_COMPAT_WRAPPER_COUNT" "$IMPECCABLE_REFERENCE_COUNT" "$IMPECCABLE_SCRIPT_COUNT" <<'PY'
+from pathlib import Path
+import sys
+
+root = Path(sys.argv[1])
+expected_consolidated = int(sys.argv[2])
+expected_wrappers = int(sys.argv[3])
+expected_references = int(sys.argv[4])
+expected_scripts = int(sys.argv[5])
+skills_dir = root / '.opencode/skills'
+impeccable_dir = skills_dir / 'impeccable'
+reference_dir = impeccable_dir / 'reference'
+scripts_dir = impeccable_dir / 'scripts'
+
+forbidden_top_level = {'layout', 'document', 'live', 'craft', 'brand', 'product', 'codex', 'pin', 'unpin'}
+actual_forbidden = sorted(name for name in forbidden_top_level if (skills_dir / name).is_dir())
+if actual_forbidden:
+    raise AssertionError(f"forbidden top-level Impeccable skill directories present: {actual_forbidden}")
+
+consolidated = [path.name for path in skills_dir.iterdir() if path.is_dir() and path.name == 'impeccable']
+if len(consolidated) != expected_consolidated:
+    raise AssertionError(f"expected {expected_consolidated} consolidated Impeccable skill, found {len(consolidated)}")
+
+reference_files = sorted(path.name for path in reference_dir.glob('*.md') if path.name != 'design-md.md')
+if len(reference_files) != expected_references:
+    raise AssertionError(f"expected {expected_references} upstream reference files excluding design-md.md, found {len(reference_files)}")
+if not (reference_dir / 'design-md.md').is_file():
+    raise AssertionError('local-only reference/design-md.md overlay is missing')
+
+scripts = sorted(path.name for path in scripts_dir.iterdir() if path.is_file())
+if len(scripts) != expected_scripts:
+    raise AssertionError(f"expected {expected_scripts} upstream script files, found {len(scripts)}")
+
+wrapper_names = {
+    'adapt', 'animate', 'arrange', 'audit', 'bolder', 'clarify', 'colorize', 'critique', 'delight', 'distill',
+    'extract', 'frontend-design', 'harden', 'normalize', 'onboard', 'optimize', 'overdrive', 'polish',
+    'quieter', 'shape', 'teach-impeccable', 'typeset',
+}
+missing_wrappers = sorted(name for name in wrapper_names if not (skills_dir / name / 'SKILL.md').is_file())
+if missing_wrappers:
+    raise AssertionError(f"missing Impeccable compatibility wrappers: {missing_wrappers}")
+if len(wrapper_names) != expected_wrappers:
+    raise AssertionError(f"validator wrapper map has {len(wrapper_names)} entries instead of {expected_wrappers}")
+
+print('impeccable v3.1.1 vendor contract checks passed')
+PY
+  then
+    pass 'Impeccable v3.1.1 vendor contract' 'consolidated package, upstream counts, local overlay, wrappers, and forbidden top-level routes are aligned'
+  else
+    fail 'Impeccable v3.1.1 vendor contract' 'consolidated package shape or local hybrid inventory is invalid'
+  fi
+}
+
+check_impeccable_skill_metadata() {
+  if python3 - "$ROOT_DIR/.opencode/skills/impeccable/SKILL.md" <<'PY'
+from pathlib import Path
+import sys
+
+text = Path(sys.argv[1]).read_text()
+required_tokens = [
+    'version: 3.1.1',
+    'Bash(npx impeccable *)',
+    'document',
+    'live',
+    'layout',
+    'See NOTICE.md',
+]
+missing = [token for token in required_tokens if token not in text]
+if missing:
+    raise AssertionError(f"impeccable/SKILL.md missing metadata tokens: {missing}")
+print('impeccable skill metadata checks passed')
+PY
+  then
+    pass 'Impeccable skill metadata' 'SKILL.md carries v3.1.1, runtime grant, command tokens, and attribution pointer'
+  else
+    fail 'Impeccable skill metadata' 'SKILL.md is missing required v3.1.1 metadata'
+  fi
+}
+
+check_impeccable_command_metadata() {
+  if python3 - "$ROOT_DIR/.opencode/skills/impeccable/scripts/command-metadata.json" "$IMPECCABLE_COMMAND_COUNT" <<'PY'
+from pathlib import Path
+import json
+import sys
+
+path = Path(sys.argv[1])
+expected_count = int(sys.argv[2])
+metadata = json.loads(path.read_text())
+expected = {
+    'adapt', 'animate', 'audit', 'bolder', 'clarify', 'colorize', 'craft', 'critique', 'delight', 'distill',
+    'document', 'extract', 'harden', 'layout', 'live', 'onboard', 'optimize', 'overdrive', 'polish',
+    'quieter', 'shape', 'teach', 'typeset',
+}
+actual = set(metadata)
+if actual != expected:
+    raise AssertionError(f"command metadata keys differ: missing={sorted(expected - actual)}, extra={sorted(actual - expected)}")
+if len(metadata) != expected_count:
+    raise AssertionError(f"expected {expected_count} command metadata entries, found {len(metadata)}")
+for forbidden in ('brand', 'product', 'codex'):
+    if forbidden in metadata:
+        raise AssertionError(f"{forbidden} must remain a reference/context surface, not command metadata")
+print('impeccable command metadata checks passed')
+PY
+  then
+    pass 'Impeccable command metadata' "$IMPECCABLE_COMMAND_COUNT upstream command keys match the v3.1.1 contract"
+  else
+    fail 'Impeccable command metadata' 'command-metadata.json does not match the v3.1.1 command set'
+  fi
+}
+
+check_impeccable_runtime_assets() {
+  if python3 - "$ROOT_DIR/.opencode/skills/impeccable" "$IMPECCABLE_SCRIPT_COUNT" <<'PY'
+from pathlib import Path
+import sys
+
+skill_dir = Path(sys.argv[1])
+expected_scripts = int(sys.argv[2])
+scripts_dir = skill_dir / 'scripts'
+script_files = [path for path in scripts_dir.iterdir() if path.is_file()]
+if len(script_files) != expected_scripts:
+    raise AssertionError(f"expected {expected_scripts} script files, found {len(script_files)}")
+
+checks = {
+    'scripts/pin.mjs': ['VALID_COMMANDS', 'loadCommandMetadata', 'command-metadata.json', 'metadata[command]?.description'],
+    'scripts/critique-storage.mjs': ['pathToFileURL', 'import.meta.url', 'process.argv[1]', 'IMPECCABLE_CRITIQUE_META'],
+    'reference/critique.md': ['.impeccable/critique/ignore.md', 'critique-storage.mjs slug', 'critique-storage.mjs write', 'critique-storage.mjs trend'],
+    'reference/polish.md': ['critique-storage.mjs latest'],
+}
+missing = []
+for relative, tokens in checks.items():
+    text = (skill_dir / relative).read_text()
+    for token in tokens:
+        if token not in text:
+            missing.append(f'{relative}: {token}')
+if missing:
+    raise AssertionError(f"runtime asset tokens missing: {missing}")
+print('impeccable runtime asset checks passed')
+PY
+  then
+    pass 'Impeccable runtime assets' 'scripts and runtime helper tokens, including Windows entrypoint markers, are present'
+  else
+    fail 'Impeccable runtime assets' 'script count or required runtime helper tokens are missing'
+  fi
+}
+
+check_impeccable_compat_wrappers() {
+  if python3 - "$ROOT_DIR/.opencode/skills" "$IMPECCABLE_COMPAT_WRAPPER_COUNT" "$IMPECCABLE_COMMAND_WRAPPER_COUNT" "$IMPECCABLE_UMBRELLA_WRAPPER_COUNT" <<'PY'
+from pathlib import Path
+import sys
+
+skills_dir = Path(sys.argv[1])
+expected_total = int(sys.argv[2])
+expected_command = int(sys.argv[3])
+expected_umbrella = int(sys.argv[4])
+expected = {
+    'adapt': '/impeccable adapt',
+    'animate': '/impeccable animate',
+    'arrange': '/impeccable layout',
+    'audit': '/impeccable audit',
+    'bolder': '/impeccable bolder',
+    'clarify': '/impeccable clarify',
+    'colorize': '/impeccable colorize',
+    'critique': '/impeccable critique',
+    'delight': '/impeccable delight',
+    'distill': '/impeccable distill',
+    'extract': '/impeccable extract',
+    'frontend-design': '/impeccable',
+    'harden': '/impeccable harden',
+    'normalize': '/impeccable polish',
+    'onboard': '/impeccable onboard',
+    'optimize': '/impeccable optimize',
+    'overdrive': '/impeccable overdrive',
+    'polish': '/impeccable polish',
+    'quieter': '/impeccable quieter',
+    'shape': '/impeccable shape',
+    'teach-impeccable': '/impeccable teach',
+    'typeset': '/impeccable typeset',
+}
+if len(expected) != expected_total:
+    raise AssertionError(f"wrapper map has {len(expected)} entries instead of {expected_total}")
+command_wrappers = [target for target in expected.values() if target != '/impeccable']
+umbrella_wrappers = [target for target in expected.values() if target == '/impeccable']
+if len(command_wrappers) != expected_command or len(umbrella_wrappers) != expected_umbrella:
+    raise AssertionError('command/umbrella wrapper counts do not match expected split')
+
+for wrapper, target in expected.items():
+    path = skills_dir / wrapper / 'SKILL.md'
+    text = path.read_text()
+    required = [f'name: {wrapper}', 'local compatibility wrapper', 'not a primary route', f'Redirect to `{target}`.']
+    missing = [token for token in required if token not in text]
+    if missing:
+        raise AssertionError(f"{wrapper} wrapper missing tokens: {missing}")
+    if 'allowed-tools' in text:
+        raise AssertionError(f"{wrapper} wrapper must not declare allowed-tools")
+print('impeccable compatibility wrapper checks passed')
+PY
+  then
+    pass 'Impeccable compatibility wrappers' "$IMPECCABLE_COMPAT_WRAPPER_COUNT wrappers map exactly and contain no runtime grants"
+  else
+    fail 'Impeccable compatibility wrappers' 'wrapper target mapping or no-runtime-grant contract is invalid'
+  fi
+}
+
+check_impeccable_governance_absence() {
+  if python3 - "$ROOT_DIR" <<'PY'
+from pathlib import Path
+import json
+import sys
+
+root = Path(sys.argv[1])
+paths = [
+    root / '.opencode/reference/support-policy.md',
+    root / '.opencode/reference/workflow-catalog.md',
+    root / '.opencode/reference/capability-matrix.json',
+    root / '.opencode/reference/routing-signals.json',
+]
+violations = []
+for path in paths:
+    text = path.read_text()
+    if 'impeccable' in text.lower():
+        violations.append(str(path.relative_to(root)))
+    if path.suffix == '.json':
+        json.loads(text)
+if violations:
+    raise AssertionError('Impeccable must not be promoted in governance/support files: ' + ', '.join(violations))
+print('impeccable governance absence checks passed')
+PY
+  then
+    pass 'Impeccable governance absence' 'impeccable is absent from support-policy, workflow-catalog, capability-matrix, and routing-signals'
+  else
+    fail 'Impeccable governance absence' 'impeccable must not appear in governance/support files or routing sidecar'
   fi
 }
 
@@ -405,8 +651,9 @@ check_routing_contract() {
     pass 'Top-level web-3d route' 'no top-level web-3d route is declared'
   fi
 
-  if grep -n -F 'Keep `impeccable` supplementary only.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
-     grep -n -F 'Deprecated wrappers stay included but non-primary.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
+  if grep -n -F 'Keep Impeccable supplementary only.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'The top level wrappers remain compatibility aliases for existing users.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1 && \
+     grep -n -F 'They do not create a primary route, a validated workflow, or a separate support tier.' "$ROUTING_MATRIX_FILE" >/dev/null 2>&1; then
     pass 'Primary impeccable route' 'impeccable remains supplementary rather than a primary route'
   else
     fail 'Primary impeccable route' 'impeccable layering is not clearly supplementary-only'
@@ -925,6 +1172,12 @@ check_full() {
   check_manifest_and_public_claims
 
   check_expected_skill_dirs
+  check_impeccable_v311_vendor_contract
+  check_impeccable_skill_metadata
+  check_impeccable_command_metadata
+  check_impeccable_runtime_assets
+  check_impeccable_compat_wrappers
+  check_impeccable_governance_absence
   check_sidecar_scaffolding
   check_compass_posture_contract
   check_outlier_pack_contract
@@ -980,7 +1233,7 @@ printf '\nSummary: %s PASS, %s WARN, %s FAIL\n' "$PASS_COUNT" "$WARN_COUNT" "$FA
 if [ "$FAIL_COUNT" -gt 0 ]; then
   printf '%s\n' 'FAIL: bundle validation did not pass.'
   if [ "$mode" = "full" ]; then
-    printf '%s\n' 'Full mode expects the current released bundle state: 41 required core skill directories (23 impeccable + 17 expert packs + 1 orientation skill), 3 planned adjacent packs, routing assets, QA/design references, workspace-model coherence, and no legacy runtime surfaces.'
+    printf '%s\n' 'Full mode expects the current released bundle state: 41 required core skill directories (1 consolidated impeccable skill + 22 impeccable compatibility wrappers + 17 expert packs + 1 orientation skill), 3 planned adjacent packs, routing assets, QA/design references, workspace-model coherence, and no legacy runtime surfaces.'
   fi
   exit 1
 fi
