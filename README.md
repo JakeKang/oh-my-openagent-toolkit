@@ -111,10 +111,11 @@ Once you are in this repo, read the local docs in this order:
 | 1 | `README.md` | Bundle overview, boundary, and upstream context |
 | 2 | `AGENTS.md` | Top-level local reading order and bundle boundaries |
 | 3 | `.opencode/reference/routing-matrix.md` | Authoritative local routing and helper map |
-| 4 | `.opencode/reference/support-policy.md` and `.opencode/reference/workflow-catalog.md` | Support boundary and the current validated workflow inventory |
-| 5 | `.opencode/reference/workspace-model.md` | Repo-root workspace conventions and the `workspace/{project-name}-{domain}` default for new greenfield outputs |
+| 4 | `.opencode/reference/opencode-compatibility-model.md` | Native OpenCode versus `oh-my-openagent` enhanced behavior boundary |
+| 5 | `.opencode/reference/support-policy.md` and `.opencode/reference/workflow-catalog.md` | Support boundary and the current validated workflow inventory |
+| 6 | `.opencode/reference/workspace-model.md` | Repo-root workspace conventions and the `workspace/{project-name}-{domain}` default for new greenfield outputs |
 
-That sequence keeps the layers clear: OpenCode is the foundation, `oh-my-openagent` sets up the harness, and this bundle adds local routing, support framing, and workspace conventions from the repo root. For first-pass orientation inside the repo, follow `README.md` -> `AGENTS.md` -> `routing-matrix.md` -> `support-policy.md` and `workflow-catalog.md` -> `workspace-model.md`.
+That sequence keeps the layers clear: OpenCode is the foundation, `oh-my-openagent` sets up the harness, and this bundle adds local routing, support framing, and workspace conventions from the repo root. For first-pass orientation inside the repo, follow `README.md` -> `AGENTS.md` -> `routing-matrix.md` -> `opencode-compatibility-model.md` -> `support-policy.md` and `workflow-catalog.md` -> `workspace-model.md`.
 
 ## Acknowledgements
 
@@ -128,6 +129,28 @@ This bundle is built as a companion to `oh-my-openagent`, which provides the har
 It also includes Impeccable v3.1.1 as a local refinement family for UI work. That layer is bundled through the consolidated upstream skill and local compatibility wrappers. It is acknowledged here as an upstream design influence and bundled asset, not as a claim that this repo is the canonical home for it.
 
 If you are publishing or sharing this repo, that is the right way to describe it: a companion bundle with a clearer local operating model, a broad but well-routed skill surface, explicit support boundaries, and a stronger documentation surface built on top of upstream foundations.
+
+## Support and governance
+
+This repo separates public support claims from the broader skill inventory. The support tier source of truth is `.opencode/reference/capability-matrix.json`; README `supported now` language must stay aligned with `.opencode/reference/support-policy.md` and `.opencode/reference/workflow-catalog.md`.
+
+| Reference | Use it for |
+| --- | --- |
+| `.opencode/reference/support-policy.md` | Support tiers and public claim rules. |
+| `.opencode/reference/workflow-catalog.md` | The four validated flagship workflows. |
+| `.opencode/reference/opencode-compatibility-model.md` | Native OpenCode baseline and `oh-my-openagent` enhanced behavior boundary. |
+| `.opencode/reference/capability-matrix.json` | Machine readable support levels for validated, guided, and planned surfaces. |
+| `.opencode/reference/workspace-model.md` | Repo root execution and `workspace/{project-name}-{domain}` placement. |
+| `.opencode/reference/project-setup-policy.md` | Preference for refining existing projects before greenfield creation. |
+| `.opencode/reference/web-3d-support-model.md` | Browser 3D ownership and support tier boundaries. |
+| `CHANGELOG.md` | Released changes and historical validation notes. |
+| `VERSION` | Current toolkit version. |
+
+Report bugs or documentation gaps as GitHub issues with a small reproduction, affected file, and expected outcome. Keep issue reports free of secrets, private URLs, tokens, and sensitive customer data.
+
+Security reporting: there is no dedicated `SECURITY.md` in this repo right now. If GitHub Security Advisories are enabled, use them for private vulnerability reports. Otherwise, open a minimal public issue asking the maintainers to provide a private channel, and do not include exploit details, credentials, or private data in that issue.
+
+Support is community maintenance for this public bundle. Funding links do not create a paid support tier, a response commitment, or an expanded validated surface.
 
 ## Support the project
 
@@ -144,4 +167,6 @@ These links are for optional funding only. They are not a paid support tier, the
 
 ## License
 
-This repository is available under the MIT License. See the repository license text when distributed with the bundle, and keep this README wording as the visible OSS license notice for this local copy.
+The toolkit repository is licensed under the MIT License. See [`LICENSE`](LICENSE) for the root license text.
+
+Vendored upstream components keep their own notices and license files. Impeccable v3.1.1 is carried under `.opencode/skills/impeccable/`, and its upstream Apache 2.0 license remains in `.opencode/skills/impeccable/LICENSE`. The root MIT license for this toolkit does not replace that vendored attribution or the Apache license terms that travel with Impeccable.
