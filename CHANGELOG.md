@@ -10,6 +10,28 @@ Versioning rules:
 - Minor: new local skill surfaces, new reference layers, or meaningful public workflow/documentation additions.
 - Patch: validator fixes, wording corrections, guardrail tightening, and non-breaking documentation updates.
 
+## v0.4.0 - 2026-05-22
+
+Minor toolkit release aligning local harness discovery documentation and validation with `oh-my-openagent` v4.3.0 project-root behavior.
+
+### Highlights
+
+* Removed obsolete top-level `paths` wiring from `.opencode/oh-my-openagent.jsonc`; the file now stays schema-compatible while project discovery loads local `.opencode/skills` and `.opencode/commands` from the toolkit root.
+* Clarified `.opencode/reference/opencode-compatibility-model.md` so `skills.sources` is documented only for extra skill sources, not command or reference roots.
+* Added a validator contract that rejects top-level `paths` in the plugin config and records the v4.3.0 toolkit-root discovery boundary.
+* Verified root scoping explicitly: the toolkit root discovers `compass`, `service-vernacular`, `impeccable`, and `route-domain`, while the parent root does not discover those project assets.
+
+### Validation
+
+* Release-time validation: `sh -n .opencode/reference/validate-opencode-bundle.sh` passed, and `bash .opencode/reference/validate-opencode-bundle.sh full` reported `95 PASS, 0 WARN, 0 FAIL`.
+* Config smoke test against `oh-my-openagent` v4.3.0 loaded `.opencode/oh-my-openagent.jsonc` with `hasPaths=false`.
+
+### Boundaries
+
+* This release does not add a new skill, primary route, validated workflow, or support tier.
+* `service-vernacular` remains a supplementary language companion and stays absent from routing-signals, capability-matrix, support-policy, and workflow-catalog sidecars.
+* Toolkit assets remain project-scoped: run from `oh-my-openagent-toolkit/` when expecting local skills or `/route-domain` to be discoverable.
+
 ## v0.3.0 - 2026-05-22
 
 Local toolkit release publishing all local-only governance, routing, Impeccable compatibility, validation, and `service-vernacular` work accumulated after `v0.2.0`.
