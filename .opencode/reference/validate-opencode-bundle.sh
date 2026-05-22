@@ -77,6 +77,7 @@ quieter
 shape
 teach-impeccable
 typeset
+service-vernacular
 "
 
 PLANNED_ADJACENT_SKILLS="
@@ -85,9 +86,9 @@ documentation-sdk
 developer-experience
 "
 
-FULL_EXPECTED_SKILL_COUNT=41
+FULL_EXPECTED_SKILL_COUNT=42
 PLANNED_ADJACENT_SKILL_COUNT=3
-LIVE_TOP_LEVEL_SKILL_COUNT=44
+LIVE_TOP_LEVEL_SKILL_COUNT=45
 IMPECCABLE_CONSOLIDATED_SKILL_COUNT=1
 IMPECCABLE_COMMAND_COUNT=23
 IMPECCABLE_COMPAT_WRAPPER_COUNT=22
@@ -97,6 +98,7 @@ IMPECCABLE_REFERENCE_COUNT=36
 IMPECCABLE_SCRIPT_COUNT=23
 FULL_EXPECTED_EXPERT_PACK_COUNT=17
 FULL_EXPECTED_ORIENTATION_SKILL_COUNT=1
+FULL_EXPECTED_LANGUAGE_COMPANION_SKILL_COUNT=1
 
 PASS_COUNT=0
 FAIL_COUNT=0
@@ -274,7 +276,7 @@ check_expected_skill_dirs() {
     fail 'Skill inventory expectation' "validator is configured for $expected_count skills instead of $FULL_EXPECTED_SKILL_COUNT"
   fi
   if [ "$missing" -eq 0 ]; then
-    pass 'Skill inventory' "all $FULL_EXPECTED_SKILL_COUNT required core skill directories are present ($IMPECCABLE_CONSOLIDATED_SKILL_COUNT consolidated impeccable skill + $IMPECCABLE_COMPAT_WRAPPER_COUNT impeccable compatibility wrappers + $FULL_EXPECTED_EXPERT_PACK_COUNT expert packs + $FULL_EXPECTED_ORIENTATION_SKILL_COUNT orientation skill)"
+    pass 'Skill inventory' "all $FULL_EXPECTED_SKILL_COUNT required core skill directories ($IMPECCABLE_CONSOLIDATED_SKILL_COUNT consolidated impeccable skill + $IMPECCABLE_COMPAT_WRAPPER_COUNT impeccable compatibility wrappers + $FULL_EXPECTED_EXPERT_PACK_COUNT expert packs + $FULL_EXPECTED_ORIENTATION_SKILL_COUNT orientation skill + $FULL_EXPECTED_LANGUAGE_COMPANION_SKILL_COUNT language companion skill), $PLANNED_ADJACENT_SKILL_COUNT planned adjacent packs are present"
   else
     printf 'FAIL Skill inventory: %s missing skill directories\n' "$missing"
   fi
@@ -293,7 +295,7 @@ core = {
     "security-engineering", "devops-platform", "qa-validation", "impeccable", "adapt", "animate",
     "arrange", "audit", "bolder", "clarify", "colorize", "critique", "compass", "delight", "distill",
     "extract", "frontend-design", "harden", "normalize", "onboard", "optimize", "overdrive",
-    "polish", "quieter", "shape", "teach-impeccable", "typeset"
+    "polish", "quieter", "shape", "teach-impeccable", "typeset", "service-vernacular"
 }
 planned = {"release-engineering", "documentation-sdk", "developer-experience"}
 actual = {p.name for p in skills_dir.iterdir() if p.is_dir()}
@@ -1607,7 +1609,7 @@ printf '\nSummary: %s PASS, %s WARN, %s FAIL\n' "$PASS_COUNT" "$WARN_COUNT" "$FA
 if [ "$FAIL_COUNT" -gt 0 ]; then
   printf '%s\n' 'FAIL: bundle validation did not pass.'
   if [ "$mode" = "full" ]; then
-    printf '%s\n' 'Full mode expects the current released bundle state: 41 required core skill directories (1 consolidated impeccable skill + 22 impeccable compatibility wrappers + 17 expert packs + 1 orientation skill), 3 planned adjacent packs, routing assets, QA/design references, workspace-model coherence, and no legacy runtime surfaces.'
+    printf '%s\n' 'Full mode expects the current released bundle state: 42 required core skill directories (1 consolidated impeccable skill + 22 impeccable compatibility wrappers + 17 expert packs + 1 orientation skill + 1 language companion skill), 3 planned adjacent packs, routing assets, QA/design references, workspace-model coherence, and no legacy runtime surfaces.'
   fi
   exit 1
 fi
