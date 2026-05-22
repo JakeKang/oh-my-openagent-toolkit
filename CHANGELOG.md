@@ -23,6 +23,11 @@ Impeccable v3.1.1 Hybrid migration entry for toolkit version `0.2.0`.
 * Updated validator coverage for the hybrid taxonomy, wrapper redirects, upstream command metadata, capability references, critique storage, craft gates, support boundaries, and forbidden wrapper claims.
 * Updated attribution handling so upstream `NOTICE.md`, `LICENSE`, and Apache 2.0 markers travel with the consolidated Impeccable package.
 
+### Validation
+
+* Historical release-time validator record: `sh .opencode/reference/validate-opencode-bundle.sh full`: `71 PASS, 0 WARN, 0 FAIL`.
+* This v0.2.0 release note is not a live pass-count claim for the current working tree; current validator success is based on `0 FAIL`.
+
 ### Boundaries
 
 * Support and workflow boundaries remain unchanged. Impeccable remains supplementary guidance plus compatibility routing inside this toolkit, not a new primary route or public support expansion.
