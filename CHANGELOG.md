@@ -10,6 +10,23 @@ Versioning rules:
 - Minor: new local skill surfaces, new reference layers, or meaningful public workflow/documentation additions.
 - Patch: validator fixes, wording corrections, guardrail tightening, and non-breaking documentation updates.
 
+ ## Unreleased
+
+Minor-level local skill surface under the existing versioning rules. `VERSION` stays at `0.2.0` until a release is published.
+
+### Highlights
+
+* Added `service-vernacular` as a local supplementary language companion for repo-backed nouns, verbs, surface registers, and before/after rewrite evidence across user-facing surfaces.
+* Updated inventory wording for 45 top-level skill entrypoints, 42 core skill surfaces, and 3 planned adjacent packs, with `service-vernacular` counted as one language companion and not as a planned-adjacent pack.
+* Validator coverage now checks the `service-vernacular` skill guardrails, reference coverage, supplementary discoverability, governance absence, and inventory classification.
+* Governance absence remains intentional: `service-vernacular` has no routing-signals, capability-matrix, support-policy, or workflow-catalog sidecar entry.
+
+### Boundaries
+
+* `service-vernacular` is not a primary route, not a validated workflow, and not a support claim.
+* This unreleased note does not publish a release date, tag, VERSION bump, supported-now claim, or validated workflow claim for `service-vernacular`.
+* The validated workflow surface remains limited to `frontend-product-delivery`, `backend-service-delivery`, `cloud-release-readiness`, and `ai-data-product-delivery`.
+
 ## v0.2.0 - 2026-05-19
 
 Impeccable v3.1.1 Hybrid migration entry for toolkit version `0.2.0`.
