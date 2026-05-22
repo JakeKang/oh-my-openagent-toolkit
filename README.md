@@ -6,13 +6,13 @@ Project-local OpenCode bundle for teams that want a clearer operating layer on t
 
 `oh-my-openagent-toolkit` is a project-local OpenCode bundle built on `oh-my-openagent`. It adds thin local routing, support framing, workspace conventions, and the imported Impeccable v3.1.1 design layer so a cloned repo is easier to navigate, operate, and explain. Local Impeccable now consists of 1 consolidated upstream Impeccable skill, 23 upstream commands, and 22 local compatibility wrappers.
 
-This repo is a companion to `oh-my-openagent`, not an official upstream distribution and not a replacement for the harness. The skill surface is broad, 44 top-level entrypoints under `.opencode/skills/`, made up of 41 core skill surfaces and 3 planned adjacent packs, but the visible validated surface stays narrow: `frontend-product-delivery`, `backend-service-delivery`, `cloud-release-readiness`, and `ai-data-product-delivery`.
+This repo is a companion to `oh-my-openagent`, not an official upstream distribution and not a replacement for the harness. The skill surface is broad, 45 top-level skill entrypoints under `.opencode/skills/`, made up of 42 core skill surfaces and 3 planned adjacent packs, but the visible validated surface stays narrow: `frontend-product-delivery`, `backend-service-delivery`, `cloud-release-readiness`, and `ai-data-product-delivery`.
 
 | At a glance | Summary |
 | --- | --- |
 | Foundation | `oh-my-openagent` provides the harness layer and execution model. |
 | Local layer | `oh-my-openagent-toolkit` adds thin routing, support framing, workspace conventions, and the imported Impeccable v3.1.1 design layer. |
-| Skill surface | The repo exposes 44 top-level skill entrypoints under `.opencode/skills/`: 41 core skill surfaces plus 3 planned adjacent packs. |
+| Skill surface | The repo exposes 45 top-level skill entrypoints under `.opencode/skills/`: 42 core skill surfaces plus 3 planned adjacent packs. |
 | Impeccable model | Local Impeccable is 1 consolidated upstream Impeccable skill exposing 23 upstream commands, with 22 local compatibility wrappers kept for existing top level entrypoints. |
 | Validated now | `frontend-product-delivery`, `backend-service-delivery`, `cloud-release-readiness`, and `ai-data-product-delivery`. |
 | Broader coverage | Additional surfaces are documented as `guided` or `planned`, not blanket `supported now` coverage. |
@@ -49,9 +49,10 @@ This repo adds local structure, not local bureaucracy. In practice, that means a
 | --- | --- | --- |
 | Thin routing | Classifies work into six routing buckets, points to the right pack, and names the built-in helpers that fit. | `AGENTS.md`, `.opencode/commands/route-domain.md`, `.opencode/reference/routing-matrix.md` |
 | Governance and usage refs | Makes support boundaries, workflow inventory, and workspace conventions explicit instead of implied. | `.opencode/reference/support-policy.md`, `.opencode/reference/workflow-catalog.md`, `.opencode/reference/workspace-model.md` |
-| Local skill surface | Adds 44 top-level skill entrypoints across major delivery lanes: 41 core skill surfaces plus 3 planned adjacent packs. That makes the repo feel like a real working system, not a thin demo layer. | `.opencode/skills/` |
+| Local skill surface | Adds 45 top-level skill entrypoints across major delivery lanes: 42 core skill surfaces plus 3 planned adjacent packs. That makes the repo feel like a real working system, not a thin demo layer. | `.opencode/skills/` |
 | UI refinement layer | Adds Impeccable v3.1.1 as a supplementary refinement stack for anti-slop review, critique, and polish. Local top level Impeccable surfaces are compatibility wrappers around the consolidated `/impeccable` command model. | Start with `frontend-web` or `mobile-app`, then layer `/impeccable` commands or compatibility wrappers on purpose |
 | DESIGN.md reference layer | Adds curated external DESIGN.md reference material for visual-language interpretation. It is not a primary route and not a validated support claim. | `.opencode/reference/design-md/README.md`, `.opencode/reference/design-md-source-policy.md`, `.opencode/reference/design-md-catalog.md` |
+| Service vernacular companion | Adds `service-vernacular` as a supplementary language companion for repo-backed nouns, verbs, surface registers, and rewrite evidence across UI, docs, CLI, notifications, backend/API product-facing errors, admin/operator, onboarding, support, and release notes. It is not a primary route, not a support claim, and not a validated support claim. | `.opencode/skills/service-vernacular/SKILL.md`, `.opencode/skills/service-vernacular/reference/` |
 
 | Skill family | Representative surfaces | Role |
 | --- | --- | --- |
@@ -63,6 +64,7 @@ This repo adds local structure, not local bureaucracy. In practice, that means a
 | QA and deployment | `qa-validation`, `devops-platform` | Validation, release readiness, rollout, and operational finish passes. |
 | Refinement layer | `impeccable`, `audit`, `critique`, `polish`, `typeset`, `colorize`, `adapt` | Supplementary UI refinement and anti-slop improvement. The named local entries are compatibility wrappers, not primary routes. |
 | Strategic orientation | `compass` | Bounded goal framing, option comparison, and next-route recommendation before implementation. It is not a primary route and not a validated support claim. |
+| Language companion | `service-vernacular` | Supplementary language companion for repo-backed domain nouns, verbs, surface registers, `LANGUAGE.md` dossier guidance, and before/after rewrite evidence. It is not a primary route, not a support claim, and not a validated support claim. |
 
 The current validated workflow surface is intentionally narrow.
 
@@ -79,6 +81,8 @@ The current validated workflow surface is intentionally narrow.
 For UI work, route through `frontend-web` or `mobile-app` first, then add `/impeccable` subcommands or local compatibility wrappers that fit the task. The same pattern appears across the rest of the bundle: core domain packs handle the main implementation lane, while focused helpers and refinement layers sharpen the outcome instead of replacing the route.
 
 When a UI request names a specific product feel, the DESIGN.md catalog can help choose a selected slug and extract transferable patterns. It stays reference material for the existing UI routes, not a supported-now promise and not a validated support claim.
+
+When copy work needs product-specific language before an owner writes UI, docs, CLI, notifications, backend/API product-facing errors, admin/operator text, onboarding, support copy, or release notes, use `service-vernacular` as a supplementary language companion. It keeps `LANGUAGE.md` as canonical, treats `DOMAIN_LANGUAGE.md` as alternate or legacy context, and stays not a primary route, not a support claim, and not a validated support claim.
 
 ## What this is not
 

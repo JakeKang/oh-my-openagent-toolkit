@@ -90,6 +90,16 @@ From the repo root, this matrix is the sole normative local routing/helper sourc
 
 The six fixed buckets remain the only first-pass routing buckets. This guidance does not add a seventh bucket, does not replace matrix routing, does not replace Prometheus, Oracle, or review-work, and does not create support status.
 
+## Supplementary service vernacular skill
+
+`service-vernacular` is a supplementary language companion for repo-backed nouns, verbs, surface registers, claim boundaries, and before/after rewrite evidence across UI, docs, CLI, notifications, backend/API product-facing errors, admin/operator text, onboarding, support, and release notes.
+
+Use it before or beside the owning primary route when copy work needs a `LANGUAGE.md` dossier, `DOMAIN_LANGUAGE.md` legacy context, generic SaaS-copy cleanup, or contract-safe product language. The owning primary route still handles implementation, documentation structure, API or SDK shape, UI mechanics, and delivery.
+
+`service-vernacular` is not a primary route and not a validated support claim.
+
+The six fixed buckets remain the only first-pass routing buckets. This guidance does not add a seventh bucket, does not replace primary routes, does not replace matrix routing, and does not create support status.
+
 ## Supplementary Impeccable layer
 
 Impeccable stays supplementary to the primary UI route. The local v3.1.1 model is one consolidated upstream `impeccable` skill with 23 upstream commands and 22 local compatibility wrappers. Each wrapper stays present and callable as a compatibility alias.
