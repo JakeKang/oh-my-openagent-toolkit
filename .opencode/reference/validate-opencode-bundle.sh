@@ -5,6 +5,13 @@ set -u
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT_DIR=$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)
 CONFIG_FILE="$ROOT_DIR/.opencode/oh-my-openagent.jsonc"
+PACKAGE_JSON_FILE="$ROOT_DIR/package.json"
+VERSION_FILE="$ROOT_DIR/VERSION"
+TOOLKIT_MANIFEST_FILE="$ROOT_DIR/toolkit-manifest.json"
+CLI_BIN_FILE="$ROOT_DIR/bin/omo-toolkit.mjs"
+CLI_MAIN_FILE="$ROOT_DIR/src/cli/main.mjs"
+CLI_SOURCE_DIR="$ROOT_DIR/src/cli"
+MANIFEST_GENERATOR_FILE="$ROOT_DIR/scripts/generate-toolkit-manifest.mjs"
 CAPABILITY_MATRIX_FILE="$ROOT_DIR/.opencode/reference/capability-matrix.json"
 WORKFLOW_CATALOG_FILE="$ROOT_DIR/.opencode/reference/workflow-catalog.md"
 WEB_3D_SUPPORT_MODEL_FILE="$ROOT_DIR/.opencode/reference/web-3d-support-model.md"
@@ -1366,6 +1373,89 @@ PY
   fi
 }
 
+check_source_package_contract() {
+  require_file 'Package metadata' "$PACKAGE_JSON_FILE"
+  require_file 'Version file' "$VERSION_FILE"
+  require_file 'Toolkit manifest' "$TOOLKIT_MANIFEST_FILE"
+  require_file 'CLI bin entrypoint' "$CLI_BIN_FILE"
+  require_file 'CLI main module' "$CLI_MAIN_FILE"
+  require_file 'Manifest generator' "$MANIFEST_GENERATOR_FILE"
+  require_dir 'CLI source directory' "$CLI_SOURCE_DIR"
+
+  if python3 - "$ROOT_DIR" "$PACKAGE_JSON_FILE" "$VERSION_FILE" "$CLI_BIN_FILE" "$TOOLKIT_MANIFEST_FILE" <<'PY'
+from pathlib import Path
+import json
+import sys
+
+root = Path(sys.argv[1])
+package_path = Path(sys.argv[2])
+version_path = Path(sys.argv[3])
+bin_path = Path(sys.argv[4])
+manifest_path = Path(sys.argv[5])
+
+package = json.loads(package_path.read_text())
+version = version_path.read_text().strip()
+manifest = json.loads(manifest_path.read_text())
+errors = []
+
+expected_bins = {
+    "oh-my-openagent-toolkit": "./bin/omo-toolkit.mjs",
+    "omo-toolkit": "./bin/omo-toolkit.mjs",
+}
+
+if package.get("name") != "oh-my-openagent-toolkit":
+    errors.append("package name must be oh-my-openagent-toolkit")
+if package.get("version") != version:
+    errors.append(f"package.json version {package.get('version')!r} must match VERSION {version!r}")
+if package.get("type") != "module":
+    errors.append("package type must be module")
+if package.get("bin") != expected_bins:
+    errors.append("package bin aliases must both point to ./bin/omo-toolkit.mjs")
+
+bin_text = bin_path.read_text()
+first_line = bin_text.splitlines()[0] if bin_text.splitlines() else ""
+if first_line != "#!/usr/bin/env node":
+    errors.append("bin/omo-toolkit.mjs must keep #!/usr/bin/env node shebang")
+if "../src/cli/main.mjs" not in bin_text:
+    errors.append("bin/omo-toolkit.mjs must import src/cli/main.mjs outside .opencode")
+
+for relative in ["bin/omo-toolkit.mjs", "src/cli/main.mjs", "src/cli"]:
+    if relative.startswith(".opencode/"):
+        errors.append(f"CLI path must stay outside .opencode: {relative}")
+    if not (root / relative).exists():
+        errors.append(f"required CLI path is missing: {relative}")
+
+for forbidden in [".opencode/bin/omo-toolkit.mjs", ".opencode/src/cli", ".opencode/cli"]:
+    if (root / forbidden).exists():
+        errors.append(f"CLI implementation must not live under {forbidden}")
+
+toolkit = manifest.get("toolkit", {})
+if toolkit.get("packageName") != "oh-my-openagent-toolkit":
+    errors.append("toolkit-manifest.json toolkit.packageName must match package name")
+if toolkit.get("version") != version:
+    errors.append("toolkit-manifest.json toolkit.version must match VERSION")
+
+if errors:
+    raise AssertionError("; ".join(errors))
+print("source package metadata checks passed")
+PY
+  then
+    pass 'Source package contract' 'package metadata, VERSION, bin aliases, shebang, and CLI source placement are valid'
+  else
+    fail 'Source package contract' 'package metadata, VERSION, bin aliases, shebang, or CLI source placement is invalid'
+  fi
+
+  if command -v node >/dev/null 2>&1; then
+    if node "$MANIFEST_GENERATOR_FILE" --check >/dev/null 2>&1; then
+      pass 'Toolkit manifest freshness' 'toolkit-manifest.json matches the generator output'
+    else
+      fail 'Toolkit manifest freshness' 'toolkit-manifest.json is stale; run node scripts/generate-toolkit-manifest.mjs --write'
+    fi
+  else
+    fail 'Toolkit manifest freshness' 'node is required to run the manifest generator check'
+  fi
+}
+
 check_evidence_freshness_contract() {
   if python3 - "$ROOT_DIR" <<'PY'
 from pathlib import Path
@@ -1735,6 +1825,7 @@ check_full() {
 
   check_release_contract
   check_readme_governance_contract
+  check_source_package_contract
   check_manifest_and_public_claims
   check_evidence_freshness_contract
 
