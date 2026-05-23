@@ -1,0 +1,28 @@
+{
+  "name": "oh-my-openagent-toolkit",
+  "version": "0.5.0",
+  "type": "module",
+  "bin": {
+    "oh-my-openagent-toolkit": "./bin/omo-toolkit.mjs",
+    "omo-toolkit": "./bin/omo-toolkit.mjs"
+  },
+  "scripts": {
+    "test": "node --check bin/omo-toolkit.mjs && node --check src/cli/main.mjs && node --test \"test/cli/*.test.mjs\"",
+    "validate:source": "node --check bin/omo-toolkit.mjs && node --check src/cli/main.mjs",
+    "pack:dry-run": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin/",
+    "src/cli/",
+    "toolkit-manifest.json",
+    ".opencode/",
+    "AGENTS.md",
+    "README.md",
+    "VERSION",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}
