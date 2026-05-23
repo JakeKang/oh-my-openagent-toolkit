@@ -165,6 +165,38 @@ test('validate --json output is parseable', () => {
   }
 });
 
+test('validate exits 0 for project-owned localOnly managed paths', () => {
+  const temp = installedTarget();
+  try {
+    makeLocalOnly(temp.target, ROUTE_DOMAIN_PATH);
+
+    const result = runBin(['validate', '--json', '--target', temp.target]);
+
+    assert.equal(result.status, 0, result.stderr);
+    const report = JSON.parse(result.stdout);
+    assert.equal(report.ok, true);
+    assert.deepEqual(report.issues, []);
+  } finally {
+    temp.cleanup();
+  }
+});
+
+test('validate still fails unmanaged managed-root files not listed as localOnly', () => {
+  const temp = installedTarget();
+  try {
+    const localPath = '.opencode/skills/unlisted/SKILL.md';
+    fs.mkdirSync(path.join(temp.target, '.opencode', 'skills', 'unlisted'), { recursive: true });
+    fs.writeFileSync(path.join(temp.target, localPath), '# Unlisted local skill\n');
+
+    const result = runBin(['validate', '--target', temp.target]);
+
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, new RegExp(`FAIL install\.unmanaged-conflict ${escapeRegExp(localPath)}`));
+  } finally {
+    temp.cleanup();
+  }
+});
+
 test('validate reports unmanaged install-root conflicts and forbidden support claims', () => {
   const temp = installedTarget();
   try {
@@ -213,6 +245,15 @@ function rewriteLockRecordHash(target, relativePath) {
   const record = lockfile.files.find((entry) => entry.path === relativePath);
   assert.ok(record, `expected lock record for ${relativePath}`);
   record.sha256 = sha256(fs.readFileSync(path.join(target, relativePath)));
+  writeLockfile(target, lockfile);
+}
+
+function makeLocalOnly(target, relativePath) {
+  const lockfile = readLockfile(target);
+  lockfile.files = lockfile.files.filter((entry) => entry.path !== relativePath);
+  lockfile.overrides ??= {};
+  lockfile.overrides.skip ??= [];
+  lockfile.overrides.localOnly = [...new Set([...(lockfile.overrides.localOnly ?? []), relativePath])].sort((left, right) => left.localeCompare(right, 'en-US'));
   writeLockfile(target, lockfile);
 }
 

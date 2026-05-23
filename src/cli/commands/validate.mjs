@@ -145,8 +145,9 @@ function validateManifestIdentity(manifest, lockfile, issues) {
 function validateExpectedManagedFiles(manifest, lockfile, issues) {
   if (lockfile.profile !== 'full') return;
   const recordsByPath = new Set((lockfile.files ?? []).map((record) => record.path));
+  const localOnlyPaths = new Set(lockfile.overrides?.localOnly ?? []);
   for (const entry of expectedManagedEntries(manifest, lockfile.profile)) {
-    if (recordsByPath.has(entry.path)) continue;
+    if (recordsByPath.has(entry.path) || localOnlyPaths.has(entry.path)) continue;
     issues.push(issue(VALIDATE_RULES.FILE_MISSING, entry.path, 'Expected managed manifest file is missing from the lockfile.'));
   }
 }
@@ -230,9 +231,10 @@ function validatePluginConfig(targetRoot, lockfile, issues) {
 
 function validateUnmanagedConflicts(targetRoot, lockfile, issues) {
   const ownedPaths = new Set((lockfile.files ?? []).map((record) => record.path));
+  const localOnlyPaths = new Set(lockfile.overrides?.localOnly ?? []);
   for (const relativePath of listTargetFiles(targetRoot)) {
     if (!isManagedInstallPath(relativePath)) continue;
-    if (ownedPaths.has(relativePath)) continue;
+    if (ownedPaths.has(relativePath) || localOnlyPaths.has(relativePath)) continue;
     issues.push(issue(VALIDATE_RULES.UNMANAGED_CONFLICT, relativePath, 'Managed install root contains an unmanaged file.'));
   }
 }

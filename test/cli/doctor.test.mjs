@@ -12,6 +12,7 @@ import { createTempTargetFromFixture, fixturePath } from './helpers/temp-target.
 const PACKAGE_ROOT = path.resolve(new URL('../..', import.meta.url).pathname);
 const BIN = path.join(PACKAGE_ROOT, 'bin', 'omo-toolkit.mjs');
 const PLUGIN_CONFIG_PATH = '.opencode/oh-my-openagent.jsonc';
+const ROUTE_DOMAIN_PATH = '.opencode/commands/route-domain.md';
 
 test('doctor reports empty target as not installed without writing', () => {
   const temp = createTempTargetFromFixture('empty-target');
@@ -56,6 +57,45 @@ test('doctor --json emits machine-readable diagnostics', () => {
     assert.ok(Array.isArray(report.diagnostics));
     assert.ok(Array.isArray(report.checks));
     assert.ok(report.suggestedCommands.includes(`node bin/omo-toolkit.mjs validate --target ${temp.target}`));
+  } finally {
+    temp.cleanup();
+  }
+});
+
+test('doctor --json reports localOnly paths as healthy info', () => {
+  const temp = installedTarget();
+  try {
+    makeLocalOnly(temp.target, ROUTE_DOMAIN_PATH);
+
+    const result = runBin(['doctor', '--json', '--target', temp.target]);
+
+    assert.equal(result.status, 0, result.stderr);
+    const report = JSON.parse(result.stdout);
+    const localOnly = report.diagnostics.find((check) => check.ruleId === 'doctor.local-only');
+    assert.equal(report.status, 'healthy');
+    assert.ok(report.rules.includes('doctor.local-only'));
+    assert.equal(localOnly.status, 'info');
+    assert.deepEqual(localOnly.preservedPaths, [ROUTE_DOMAIN_PATH]);
+  } finally {
+    temp.cleanup();
+  }
+});
+
+test('doctor suggests migrate dry-run before init dry-run for legacy-looking target without lockfile', () => {
+  const temp = createTempTargetFromFixture('empty-target');
+  try {
+    fs.mkdirSync(path.join(temp.target, '.opencode', 'commands'), { recursive: true });
+    fs.writeFileSync(path.join(temp.target, ROUTE_DOMAIN_PATH), 'legacy route command\n');
+
+    const result = runBin(['doctor', '--json', '--target', temp.target]);
+
+    assert.equal(result.status, 1);
+    const report = JSON.parse(result.stdout);
+    const migrate = `node bin/omo-toolkit.mjs migrate --dry-run --target ${temp.target}`;
+    const init = `node bin/omo-toolkit.mjs init --dry-run --target ${temp.target}`;
+    assert.ok(report.suggestedCommands.includes(migrate));
+    assert.ok(report.suggestedCommands.includes(init));
+    assert.ok(report.suggestedCommands.indexOf(migrate) < report.suggestedCommands.indexOf(init));
   } finally {
     temp.cleanup();
   }
@@ -109,6 +149,23 @@ function rewriteLockRecordHash(target, relativePath) {
   assert.ok(record, `expected lock record for ${relativePath}`);
   record.sha256 = sha256(fs.readFileSync(path.join(target, relativePath)));
   fs.writeFileSync(lockfilePath, `${JSON.stringify(lockfile, null, 2)}\n`);
+}
+
+function readLockfile(target) {
+  return JSON.parse(fs.readFileSync(path.join(target, LOCKFILE_RELATIVE_PATH), 'utf8'));
+}
+
+function writeLockfile(target, lockfile) {
+  fs.writeFileSync(path.join(target, LOCKFILE_RELATIVE_PATH), `${JSON.stringify(lockfile, null, 2)}\n`);
+}
+
+function makeLocalOnly(target, relativePath) {
+  const lockfile = readLockfile(target);
+  lockfile.files = lockfile.files.filter((entry) => entry.path !== relativePath);
+  lockfile.overrides ??= {};
+  lockfile.overrides.skip ??= [];
+  lockfile.overrides.localOnly = [...new Set([...(lockfile.overrides.localOnly ?? []), relativePath])].sort((left, right) => left.localeCompare(right, 'en-US'));
+  writeLockfile(target, lockfile);
 }
 
 function snapshotTarget(target) {

@@ -22,6 +22,7 @@ export const DOCTOR_RULES = Object.freeze({
   FILE_HASHES: 'doctor.hashes',
   AGENTS_MARKERS: 'doctor.agents.markers',
   PLUGIN_CONFIG: 'doctor.plugin.config',
+  LOCAL_ONLY: 'doctor.local-only',
 });
 
 const RULE_ORDER = Object.freeze(Object.values(DOCTOR_RULES));
@@ -122,7 +123,7 @@ function diagnoseTarget({ packageRoot, targetRoot }) {
   if (lockfileResult.state === 'missing') {
     add(checks, DOCTOR_RULES.NOT_INSTALLED, 'fail', 'Toolkit lockfile is missing; target is not installed.', {
       path: LOCKFILE_RELATIVE_PATH,
-      suggestedCommands: [commands.initDryRun],
+      suggestedCommands: fs.existsSync(opencodePath) ? [commands.migrateDryRun, commands.initDryRun] : [commands.initDryRun],
     }, suggestedCommands);
   } else if (lockfileResult.state === 'invalid') {
     add(checks, DOCTOR_RULES.LOCKFILE_INVALID, 'fail', 'Toolkit lockfile is invalid and cannot be parsed.', {
@@ -192,6 +193,20 @@ function diagnoseInstalledTarget({ targetRoot, manifest, lockfile, checks, sugge
     ...plugin.details,
     suggestedCommands: plugin.ok ? [] : [commands.validate],
   }, suggestedCommands);
+
+  const localOnly = inspectLocalOnly(lockfile);
+  add(checks, DOCTOR_RULES.LOCAL_ONLY, localOnly.paths.length > 0 ? 'info' : 'pass', localOnly.message, {
+    preservedPaths: localOnly.paths,
+    count: localOnly.paths.length,
+  }, suggestedCommands);
+}
+
+function inspectLocalOnly(lockfile) {
+  const paths = [...(lockfile.overrides?.localOnly ?? [])].sort((left, right) => left.localeCompare(right, 'en-US'));
+  return {
+    paths,
+    message: paths.length > 0 ? 'Project-owned localOnly paths are preserved.' : 'No project-owned localOnly paths are recorded.',
+  };
 }
 
 function readLockfile(targetRoot) {
@@ -295,6 +310,7 @@ function add(checks, ruleId, status, message, details = {}, suggestedCommands) {
 function nextCommands(targetRoot) {
   return {
     initDryRun: `node bin/omo-toolkit.mjs init --dry-run --target ${targetRoot}`,
+    migrateDryRun: `node bin/omo-toolkit.mjs migrate --dry-run --target ${targetRoot}`,
     updateCheck: `node bin/omo-toolkit.mjs update --check --target ${targetRoot}`,
     validate: `node bin/omo-toolkit.mjs validate --target ${targetRoot}`,
   };
