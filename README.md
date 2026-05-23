@@ -97,16 +97,51 @@ Routed surfaces are not automatically validated surfaces, and broader skill cove
 
 ## Quick start
 
-Set this up in the same order the stack is built:
+Set up OpenCode and the harness first:
 
 1. Install [OpenCode](https://opencode.ai/docs).
 2. Set up [`oh-my-openagent`](https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/refs/heads/dev/docs/guide/installation.md).
-3. Clone this bundle and work from the repo root.
+
+Then choose one setup path.
+
+### Path 1: Package/CLI installer
+
+Use this path from the target project root when you want the toolkit installed into that project's local `.opencode/` bundle.
+
+```sh
+npx oh-my-openagent-toolkit init --dry-run
+npx oh-my-openagent-toolkit init --apply
+npx oh-my-openagent-toolkit update --check
+bunx oh-my-openagent-toolkit doctor
+```
+
+Add `--target <path>` when you are not running from the target project root.
+
+The package exposes two bin names: `oh-my-openagent-toolkit` and `omo-toolkit`. `omo-toolkit` is an alias inside the `oh-my-openagent-toolkit` package, not a separate npm package. Use package-scoped alias commands when you want the shorter name:
+
+```sh
+npx --package oh-my-openagent-toolkit omo-toolkit --help
+bunx --package oh-my-openagent-toolkit omo-toolkit doctor
+```
+
+Default `init` manages the toolkit `.opencode/` payload, the toolkit lockfile, and the managed block in `AGENTS.md`. Root docs and `.mcp.json` are opt-in target artifacts. The default install does not overwrite a target project's README, changelog, version file, license, or `.mcp.json`; add opt-in flags only when you intend to copy those references.
+
+Installed target validation is CLI-only in v1: run `node bin/omo-toolkit.mjs validate --target <path>` from a toolkit checkout or unpacked package. The shell source validator remains for this repo source bundle and accepts only `foundation` or `full`.
+
+### Path 2: Clone/source workflow
+
+Use this path when you want to inspect, patch, or validate the toolkit source itself.
 
 ```sh
 git clone <repo-url>
 cd oh-my-openagent-toolkit
+bash .opencode/reference/validate-opencode-bundle.sh foundation
+bash .opencode/reference/validate-opencode-bundle.sh full
 ```
+
+The clone workflow does not validate an installed target project. Use `node bin/omo-toolkit.mjs validate --target <path>` for that.
+
+Neither setup path changes the support boundary. The current validated workflow surface stays limited to the four workflows listed above, and installer/update mechanics are not a new support tier.
 
 Once you are in this repo, read the local docs in this order:
 
