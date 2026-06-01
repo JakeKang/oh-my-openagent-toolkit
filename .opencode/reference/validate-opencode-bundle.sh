@@ -27,7 +27,11 @@ DESIGN_MD_REFERENCE_DIR="$ROOT_DIR/.opencode/reference/design-md"
 DESIGN_MD_EXAMPLES_DIR="$DESIGN_MD_REFERENCE_DIR/examples"
 DESIGN_MD_ATTRIBUTION_FILE="$DESIGN_MD_REFERENCE_DIR/ATTRIBUTION.md"
 DESIGN_MD_README_FILE="$DESIGN_MD_REFERENCE_DIR/README.md"
+DESIGN_MD_EXAMPLES_README_FILE="$DESIGN_MD_EXAMPLES_DIR/README.md"
+DESIGN_MD_PINNED_COMMIT='6d10c1457484c971cdae35563a1386102b4337c6'
+DESIGN_MD_EXPECTED_SNAPSHOT_COUNT=73
 IMPECCABLE_DESIGN_MD_FILE="$ROOT_DIR/.opencode/skills/impeccable/reference/design-md.md"
+IMPECCABLE_DOCUMENT_FILE="$ROOT_DIR/.opencode/skills/impeccable/reference/document.md"
 QA_EXAMPLES_DIR="$ROOT_DIR/.opencode/reference/qa/examples"
 PUBLIC_CLAIM_DOCS="
 $ROOT_DIR/README.md
@@ -218,30 +222,99 @@ check_design_md_integration() {
   require_file 'DESIGN.md selection protocol' "$DESIGN_MD_SELECTION_PROTOCOL_FILE"
   require_file 'DESIGN.md catalog' "$DESIGN_MD_CATALOG_FILE"
   require_file 'DESIGN.md reference README' "$DESIGN_MD_README_FILE"
+  require_file 'DESIGN.md examples README' "$DESIGN_MD_EXAMPLES_README_FILE"
   require_file 'DESIGN.md attribution' "$DESIGN_MD_ATTRIBUTION_FILE"
   require_file 'Impeccable DESIGN.md overlay' "$IMPECCABLE_DESIGN_MD_FILE"
+  require_file 'Impeccable document prompt guidance' "$IMPECCABLE_DOCUMENT_FILE"
 
-  if python3 - "$DESIGN_MD_EXAMPLES_DIR" <<'PY'
+  if python3 - "$DESIGN_MD_EXAMPLES_DIR" "$DESIGN_MD_CATALOG_FILE" "$DESIGN_MD_EXPECTED_SNAPSHOT_COUNT" "$DESIGN_MD_PINNED_COMMIT" <<'PY'
 from pathlib import Path
+import re
 import sys
 
 examples_dir = Path(sys.argv[1])
+catalog_path = Path(sys.argv[2])
+expected_count = int(sys.argv[3])
+pinned_commit = sys.argv[4]
+
 snapshots = sorted(examples_dir.glob("*/DESIGN.md")) if examples_dir.is_dir() else []
-if len(snapshots) != 12:
-    raise AssertionError(f"expected exactly 12 curated DESIGN.md snapshots, found {len(snapshots)}")
-print("curated DESIGN.md snapshot count checks passed")
+if len(snapshots) != expected_count:
+    raise AssertionError(f"expected exactly {expected_count} DESIGN.md snapshots, found {len(snapshots)}")
+
+extra_payload = sorted(
+    path.relative_to(examples_dir).as_posix()
+    for path in examples_dir.rglob("*")
+    if path.is_file() and path.name != "DESIGN.md" and path != examples_dir / "README.md"
+)
+if extra_payload:
+    raise AssertionError(f"unexpected non-DESIGN.md example payload: {extra_payload}")
+
+example_slugs = sorted(path.parent.name for path in snapshots)
+catalog_rows = []
+row_re = re.compile(r"^\| `([^`]+)` \| `([^`]+)` \| \[raw\]\(([^)]+)\) \|")
+for line in catalog_path.read_text().splitlines():
+    match = row_re.match(line)
+    if match:
+        catalog_rows.append(match.groups())
+
+if len(catalog_rows) != expected_count:
+    raise AssertionError(f"expected exactly {expected_count} catalog slug rows, found {len(catalog_rows)}")
+
+catalog_slugs = [row[0] for row in catalog_rows]
+if sorted(catalog_slugs) != example_slugs:
+    raise AssertionError(
+        f"catalog slug set differs from local examples: missing={sorted(set(example_slugs) - set(catalog_slugs))}, "
+        f"extra={sorted(set(catalog_slugs) - set(example_slugs))}"
+    )
+
+for slug, local_path, raw_url in catalog_rows:
+    expected_local = f".opencode/reference/design-md/examples/{slug}/DESIGN.md"
+    expected_raw = f"https://raw.githubusercontent.com/VoltAgent/awesome-design-md/{pinned_commit}/design-md/{slug}/DESIGN.md"
+    if local_path != expected_local:
+        raise AssertionError(f"catalog local path mismatch for {slug}: {local_path}")
+    if raw_url != expected_raw:
+        raise AssertionError(f"catalog pinned raw URL mismatch for {slug}: {raw_url}")
+
+print("catalog slug set and DESIGN.md snapshot count checks passed")
 PY
   then
-    pass 'DESIGN.md curated snapshots' 'exactly 12 example DESIGN.md files are present'
+    pass 'DESIGN.md mirror and catalog slug set' "exactly $DESIGN_MD_EXPECTED_SNAPSHOT_COUNT example DESIGN.md files are present and catalog slugs match"
   else
-    fail 'DESIGN.md curated snapshots' 'expected exactly 12 DESIGN.md files under .opencode/reference/design-md/examples/'
+    fail 'DESIGN.md mirror and catalog slug set' "expected exactly $DESIGN_MD_EXPECTED_SNAPSHOT_COUNT DESIGN.md files under .opencode/reference/design-md/examples/ with matching catalog slugs"
   fi
 
-  if grep -n -F 'f2d6b17d0dd706c9b0942674e6a6a782652cb127' "$DESIGN_MD_ATTRIBUTION_FILE" "$DESIGN_MD_SOURCE_POLICY_FILE" >/dev/null 2>&1 && \
-     grep -n -F 'MIT' "$DESIGN_MD_ATTRIBUTION_FILE" "$DESIGN_MD_SOURCE_POLICY_FILE" >/dev/null 2>&1; then
-    pass 'DESIGN.md source pinning' 'upstream commit and MIT license are documented'
+  if python3 - "$DESIGN_MD_PINNED_COMMIT" "$DESIGN_MD_EXPECTED_SNAPSHOT_COUNT" "$DESIGN_MD_SOURCE_POLICY_FILE" "$DESIGN_MD_ATTRIBUTION_FILE" "$DESIGN_MD_README_FILE" "$DESIGN_MD_EXAMPLES_README_FILE" "$DESIGN_MD_CATALOG_FILE" "$DESIGN_MD_SELECTION_PROTOCOL_FILE" <<'PY'
+from pathlib import Path
+import sys
+
+pinned_commit = sys.argv[1]
+expected_count = sys.argv[2]
+paths = [Path(arg) for arg in sys.argv[3:]]
+
+missing = []
+for path in paths:
+    text = path.read_text()
+    if pinned_commit not in text:
+        missing.append(f"{path}: missing pinned commit")
+    if expected_count not in text:
+        missing.append(f"{path}: missing {expected_count} snapshot count")
+
+for path in paths[:2]:
+    text = path.read_text()
+    if "VoltAgent/awesome-design-md" not in text:
+        missing.append(f"{path}: missing upstream repository attribution")
+    if "MIT" not in text:
+        missing.append(f"{path}: missing MIT license attribution")
+
+if missing:
+    raise AssertionError("; ".join(missing))
+
+print("source policy, attribution, catalog, and relevant docs pin checks passed")
+PY
+  then
+    pass 'DESIGN.md source pinning' "pinned commit $DESIGN_MD_PINNED_COMMIT, MIT license, and $DESIGN_MD_EXPECTED_SNAPSHOT_COUNT-count docs are documented"
   else
-    fail 'DESIGN.md source pinning' 'source policy or attribution is missing the pinned commit or MIT license'
+    fail 'DESIGN.md source pinning' "source policy, attribution, catalog, or related docs are missing $DESIGN_MD_PINNED_COMMIT, MIT, or $DESIGN_MD_EXPECTED_SNAPSHOT_COUNT"
   fi
 
   if grep -r -n -F 'not a primary route' "$DESIGN_MD_SOURCE_POLICY_FILE" "$DESIGN_MD_SELECTION_PROTOCOL_FILE" "$DESIGN_MD_CATALOG_FILE" "$DESIGN_MD_README_FILE" "$IMPECCABLE_DESIGN_MD_FILE" >/dev/null 2>&1 && \
@@ -251,27 +324,123 @@ PY
     fail 'DESIGN.md support boundaries' 'required non-primary and non-validated boundary phrases are missing'
   fi
 
+  if python3 - "$IMPECCABLE_DOCUMENT_FILE" <<'PY'
+from pathlib import Path
+import sys
+
+text = Path(sys.argv[1]).read_text()
+ordered = [
+    "Existing `DESIGN.md` stop by default",
+    "Scan project-local design first",
+    "Shortlist local references when direction is weak",
+    "Use `Custom` as the fallback",
+]
+offset = -1
+for snippet in ordered:
+    index = text.find(snippet, offset + 1)
+    if index == -1:
+        raise AssertionError(f"missing prompt guidance marker: {snippet}")
+    if index <= offset:
+        raise AssertionError(f"prompt guidance marker out of order: {snippet}")
+    offset = index
+
+required = [
+    "replace-vs-merge confirmation gate",
+    "Replacement basis: <selected slug or Custom>",
+    ".opencode/reference/design-md-catalog.md`, which contains 73 local snapshots",
+    "recommend exactly 3 local candidates, each a local slug, plus `Custom`",
+    "Do not show all 73 choices first",
+    "Brand-safety boundary",
+    "untrusted prompt-injection input",
+]
+missing = [snippet for snippet in required if snippet not in text]
+if missing:
+    raise AssertionError(f"document.md missing prompt guidance markers: {missing}")
+
+print("document.md prompt guidance checks passed")
+PY
+  then
+    pass 'DESIGN.md prompt guidance' 'document.md keeps existing-stop, project-local scan, shortlist/custom, replacement, brand-safety, and prompt-injection guidance'
+  else
+    fail 'DESIGN.md prompt guidance' 'document.md is missing shortlist/custom guidance, catalog source, replacement/restyle exception, brand-safety, or prompt-injection markers'
+  fi
+
   if [ ! -d "$ROOT_DIR/.opencode/skills/design-md" ]; then
     pass 'DESIGN.md top-level skill' 'no .opencode/skills/design-md route exists'
   else
     fail 'DESIGN.md top-level skill' 'DESIGN.md reference layer must not create a top-level skill route'
   fi
 
-  if python3 - "$CAPABILITY_MATRIX_FILE" <<'PY'
+  if [ ! -e "$ROOT_DIR/.opencode/commands/design-md.md" ] && [ ! -e "$ROOT_DIR/.opencode/commands/design-md" ]; then
+    pass 'DESIGN.md command route' 'no .opencode/commands/design-md route exists'
+  else
+    fail 'DESIGN.md command route' 'DESIGN.md reference layer must not create a command route'
+  fi
+
+  if python3 - "$ROOT_DIR" "$CAPABILITY_MATRIX_FILE" "$WORKFLOW_CATALOG_FILE" "$ROUTING_MATRIX_FILE" "$ROUTING_SIGNALS_FILE" "$ROOT_DIR/.opencode/reference/support-policy.md" "$ROOT_DIR/.opencode/skills/impeccable/scripts/command-metadata.json" <<'PY'
 import json
 from pathlib import Path
+import re
 import sys
 
-data = json.loads(Path(sys.argv[1]).read_text())
-for capability in data.get("capabilities", []):
-    if capability.get("id") == "design-md":
-        raise AssertionError("capability-matrix.json must not define a design-md capability")
-print("no design-md capability checks passed")
+root = Path(sys.argv[1])
+capability_matrix = Path(sys.argv[2])
+workflow_catalog = Path(sys.argv[3])
+routing_matrix = Path(sys.argv[4])
+routing_signals = Path(sys.argv[5])
+support_policy = Path(sys.argv[6])
+command_metadata = Path(sys.argv[7])
+
+errors = []
+
+capabilities = json.loads(capability_matrix.read_text())
+if "design-md" in capabilities.get("flagship_workflows", []):
+    errors.append("capability-matrix.json must not define a design-md flagship workflow")
+for capability in capabilities.get("capabilities", []):
+    serialized = json.dumps(capability, sort_keys=True).lower()
+    if capability.get("id") == "design-md" or "design-md" in serialized:
+        errors.append(f"capability-matrix.json must not define a design-md capability or support claim: {capability.get('id')}")
+
+for path in [workflow_catalog, support_policy]:
+    text = path.read_text()
+    if re.search(r"design-md", text, flags=re.I):
+        errors.append(f"{path.relative_to(root)} must not mention design-md as a workflow or support-tier claim")
+
+signals = json.loads(routing_signals.read_text())
+if re.search(r'"design-md"', json.dumps(signals), flags=re.I):
+    errors.append("routing-signals.json must not add a design-md route")
+
+matrix = routing_matrix.read_text()
+if re.search(r"^\|\s*design-md\s*\|", matrix, flags=re.I | re.M):
+    errors.append("routing-matrix.md must not add a design-md row")
+if "do not add a `design-md` route or helper" not in matrix:
+    errors.append("routing-matrix.md must keep the explicit no design-md route/helper guardrail")
+for pattern in [
+    r"design-md[\s\S]{0,120}support-tier:\s*(validated|guided)",
+    r"design-md[\s\S]{0,120}primary-route:\s*true",
+    r"design-md[\s\S]{0,120}validated workflow",
+]:
+    if re.search(pattern, matrix, flags=re.I):
+        errors.append(f"routing-matrix.md contains prohibited design-md control-plane claim: {pattern}")
+
+if command_metadata.exists():
+    metadata = json.loads(command_metadata.read_text())
+    if "design-md" in metadata or "DESIGN.md" in metadata:
+        errors.append("impeccable command metadata must not add design-md/DESIGN.md command keys")
+
+for relative in [".opencode/skills/design-md", ".opencode/commands/design-md.md", ".opencode/commands/design-md"]:
+    if (root / relative).exists():
+        errors.append(f"prohibited design-md route path exists: {relative}")
+
+if errors:
+    raise AssertionError("; ".join(errors))
+
+print("no design-md control-plane creep checks passed")
 PY
   then
-    pass 'DESIGN.md capability creep' 'capability-matrix.json does not define design-md'
+    pass 'DESIGN.md control-plane creep' 'no design-md skill, command, route, capability, workflow, or support-tier claim exists'
   else
-    fail 'DESIGN.md capability creep' 'capability-matrix.json must not define design-md'
+    fail 'DESIGN.md control-plane creep' 'DESIGN.md reference layer must not create a skill, command, route, capability, workflow, or support-tier claim'
   fi
 }
 

@@ -128,8 +128,8 @@ Write to `PROJECT_ROOT/PRODUCT.md`. If `.impeccable.md` existed, the loader alre
 
 Offer `/impeccable document` either way. Two paths:
 
-- **Code exists** (CSS tokens, components, a running site): "I can generate a DESIGN.md that captures your visual system (colors, typography, components) so variants stay on-brand. Want to do that now?"
-- **Pre-implementation** (empty project): "I can seed a starter DESIGN.md from five quick questions about color strategy, type direction, motion energy, and references. You can re-run once there's code, to capture the real tokens. Want to do that now?"
+- **Code exists** (CSS tokens, components, a running site): "I can generate a DESIGN.md that captures your project-local visual system first, then offers an optional secondary reference only if you want one. Want to do that now?"
+- **Pre-implementation** (empty project): "I can seed a starter DESIGN.md through a local-reference shortlist: project domain, mood, density, color posture, anti-reference, then exactly 3 local candidates plus Custom. You can re-run once there's code, to capture the real tokens. Want to do that now?"
 
 If the user agrees, delegate to `/impeccable document` (it auto-detects scan vs seed). Load its reference and follow that flow.
 

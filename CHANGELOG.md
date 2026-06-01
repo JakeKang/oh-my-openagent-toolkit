@@ -11,6 +11,26 @@ Versioning rules:
 - Patch: validator fixes, wording corrections, guardrail tightening, and non-breaking documentation updates.
 
 
+## v0.7.0 - 2026-06-01
+
+Minor toolkit release adding the full local DESIGN.md reference mirror and reference-guided DESIGN.md generation guardrails.
+
+#### Highlights
+
+* Added the full 73-example local design-md mirror from the pinned upstream snapshot so design references work offline from package contents.
+* Updated `/impeccable document` guidance to prefer existing project DESIGN.md files, scan project-local design sources, shortlist three local examples plus Custom, and keep replacement/restyle flows explicit.
+* Added brand-safety and prompt-injection guardrails for reference-guided DESIGN.md generation so copied examples stay inspiration, not product identity or instruction authority.
+
+#### Validation
+
+* Added validator and static regression coverage for the 73-example mirror, catalog parity, prompt guidance, no design-md route/control-plane creep, and unchanged support-tier boundaries.
+* Regenerated toolkit manifest and historical hash metadata for `0.7.0`; validation and package smoke passed for the release candidate.
+
+#### Boundaries
+
+* This release does not publish npm, create tags, or change package aliases; npm publish remains a manual user-owned handoff.
+* Design-md references remain supplementary guidance and do not add a primary route, validated workflow, support tier, runtime fetch, or remote dependency.
+
 ## v0.6.1 - 2026-05-26
 
 Patch release for the `init` AGENTS target-path repair.
