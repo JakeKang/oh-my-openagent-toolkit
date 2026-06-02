@@ -3269,8 +3269,8 @@
       "profiles": [
         "opt-in"
       ],
-      "sha256": "76b051ff3245c7cc96f7ee6d775f31cbebc7570626ac3a152fbd940cba877c88",
-      "size": 23112,
+      "sha256": "15b9ba1b26a889d42dde922ad00f0c2782ecec072a7e40d4d098a3e5e1a8e3fa",
+      "size": 14803,
       "strategy": "opt-in"
     },
     {
@@ -3329,7 +3329,7 @@
   },
   "schema": 1,
   "source": {
-    "generatedAt": "2026-06-01T07:34:51.255Z",
+    "generatedAt": "2026-06-02T01:46:20.507Z",
     "gitCommit": null
   },
   "toolkit": {
